@@ -1,658 +1,681 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQUATOR - Budidaya Tambak Tradisional & Modern</title>
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <style>
-        :root {
-            --primary-blue: #0284c7;
-            --dark-blue: #0369a1;
-            --accent-cyan: #06b6d4;
-            --bg-light: #f0fdf4; /* Aksen hijau lembut sesuai figma */
-            --bg-page: #f8fafc;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-page);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 8%;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-
-        .brand img {
-            width: 28px;
-            height: 28px;
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-            list-style: none;
-        }
-
-        .nav-menu a {
-            color: #e2e8f0;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-menu a:hover {
-            color: #38bdf8;
-        }
-
-        .nav-btn {
-            background: #2563eb;
-            color: #fff !important;
-            padding: 8px 20px;
-            border-radius: 6px;
-        }
-
-        /* SECTION HERO */
-        .hero {
-            min-height: 100vh;
-            background: linear-gradient(rgba(10, 25, 40, 0.7), rgba(10, 25, 40, 0.75)), 
-                        url("{{ asset('images/tambak-hero.jpg') }}") center/cover no-repeat;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 120px 20px 60px;
-            color: #fff;
-        }
-
-        .hero-tag {
-            color: #38bdf8;
-            font-size: 12px;
-            letter-spacing: 2px;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .hero-title {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(36px, 5vw, 56px);
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .hero-subtitle {
-            font-size: 18px;
-            font-weight: 400;
-            color: #e2e8f0;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-
-        .hero-desc {
-            max-width: 580px;
-            color: #94a3b8;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .btn-wrap {
-            display: flex;
-            gap: 16px;
-        }
-
-        .btn-fill {
-            background: #0284c7;
-            color: #fff;
-            padding: 12px 26px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .btn-fill:hover {
-            background: #0369a1;
-        }
-
-        .btn-line {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 12px 26px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            backdrop-filter: blur(4px);
-            transition: 0.2s;
-        }
-
-        .btn-line:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #fff;
-        }
-
-        /* LAYOUT UMUM SECTION */
-        .section-container {
-            max-width: 1160px;
-            margin: auto;
-            padding: 90px 24px;
-        }
-
-        .badge-sub {
-            color: #0d9488;
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 38px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 20px;
-            line-height: 1.25;
-        }
-
-        /* 1. TENTANG KAMI */
-        .grid-split {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .split-text p {
-            color: #475569;
-            font-size: 14.5px;
-            line-height: 1.7;
-            margin-bottom: 18px;
-        }
-
-        .split-img-card {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
-
-        .split-img-card img {
-            width: 100%;
-            height: 420px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .floating-pill {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: #0284c7;
-            color: #fff;
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        /* 2. KEUNGGULAN KAMI */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-            margin-top: 40px;
-        }
-
-        .feat-card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 28px;
-            display: flex;
-            align-items: flex-start;
-            gap: 20px;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            border: 1px solid #f1f5f9;
-        }
-
-        .feat-icon-box {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #e0f2fe;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: #0284c7;
-            flex-shrink: 0;
-        }
-
-        .feat-info h4 {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #0f172a;
-        }
-
-        .feat-info p {
-            font-size: 13.5px;
-            color: #64748b;
-            line-height: 1.5;
-        }
-
-        .feat-num {
-            position: absolute;
-            right: 24px;
-            top: 16px;
-            font-size: 34px;
-            font-weight: 800;
-            color: #e2e8f0;
-        }
-
-        /* 3. DARI TAMBAK KAMI (GALERI) */
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .gal-big {
-            height: 380px;
-            position: relative;
-            border-radius: 14px;
-            overflow: hidden;
-        }
-
-        .gal-right {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .gal-small {
-            height: 180px;
-            position: relative;
-            border-radius: 14px;
-            overflow: hidden;
-        }
-
-        .gal-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .gal-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 16px 20px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff;
-        }
-
-        .gal-tag {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #cbd5e1;
-        }
-
-        .gal-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        /* 4. STATISTIK BUDIDAYA */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            text-align: center;
-            gap: 30px;
-            margin: 50px 0 25px;
-        }
-
-        .stat-val {
-            font-size: 44px;
-            font-weight: 800;
-            color: #0284c7;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .stat-label {
-            font-size: 13.5px;
-            color: #64748b;
-            margin-top: 6px;
-        }
-
-        /* 5. PROSES DENGAN INDIKATOR NOMOR BULAT */
-        .process-list {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            margin-top: 24px;
-        }
-
-        .process-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .num-circle {
-            width: 36px;
-            height: 36px;
-            background: #0284c7;
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .num-circle.orange {
-            background: #f97316;
-        }
-
-        .process-text h5 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #0f172a;
-        }
-
-        .process-text p {
-            font-size: 13px;
-            color: #64748b;
-            line-height: 1.5;
-        }
-
-        /* 6. LOKASI & MAPS */
-        .location-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .map-wrapper {
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            height: 360px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .map-wrapper iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .loc-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .loc-card {
-            background: #fff;
-            padding: 24px;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .loc-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .btn-wa {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: #22c55e;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 14px;
-        }
-
-        /* 7. BANNER PEMANCINGAN */
-        .fish-banner {
-            border-radius: 16px;
-            overflow: hidden;
-            background: linear-gradient(rgba(10, 20, 30, 0.75), rgba(10, 20, 30, 0.75)), 
-                        url("{{ asset('images/ikan.jpg') }}") center/cover no-repeat;
-            color: #fff;
-            padding: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 50px;
-        }
-
-        .price-tag {
-            text-align: right;
-        }
-
-        .price-num {
-            font-size: 40px;
-            font-weight: 800;
-        }
-
-        /* FOOTER */
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 70px 8% 30px;
-            margin-top: 60px;
-        }
-
+@extends('layouts.app')
+
+@push('head')
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+<style>
+    :root {
+        --bg-mint: #d7edef;          
+        --bg-pastel-blue: #e8f3f9;   
+        --bg-card: #ffffff;         
+        --text-title: #0f172a;
+        --text-body: #475569;
+        --border-color: #cde4e7;
+        --primary-blue: #0284c7;
+        --badge-blue: #0284c7;
+        --footer-grad: linear-gradient(90deg, #177ba5 0%, #1a839e 40%, #159599 100%);
+        --stat-num: #0284c7;
+        --card-num: #c2dfe4;
+    }
+
+    /* Penyesuaian Dark Mode Mengikuti Palet Gambar */
+    body.dark-mode {
+        --bg-mint: #071929;
+        --bg-pastel-blue: #071929;
+        --bg-card: #0C2338;
+        --text-title: #E8F4FA;
+        --text-body: #7BAFC6;
+        --border-color: rgba(255, 255, 255, 0.12);
+        --primary-blue: #1A6DC4;
+        --badge-blue: #06B6D4;
+        --footer-grad: linear-gradient(90deg, #1A6DC4 0%, #2CC4B5 100%);
+        --stat-num: #3AA8E8;
+        --card-num: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .section-wrap-mint {
+        background-color: var(--bg-mint);
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    .section-wrap-pastel-blue {
+        background-color: var(--bg-pastel-blue);
+        width: 100%;
+        transition: background-color 0.3s ease;
+    }
+
+    .section-container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 85px 24px;
+    }
+
+    .hero {
+        min-height: 85vh;
+        background: linear-gradient(rgba(8, 20, 34, 0.72), rgba(8, 20, 34, 0.78)), 
+                    url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 70px 24px 80px;
+        color: #ffffff;
+    }
+
+    .hero-tag {
+        color: var(--badge-blue);
+        font-size: 11px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    .hero-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(36px, 4.5vw, 54px);
+        font-weight: 700;
+        margin-bottom: 18px;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 17px;
+        font-weight: 400;
+        color: #f1f5f9;
+        line-height: 1.55;
+        margin-bottom: 14px;
+    }
+
+    .hero-desc {
+        max-width: 580px;
+        color: #cbd5e1;
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin-bottom: 34px;
+    }
+
+    .btn-wrap {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-fill {
+        background: var(--primary-blue);
+        color: #ffffff;
+        padding: 11px 26px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 600;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-fill:hover {
+        background: #0369a1;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    body.dark-mode .btn-fill:hover {
+        background: #3AA8E8;
+    }
+
+    .btn-line {
+        background: rgba(15, 23, 42, 0.35);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 11px 26px;
+        border-radius: 7px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 600;
+        backdrop-filter: blur(4px);
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .btn-line:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #ffffff;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .badge-sub {
+        color: var(--badge-blue);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 38px;
+        font-weight: 700;
+        color: var(--text-title);
+        line-height: 1.25;
+        margin-bottom: 20px;
+    }
+
+    .grid-split {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 50px;
+        align-items: center;
+    }
+
+    .split-text p {
+        color: var(--text-body);
+        font-size: 14.5px;
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+
+    .split-img-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .split-img-card img {
+        width: 100%;
+        height: 390px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .floating-pill {
+        position: absolute;
+        bottom: 18px;
+        left: 18px;
+        background: var(--primary-blue);
+        color: #fff;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-top: 36px;
+    }
+
+    .feat-card {
+        background: var(--bg-card);
+        border-radius: 18px;
+        padding: 30px 28px;
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        position: relative;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+        transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    }
+
+    .feat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .feat-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+    }
+
+    /* Icon Default Light Mode */
+    .icon-green { background: rgba(34, 197, 94, 0.15); color: #16a34a; }
+    .icon-blue  { background: rgba(14, 165, 233, 0.15); color: #0284c7; }
+    .icon-amber { background: rgba(245, 158, 11, 0.15); color: #d97706; }
+    .icon-teal  { background: rgba(20, 184, 166, 0.15); color: #0d9488; }
+
+    /* Icon Khusus Dark Mode berdasarkan Palet */
+    body.dark-mode .icon-green { background: rgba(16, 185, 129, 0.12); color: #10B981; }
+    body.dark-mode .icon-blue  { background: rgba(6, 182, 212, 0.12); color: #06B6D4; }
+    body.dark-mode .icon-amber { background: rgba(245, 158, 11, 0.12); color: #F59E0B; }
+    body.dark-mode .icon-teal  { background: rgba(44, 196, 181, 0.12); color: #2CC4B5; }
+
+    .feat-bar {
+        width: 28px;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--badge-blue);
+        margin-bottom: 12px;
+    }
+
+    .feat-info h4 {
+        font-size: 16.5px;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: var(--text-title);
+    }
+
+    .feat-info p {
+        font-size: 13.5px;
+        color: var(--text-body);
+        line-height: 1.55;
+    }
+
+    .feat-num {
+        position: absolute;
+        right: 26px;
+        top: 18px;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--card-num);
+    }
+
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: 1.25fr 1fr;
+        gap: 20px;
+        margin-top: 26px;
+    }
+
+    .gal-big {
+        height: 360px;
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .gal-right {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .gal-small {
+        height: 170px;
+        position: relative;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .gal-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .gal-big:hover .gal-img,
+    .gal-small:hover .gal-img {
+        transform: scale(1.05);
+    }
+
+    .gal-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px 20px;
+        background: linear-gradient(transparent, rgba(15, 23, 42, 0.85));
+        color: #fff;
+    }
+
+    .gal-tag {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #cbd5e1;
+        display: block;
+        margin-bottom: 2px;
+    }
+
+    .gal-title {
+        font-size: 15.5px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        text-align: center;
+        gap: 30px;
+        margin: 48px 0 25px;
+    }
+
+    .stat-val {
+        font-size: 50px;
+        font-weight: 800;
+        color: var(--stat-num);
+        letter-spacing: -0.5px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: var(--text-body);
+        margin-top: 6px;
+    }
+
+    .process-list {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        margin-top: 24px;
+    }
+
+    .process-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .num-circle {
+        width: 36px;
+        height: 36px;
+        background: #0ea5e9;
+        color: #fff;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .num-circle.orange { background: #f97316; }
+
+    body.dark-mode .num-circle { background: #06B6D4; color: #fff; }
+    body.dark-mode .num-circle.orange { background: #F59E0B; color: #fff; }
+
+    .process-text h5 {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--text-title);
+    }
+
+    .process-text p {
+        font-size: 13px;
+        color: var(--text-body);
+        line-height: 1.5;
+    }
+
+    .location-grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr; 
+        gap: 20px;
+        margin: 32px auto 0;
+        max-width: 1000px;
+        align-items: stretch;
+    }
+
+    .map-wrapper {
+        border-radius: 16px;
+        overflow: hidden;
+        height: 100%;
+        min-height: 320px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    }
+
+    .map-wrapper iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .loc-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .loc-card {
+        background: var(--bg-card);
+        padding: 16px 18px; 
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .loc-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--text-title);
+    }
+
+    .btn-wa {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background: #22c55e;
+        color: #fff;
+        padding: 7px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 8px;
+        width: fit-content;
+    }
+
+    body.dark-mode .btn-wa { background: #25D366; }
+
+    @media (max-width: 850px) {
+        .location-grid { grid-template-columns: 1fr; }
+        .map-wrapper { height: 280px; }
+    }
+
+    /* CSS FOOTER BARU */
+    footer {
+        background: var(--footer-grad);
+        color: #ffffff;
+        padding: 60px 5% 28px;
+    }
+
+    .footer-container {
+        max-width: 1140px;
+        margin: 0 auto;
+    }
+
+    .footer-grid {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 45px;
+        align-items: start;
+    }
+
+    .footer-brand-col .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+    .footer-brand-col p {
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 18px;
+        max-width: 290px;
+    }
+
+    .footer-brand-col .quote-text {
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.75);
+        font-style: italic;
+    }
+
+    .footer-col h5 {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .footer-col ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .footer-col a,
+    .footer-col span {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 13.5px;
+        transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+        color: #ffffff;
+    }
+
+    .footer-divider {
+        border: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        margin: 0 0 24px 0;
+    }
+
+    .copyright {
+        text-align: center;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 900px) {
+        .grid-split, .gallery-grid, .location-grid { grid-template-columns: 1fr; }
+        .feature-grid, .stats-grid { grid-template-columns: 1fr; }
         .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 50px;
+            grid-template-columns: 1fr 1fr;
+            gap: 35px;
         }
+    }
 
-        .footer-col h5 {
-            color: #fff;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 18px;
+   /* Optimisasi Animasi Khusus HP */
+    @media (max-width: 768px) {
+        [data-aos] {
+            /* Menghilangkan penundaan (delay) agar elemen langsung muncul */
+            transition-delay: 0s !important;
+            animation-delay: 0s !important;
+            /* Mempercepat durasi animasi jadi 250ms agar sangat instan di HP */
+            transition-duration: 250ms !important;
         }
+    }
+</style>
+@endpush
 
-        .footer-col ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+@section('content')
 
-        .footer-col a {
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 13.5px;
-            transition: 0.2s;
-        }
+<header class="hero">
+    <span class="hero-tag" data-aos="fade-down" data-aos-duration="500">TENTANG TAMBAK KAMI</span>
+    <h1 class="hero-title" data-aos="zoom-in" data-aos-duration="600" data-aos-delay="50">Tambak Tradisional Kami</h1>
+    <p class="hero-subtitle" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">Budidaya Udang Vaname & Ikan Mujaer<br>dengan Perawatan Alami</p>
+    <p class="hero-desc" data-aos="fade-up" data-aos-duration="600" data-aos-delay="150">Memadukan pengalaman budidaya tradisional dengan pemantauan kualitas air berbasis digital.</p>
+    <div class="btn-wrap" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+        <a href="#budidaya" class="btn-fill">Lihat Budidaya Kami</a>
+        <a href="#kontak" class="btn-line">Hubungi Kami</a>
+    </div>
+</header>
 
-        .footer-col a:hover {
-            color: #38bdf8;
-        }
-
-        .copyright {
-            text-align: center;
-            font-size: 12.5px;
-            border-top: 1px solid #1e293b;
-            padding-top: 24px;
-            color: #64748b;
-        }
-
-        @media (max-width: 900px) {
-            .grid-split, .gallery-grid, .location-grid, .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .feature-grid, .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .fish-banner {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-            .price-tag {
-                text-align: center;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="brand">
-            <img src="{{ asset('images/logo.png') }}" alt="Aquator">
-            <span>AQUATOR</span>
-        </div>
-        <ul class="nav-menu">
-            <li><a href="{{ url('/home') }}">Dashboard</a></li>
-            <li><a href="#laporan">Laporan</a></li>
-            <li><a href="#" class="nav-btn">Home</a></li>
-        </ul>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <header class="hero">
-        <span class="hero-tag">Tentang Tambak Kami</span>
-        <h1 class="hero-title">Tambak Tradisional Kami</h1>
-        <p class="hero-subtitle">Budidaya Udang Vaname & Ikan Mujaer<br>dengan Perawatan Alami</p>
-        <p class="hero-desc">Memadukan pengalaman budidaya tradisional dengan pemantauan kualitas air berbasis digital.</p>
-        <div class="btn-wrap">
-            <a href="#budidaya" class="btn-fill">Lihat Budidaya Kami</a>
-            <a href="#kontak" class="btn-line">Hubungi Kami</a>
-        </div>
-    </header>
-
-    <!-- SECTION 1: TENTANG KAMI -->
+<div class="section-wrap-mint">
     <section class="section-container">
         <div class="grid-split">
-            <div class="split-text">
-                <span class="badge-sub">Tentang Kami</span>
-                <h2 class="section-title">Tradisional dalam Cara,<br>Modern dalam Pemantauan.</h2>
+            <div class="split-text" data-aos="fade-right" data-aos-duration="600">
+                <span class="badge-sub">TENTANG KAMI</span>
+                <h2 cl  ass="section-title">Tradisional dalam Cara,<br>Modern dalam Pemantauan.</h2>
                 <p>Kami membudidayakan udang Vaname dan ikan mujaer secara tradisional di tambak air tawar Sidoarjo dengan sistem pengelolaan manual namun terpantau digital.</p>
                 <p>Kami tetap mengandalkan pengalaman lokal dan metode alami dalam perawatan tambak, sementara teknologi digunakan untuk membantu memastikan kondisi air tetap terpantau secara berkala.</p>
             </div>
-            <div class="split-img-card">
-                <img src="{{ asset('images/tentang-tambak.jpg') }}" alt="Tambak Sidoarjo">
+            <div class="split-img-card" data-aos="fade-left" data-aos-duration="600">
+                <img src="{{ asset('assets/bersama.jpg') }}" alt="Tambak Sidoarjo">
                 <span class="floating-pill">TRADISIONAL × DIGITAL</span>
             </div>
         </div>
     </section>
 
-    <!-- SECTION 2: KEUNGGULAN KAMI -->
     <section class="section-container" style="padding-top: 0;">
-        <div style="text-align: center; max-width: 600px; margin: auto;">
-            <span class="badge-sub">Tambak Bangunsari</span>
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 30px;" data-aos="fade-up" data-aos-duration="500">
+            <span class="badge-sub">TAMBAK BANGUNSARI</span>
             <h2 class="section-title">Keunggulan Kami</h2>
         </div>
         
         <div class="feature-grid">
-            <div class="feat-card">
-                <div class="feat-icon-box"><i class="bi bi-flower1"></i></div>
+            <div class="feat-card" data-aos="fade-up" data-aos-duration="500" data-aos-delay="50">
+                <div class="feat-icon-box icon-green"><i class="bi bi-flower1"></i></div>
                 <div class="feat-info">
+                    <div class="feat-bar"></div>
                     <h4>Sistem Tradisional</h4>
                     <p>Budidaya udang dan ikan dengan metode alami yang menjaga keseimbangan ekosistem tambak.</p>
                 </div>
                 <span class="feat-num">01</span>
             </div>
 
-            <div class="feat-card">
-                <div class="feat-icon-box"><i class="bi bi-display"></i></div>
+            <div class="feat-card" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
+                <div class="feat-icon-box icon-blue"><i class="bi bi-display"></i></div>
                 <div class="feat-info">
+                    <div class="feat-bar"></div>
                     <h4>Monitoring Kualitas Air</h4>
                     <p>Memantau nilai pH, suhu, TDS dan kekeruhan air secara real-time melalui website.</p>
                 </div>
                 <span class="feat-num">02</span>
             </div>
 
-            <div class="feat-card">
-                <div class="feat-icon-box"><i class="bi bi-bell"></i></div>
+            <div class="feat-card" data-aos="fade-up" data-aos-duration="500" data-aos-delay="150">
+                <div class="feat-icon-box icon-amber"><i class="bi bi-bell-fill"></i></div>
                 <div class="feat-info">
+                    <div class="feat-bar"></div>
                     <h4>Pemantauan Lebih Teratur</h4>
                     <p>Analisis AI membantu mendeteksi pola perubahan air dan memberikan rekomendasi tindakan yang tepat.</p>
                 </div>
                 <span class="feat-num">03</span>
             </div>
 
-            <div class="feat-card">
-                <div class="feat-icon-box"><i class="bi bi-water"></i></div>
+            <div class="feat-card" data-aos="fade-up" data-aos-duration="500" data-aos-delay="200">
+                <div class="feat-icon-box icon-teal"><i class="bi bi-water"></i></div>
                 <div class="feat-info">
+                    <div class="feat-bar"></div>
                     <h4>Siap Panen Berkala</h4>
                     <p>Kualitas air yang terjaga membantu mendukung pertumbuhan udang dan ikan hingga masa panen.</p>
                 </div>
@@ -661,93 +684,100 @@
         </div>
     </section>
 
-    <!-- SECTION 3: DARI TAMBAK KAMI (GALERI) -->
     <section class="section-container" style="padding-top: 0;">
-        <h2 class="section-title" style="margin-bottom: 4px;">Dari Tambak Kami</h2>
-        <p style="color: #64748b; font-size: 14px;">Bagian dari proses budidaya yang kami jalankan setiap hari.</p>
+        <div data-aos="fade-right" data-aos-duration="500">
+            <h2 class="section-title" style="margin-bottom: 4px;">Dari Tambak Kami</h2>
+            <p style="color: var(--text-body); font-size: 14px;">Bagian dari proses budidaya yang kami jalankan setiap hari.</p>
+        </div>
 
         <div class="gallery-grid">
-            <div class="gal-big">
-                <img src="{{ asset('images/ikan.jpg') }}" alt="Budidaya Ikan Mujaer" class="gal-img">
+            <div class="gal-big" data-aos="zoom-in" data-aos-duration="600">
+                <img src="{{ asset('assets/mujaer.png') }}" alt="Budidaya Ikan Mujaer" class="gal-img">
                 <div class="gal-overlay">
-                    <span class="gal-tag">Mujaer</span>
+                    <span class="gal-tag">MUJAER</span>
                     <div class="gal-title">Budidaya Ikan Mujaer</div>
                 </div>
             </div>
             <div class="gal-right">
-                <div class="gal-small">
-                    <img src="{{ asset('images/ikan.jpg') }}" alt="Udang Vaname" class="gal-img">
+                <div class="gal-small" data-aos="fade-left" data-aos-duration="500" data-aos-delay="100">
+                    <img src="{{ asset('assets/udang.jpg') }}" alt="Udang Vaname" class="gal-img">
                     <div class="gal-overlay">
-                        <span class="gal-tag">Udang</span>
+                        <span class="gal-tag">UDANG</span>
                         <div class="gal-title">Udang Vaname</div>
                     </div>
                 </div>
-                <div class="gal-small">
-                    <img src="{{ asset('images/ikan.jpg') }}" alt="Peralatan Tambak" class="gal-img">
+                <div class="gal-small" data-aos="fade-left" data-aos-duration="500" data-aos-delay="150">
+                    <img src="{{ asset('assets/jala.jpg') }}" alt="Peralatan Tambak" class="gal-img">
                     <div class="gal-overlay">
-                        <span class="gal-tag">Jala</span>
+                        <span class="gal-tag">JALA</span>
                         <div class="gal-title">Peralatan Tambak</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+</div>
 
-    <!-- SECTION 4: BUDIDAYA KAMI (STATISTIK) -->
-    <section id="budidaya" class="section-container" style="text-align: center; padding-top: 20px;">
-        <h2 class="section-title">Budidaya Kami</h2>
-        <p style="color: #64748b; font-size: 14px; max-width: 550px; margin: auto;">Kami membudidayakan udang Vaname dan ikan mujaer secara tradisional di tambak air tawar Sidoarjo.</p>
+<div class="section-wrap-pastel-blue">
+    <section id="budidaya" class="section-container" style="text-align: center;">
+        <div data-aos="fade-up" data-aos-duration="500">
+            <h2 class="section-title" style="margin-bottom: 10px;">Budidaya Kami</h2>
+            <p style="color: var(--text-body); font-size: 15px; max-width: 580px; margin: auto;">Kami membudidayakan udang Vaname dan ikan mujaer secara tradisional di tambak air tawar Sidoarjo.</p>
+        </div>
 
         <div class="stats-grid">
-            <div>
-                <div class="stat-val">350 KG</div>
-                <div class="stat-label">Rata-rata panen udang per siklus</div>
+            <div data-aos="zoom-in-up" data-aos-duration="500" data-aos-delay="50">
+                <div class="stat-val" style="color: #10B981;">350 KG</div>
+                <div class="stat-label" style="color: #7BAFC6; font-weight: 500;">Rata-rata panen udang per siklus</div>
             </div>
-            <div>
-                <div class="stat-val">±250 KG</div>
-                <div class="stat-label">Mujaer siap konsumsi lokal per panen</div>
+            <div data-aos="zoom-in-up" data-aos-duration="500" data-aos-delay="100">
+                <div class="stat-val" style="color: #06B6D4;">±250 KG</div>
+                <div class="stat-label" style="color: #7BAFC6; font-weight: 500;">Mujaer siap konsumsi lokal per panen</div>
             </div>
-            <div>
-                <div class="stat-val">24/7</div>
-                <div class="stat-label">Pemantauan kualitas air otomatis</div>
+            <div data-aos="zoom-in-up" data-aos-duration="500" data-aos-delay="150">
+                <div class="stat-val" style="color: #1A6DC4;">24/7</div>
+                <div class="stat-label" style="color: #7BAFC6; font-weight: 500;">Pemantauan kualitas air otomatis</div>
             </div>
         </div>
-        <p style="color: #94a3b8; font-size: 13px;">Kualitas air dipantau otomatis melalui dashboard untuk membantu menjaga kondisi budidaya.</p>
+        <p style="color: var(--text-body); font-size: 13.5px; opacity: 0.85;" data-aos="fade-up" data-aos-duration="500" data-aos-delay="200">
+            Kualitas air dipantau otomatis melalui dashboard untuk membantu menjaga kondisi budidaya.
+        </p>
     </section>
+</div>
 
-    <!-- SECTION 5: PROSES & KUALITAS PANEN -->
+<div class="section-wrap-mint">
     <section class="section-container">
         <div class="grid-split">
-            <div class="split-img-card">
-                <img src="{{ asset('images/ikan.jpg') }}" alt="Kualitas Panen" style="height: 480px;">
+            <div class="split-img-card" data-aos="fade-right" data-aos-duration="600">
+                <img src="https://images.unsplash.com/photo-1534043464124-3be32fe00099?auto=format&fit=crop&w=1000&q=80" alt="Kualitas Panen" style="height: 480px;">
             </div>
-            <div>
-                <span class="badge-sub">Proses</span>
+            <div data-aos="fade-left" data-aos-duration="600">
+                <span class="badge-sub">PROSES</span>
                 <h2 class="section-title">Kualitas Panen Unggul,<br>Terjamin oleh Data.</h2>
                 
                 <div class="process-list">
-                    <div class="process-item">
+                    <div class="process-item" data-aos="fade-up" data-aos-duration="500" data-aos-delay="50">
                         <div class="num-circle">01</div>
                         <div class="process-text">
                             <h5>Air Tambak</h5>
                             <p>Kondisi air menjadi bagian penting dalam proses budidaya.</p>
                         </div>
                     </div>
-                    <div class="process-item">
+                    <div class="process-item" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
                         <div class="num-circle">02</div>
                         <div class="process-text">
                             <h5>Sensor Monitoring</h5>
                             <p>Parameter pH, suhu, dan kekeruhan dipantau secara digital.</p>
                         </div>
                     </div>
-                    <div class="process-item">
+                    <div class="process-item" data-aos="fade-up" data-aos-duration="500" data-aos-delay="150">
                         <div class="num-circle">03</div>
                         <div class="process-text">
                             <h5>Dashboard AQUATOR</h5>
                             <p>Data monitoring dapat dilihat melalui dashboard terpadu.</p>
                         </div>
                     </div>
-                    <div class="process-item">
+                    <div class="process-item" data-aos="fade-up" data-aos-duration="500" data-aos-delay="200">
                         <div class="num-circle orange">04</div>
                         <div class="process-text">
                             <h5>Keputusan Budidaya</h5>
@@ -758,98 +788,118 @@
             </div>
         </div>
     </section>
+</div>
 
-    <!-- SECTION 6: KUNJUNGI KAMI & LOKASI -->
-    <section id="kontak" class="section-container" style="padding-top: 0;">
-        <div style="text-align: center; margin-bottom: 30px;">
+<div class="section-wrap-pastel-blue">
+    <section id="kontak" class="section-container">
+        <div style="text-align: center; margin-bottom: 24px;" data-aos="fade-up" data-aos-duration="500">
             <h2 class="section-title" style="margin-bottom: 6px;">Kunjungi Kami</h2>
-            <p style="color: #64748b; font-size: 14px;">Temukan tambak dan lokasi pemancingan kami di Sidoarjo.</p>
+            <p style="color: var(--text-body); font-size: 14px;">Temukan lokasi tambak kami di Sidoarjo.</p>
         </div>
 
-        <div class="location-grid">
+        <div class="location-grid" data-aos="fade-up" data-aos-duration="600">
+            <!-- Peta Utama (Besar) -->
             <div class="map-wrapper">
-                <!-- Ganti src dengan embed link Google Maps lokasi asli kamu -->
                 <iframe src="https://maps.google.com/maps?q=Jabon%20Sidoarjo&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
             </div>
 
+            <!-- Kartu Info (Kecil & Ringkas) -->
             <div class="loc-cards">
                 <div class="loc-card">
-                    <div class="loc-head"><i class="bi bi-geo-alt-fill text-danger" style="color: #ef4444;"></i> Lokasi Tambak</div>
-                    <p style="color: #64748b; font-size: 13.5px; line-height: 1.6;">Dusun Bangunsari, Kecamatan Jabon,<br>Kabupaten Sidoarjo, Jawa Timur, Indonesia.</p>
-                    <a href="https://maps.google.com" target="_blank" style="color: #0284c7; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-block; margin-top: 10px;">Lihat di Google Maps &rarr;</a>
+                    <div class="loc-head">
+                        <i class="bi bi-geo-alt-fill" style="color: #ef4444; font-size: 14px;"></i> Lokasi Tambak
+                    </div>
+                    <p style="color: var(--text-body); font-size: 12px; line-height: 1.4; margin: 0;">
+                        Dusun Bangunsari, Kecamatan Jabon,<br>Kabupaten Sidoarjo, Jawa Timur.
+                    </p>
+                    <a href="https://maps.google.com" target="_blank" style="color: var(--primary-blue); text-decoration: none; font-size: 11.5px; font-weight: 600; display: inline-block; margin-top: 6px;">
+                        Lihat di Google Maps &rarr;
+                    </a>
                 </div>
 
                 <div class="loc-card">
-                    <div class="loc-head"><i class="bi bi-telephone-fill text-danger" style="color: #ef4444;"></i> Kontak Kami</div>
-                    <div style="font-size: 22px; font-weight: 800; color: #0f172a; margin-top: 4px;">0857-0717-8918</div>
-                    <p style="color: #64748b; font-size: 12.5px;">WhatsApp Available</p>
+                    <div class="loc-head">
+                        <i class="bi bi-telephone-fill" style="color: #ef4444; font-size: 13px;"></i> Kontak Kami
+                    </div>
+                    <a href="https://wa.me/6285707178918" target="_blank" style="font-size: 16px; font-weight: 800; color: var(--text-title); margin-top: 1px; text-decoration: none; display: block;">
+                        0857-0717-8918
+                    </a>
+                    <p style="color: var(--text-body); font-size: 11px; margin: 1px 0 0;">WhatsApp Available</p>
                     <a href="https://wa.me/6285707178918" target="_blank" class="btn-wa">
                         <i class="bi bi-whatsapp"></i> Chat WhatsApp
                     </a>
                 </div>
             </div>
         </div>
-
-        <!-- BANNER PEMANCINGAN -->
-        <div class="fish-banner">
-            <div>
-                <h3 style="font-family: 'Playfair Display', serif; font-size: 26px; margin-bottom: 8px;">Pemancingan Harian Bangunsari</h3>
-                <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 14px;">Nikmati serunya memancing ikan segar langsung dari tambak kami.<br>Datang kapan saja, bawa pulang hasilnya.</p>
-                <div style="display: flex; gap: 18px; font-size: 13px; color: #94a3b8; flex-wrap: wrap; margin-bottom: 20px;">
-                    <span><i class="bi bi-clock"></i> Buka setiap hari</span>
-                    <span><i class="bi bi-geo-alt"></i> Dusun Bangunsari, Jabon, Sidoarjo</span>
-                    <span><i class="bi bi-telephone"></i> 0857-0717-8918</span>
-                </div>
-                <div style="display: flex; gap: 12px;">
-                    <a href="#kontak" class="btn-line" style="padding: 9px 20px;">Lihat Lokasi</a>
-                    <a href="https://wa.me/6285707178918" target="_blank" class="btn-fill" style="background: #22c55e; padding: 9px 20px;">Hubungi WhatsApp</a>
-                </div>
-            </div>
-            <div class="price-tag">
-                <div class="price-num">Rp25.000</div>
-                <div style="color: #94a3b8; font-size: 13px;">per kilogram</div>
-            </div>
-        </div>
     </section>
+</div>
 
-    <!-- FOOTER -->
-    <footer>
+<!-- FOOTER BARU -->
+<footer>
+    <div class="footer-container">
         <div class="footer-grid">
-            <div>
-                <div class="brand" style="margin-bottom: 12px;">
-                    <img src="{{ asset('images/logo.png') }}" alt="Aquator">
-                    <span>AQUATOR</span>
-                </div>
-                <p style="font-size: 13.5px; line-height: 1.6; max-width: 320px; margin-bottom: 14px;">Budidaya Udang & Ikan Mujaer di Sidoarjo secara tradisional & digital.</p>
-                <i style="font-size: 12px; color: #64748b;">"Kualitas air terpantau, budidaya lebih terarah."</i>
+            <!-- Brand Column -->
+            <div class="footer-brand-col">
+                <a href="{{ url('/') }}" class="brand">
+                    <div class="d-flex justify-content-center align-items-center"
+                        style="width: 40px; height: 40px; background-color: #ffffff; border-radius: 10px; padding: 5px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); overflow: hidden;">
+                        <img src="{{ asset('assets/icon.png') }}" alt="Aquator Logo"
+                            style="width: 100%; height: 100%; object-fit: contain; transform: scale(1.8);">
+                    </div>
+                    <span class="fw-bold" style="font-size: 19px; color: #ffffff; letter-spacing: 0.5px;">AQUATOR</span>
+                </a>
+                <p>Budidaya Udang & Ikan Mujaer di Sidoarjo secara tradisional & digital.</p>
+                <div class="quote-text">"Kualitas air terpantau, budidaya lebih terarah."</div>
             </div>
+
+            <!-- Jelajahi -->
             <div class="footer-col">
-                <h5>Jelajahi</h5>
+                <h5>JELAJAHI</h5>
                 <ul>
-                    <li><a href="{{ url('/home') }}">Dashboard</a></li>
-                    <li><a href="#laporan">Laporan</a></li>
-                    <li><a href="#">Home</a></li>
+                    <li><a href="{{ url('/dashboard') }}">Dashboard</a></li>
+                    <li><a href="{{ url('/history') }}">Laporan</a></li>
+                    <li><a href="{{ url('/home') }}">Home</a></li>
                 </ul>
             </div>
+
+            <!-- Kunjungi Kami -->
             <div class="footer-col">
-                <h5>Kunjungi Kami</h5>
+                <h5>KUNJUNGI KAMI</h5>
                 <ul>
                     <li><a href="#kontak">Lokasi Tambak</a></li>
-                    <li><a href="#kontak">Pemancingan Harian</a></li>
+                    <li><a href="#">Pemancingan Harian</a></li>
                 </ul>
             </div>
+
+            <!-- Kontak -->
             <div class="footer-col">
-                <h5>Kontak</h5>
+                <h5>KONTAK</h5>
                 <ul>
-                    <li><a href="tel:085707178918">0857-0717-8918</a></li>
-                    <li><a href="https://wa.me/6285707178918">WhatsApp</a></li>
+                    <li><a href="https://wa.me/6285707178918" target="_blank">0857-0717-8918</a></li>
                 </ul>
             </div>
         </div>
+
+        <hr class="footer-divider">
+
         <div class="copyright">
             &copy; 2026 AQUATOR / TambakKita. All rights reserved.
         </div>
-    </footer>
+    </div>
+</footer>
 
-</body>
-</html>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const isMobile = window.innerWidth <= 768;
+        
+        AOS.init({
+            duration: isMobile ? 250 : 500,  // Durasi instan di HP, sedikit lebih cepat di desktop
+            once: true,                      
+            offset: isMobile ? 10 : 60,      
+            easing: 'ease-out-quad',
+            disableMutationObserver: true
+        });
+    });
+</script>
+@endsection

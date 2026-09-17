@@ -95,11 +95,11 @@ class SensorDataSeeder extends Seeder
     {
         switch ($label) {
             case 'buruk':
-                return $this->trapezoid($x, 0, 0, 20, 40);
-            case 'sedang':
-                return $this->trapezoid($x, 35, 45, 55, 70);
+                return $this->trapezoid($x, 0, 0, 40, 60);
+            case 'cukup': // Label sudah sinkron dengan Controller
+                return $this->trapezoid($x, 50, 65, 75, 85);
             case 'baik':
-                return $this->trapezoid($x, 70, 85, 100, 100);
+                return $this->trapezoid($x, 75, 85, 100, 100);
             default:
                 return 0;
         }
@@ -107,55 +107,60 @@ class SensorDataSeeder extends Seeder
 
     private function calculateFuzzyQuality($ph, $suhu, $tds, $ntu)
     {
-        $ph_asam   = $this->trapezoid($ph, 0, 0, 6.5, 7.5);
-        $ph_netral = $this->trapezoid($ph, 7, 7.4, 8.4, 9);
-        $ph_basa   = $this->trapezoid($ph, 8.5, 10, 14, 14);
+        // 1. Fuzzifikasi pH 
+        $ph_asam   = $this->trapezoid($ph, 0, 0, 6.0, 6.8);
+        $ph_netral = $this->trapezoid($ph, 6.5, 7.0, 8.2, 8.7);
+        $ph_basa   = $this->trapezoid($ph, 8.4, 8.8, 14, 14);
 
-        $suhu_dingin  = $this->trapezoid($suhu, 0, 0, 25, 28);
-        $suhu_optimal = $this->trapezoid($suhu, 26, 27, 31, 34);
-        $suhu_panas   = $this->trapezoid($suhu, 32, 35, 45, 45);
+        // 2. Fuzzifikasi Suhu
+        $suhu_dingin  = $this->trapezoid($suhu, 0, 0, 24, 26);
+        $suhu_optimal = $this->trapezoid($suhu, 25, 27, 31, 33);
+        $suhu_panas   = $this->trapezoid($suhu, 32, 34, 45, 45);
 
-        $tds_normal = $this->trapezoid($tds, 0, 0, 500, 1000);
+        // 3. Fuzzifikasi TDS
+        $tds_normal = $this->trapezoid($tds, 0, 0, 600, 1000);
         $tds_sedang = $this->trapezoid($tds, 800, 1000, 1500, 2000);
         $tds_tinggi = $this->trapezoid($tds, 1800, 2000, 5000, 5000);
 
-        $keruh_jernih  = $this->trapezoid($ntu, 0, 0, 3, 5);
-        $keruh_optimal = $this->trapezoid($ntu, 3, 4, 39, 43);
-        $keruh_keruh   = $this->trapezoid($ntu, 40, 44, 100, 100);
+        // 4. Fuzzifikasi Kekeruhan
+        $keruh_jernih  = $this->trapezoid($ntu, 0, 0, 5, 10);
+        $keruh_optimal = $this->trapezoid($ntu, 5, 10, 30, 40);
+        $keruh_keruh   = $this->trapezoid($ntu, 35, 45, 100, 100);
 
+        // Basis Aturan Fuzzy (Ubah 'sedang' menjadi 'cukup')
         $base_rules = [
             ['asam', 'dingin', 'jernih', 'buruk'],
             ['asam', 'dingin', 'optimal', 'buruk'],
             ['asam', 'dingin', 'keruh', 'buruk'],
-            ['asam', 'optimal', 'jernih', 'baik'],
-            ['asam', 'optimal', 'optimal', 'sedang'],
+            ['asam', 'optimal', 'jernih', 'cukup'],
+            ['asam', 'optimal', 'optimal', 'cukup'],
             ['asam', 'optimal', 'keruh', 'buruk'],
             ['asam', 'panas', 'jernih', 'buruk'],
             ['asam', 'panas', 'optimal', 'buruk'],
             ['asam', 'panas', 'keruh', 'buruk'],
 
-            ['netral', 'dingin', 'jernih', 'baik'],
-            ['netral', 'dingin', 'optimal', 'sedang'],
+            ['netral', 'dingin', 'jernih', 'cukup'],
+            ['netral', 'dingin', 'optimal', 'cukup'],
             ['netral', 'dingin', 'keruh', 'buruk'],
             ['netral', 'optimal', 'jernih', 'baik'],
             ['netral', 'optimal', 'optimal', 'baik'],
-            ['netral', 'optimal', 'keruh', 'sedang'],
-            ['netral', 'panas', 'jernih', 'baik'],
-            ['netral', 'panas', 'optimal', 'sedang'],
+            ['netral', 'optimal', 'keruh', 'cukup'],
+            ['netral', 'panas', 'jernih', 'cukup'],
+            ['netral', 'panas', 'optimal', 'cukup'],
             ['netral', 'panas', 'keruh', 'buruk'],
 
             ['basa', 'dingin', 'jernih', 'buruk'],
             ['basa', 'dingin', 'optimal', 'buruk'],
             ['basa', 'dingin', 'keruh', 'buruk'],
-            ['basa', 'optimal', 'jernih', 'baik'],
-            ['basa', 'optimal', 'optimal', 'baik'],
+            ['basa', 'optimal', 'jernih', 'cukup'],
+            ['basa', 'optimal', 'optimal', 'cukup'],
             ['basa', 'optimal', 'keruh', 'buruk'],
             ['basa', 'panas', 'jernih', 'buruk'],
             ['basa', 'panas', 'optimal', 'buruk'],
             ['basa', 'panas', 'keruh', 'buruk'],
         ];
 
-        $rule_outputs = ['buruk' => 0, 'sedang' => 0, 'baik' => 0];
+        $rule_outputs = ['buruk' => 0, 'cukup' => 0, 'baik' => 0];
 
         foreach ($base_rules as $rule) {
             [$ph_key, $suhu_key, $keruh_key, $output_label] = $rule;
@@ -164,25 +169,26 @@ class SensorDataSeeder extends Seeder
             $mu_keruh = ${"keruh_" . $keruh_key};
 
             $mu_normal = min($mu_ph, $mu_suhu, $mu_keruh, $tds_normal);
-            $rule_outputs[$output_label] += $mu_normal;
+            $rule_outputs[$output_label] = max($rule_outputs[$output_label], $mu_normal);
 
             $mu_sedang = min($mu_ph, $mu_suhu, $mu_keruh, $tds_sedang);
-            $sedang_label = ($output_label === 'baik') ? 'sedang' : 'buruk';
-            $rule_outputs[$sedang_label] += $mu_sedang;
+            $sedang_label = ($output_label === 'baik') ? 'cukup' : 'buruk';
+            $rule_outputs[$sedang_label] = max($rule_outputs[$sedang_label], $mu_sedang);
 
             $mu_tinggi = min($mu_ph, $mu_suhu, $mu_keruh, $tds_tinggi);
-            $rule_outputs['buruk'] += $mu_tinggi;
+            $rule_outputs['buruk'] = max($rule_outputs['buruk'], $mu_tinggi);
         }
 
+        // Defuzzifikasi Centroid
         $numerator = 0;
         $denominator = 0;
 
-        for ($x = 0; $x <= 100; $x += 0.1) {
+        for ($x = 0; $x <= 100; $x += 1) { 
             $mu_buruk  = min($rule_outputs['buruk'], $this->output_membership($x, 'buruk'));
-            $mu_sedang = min($rule_outputs['sedang'], $this->output_membership($x, 'sedang'));
+            $mu_cukup  = min($rule_outputs['cukup'], $this->output_membership($x, 'cukup'));
             $mu_baik   = min($rule_outputs['baik'], $this->output_membership($x, 'baik'));
 
-            $mu_total = max($mu_buruk, $mu_sedang, $mu_baik);
+            $mu_total = max($mu_buruk, $mu_cukup, $mu_baik);
 
             $numerator += $x * $mu_total;
             $denominator += $mu_total;

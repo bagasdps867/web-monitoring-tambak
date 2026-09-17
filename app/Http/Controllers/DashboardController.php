@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // PERBAIKAN: Mengambil hingga 1440 data terakhir agar grafik 7 & 30 hari memiliki rentang tanggal yang cukup
+        // Mengambil hingga 1440 data terakhir agar grafik 7 & 30 hari memiliki rentang tanggal yang cukup
         $sensorData = Sensor::orderBy('created_at', 'desc')->take(1440)->get();
         $cuaca = $this->getCuacaData();
 
@@ -21,7 +21,6 @@ class DashboardController extends Controller
 
     public function getSensorData()
     {
-        // PERBAIKAN: Mengambil data yang sama dengan index() agar pembaruan AJAX tidak memotong rentang grafik
         $sensorData = Sensor::orderBy('created_at', 'desc')->take(1440)->get();
         $latest = $sensorData->first();
         $quality = null;
@@ -35,7 +34,6 @@ class DashboardController extends Controller
             $sensorDataArray[0]['quality'] = $quality;
         }
 
-        // Return Data Sensor DAN Data Cuaca untuk AJAX Polling Realtime
         return response()->json([
             'sensors' => $sensorDataArray,
             'cuaca'   => $this->getCuacaData()
@@ -44,13 +42,11 @@ class DashboardController extends Controller
 
     private function getCuacaData()
     {
-        // Cek Cache
         if (Cache::has('bmkg_cuaca_jabon')) {
             return Cache::get('bmkg_cuaca_jabon');
         }
 
         try {
-            // API BMKG Resmi (JSON) Khusus Kecamatan Jabon, Kabupaten Sidoarjo
             $url = "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=35.15.05.2001";
 
             $response = Http::withHeaders([
@@ -61,7 +57,6 @@ class DashboardController extends Controller
             if ($response->successful()) {
                 $data = $response->json();
 
-                // BMKG JSON mengembalikan array cuaca per 3 jam
                 $cuacaList = [];
                 if (isset($data['data'][0]['cuaca'])) {
                     foreach ($data['data'][0]['cuaca'] as $group) {
@@ -297,11 +292,11 @@ class DashboardController extends Controller
     {
         switch ($label) {
             case 'buruk':
-                return $this->trapezoid($x, 0, 0, 20, 40);
-            case 'sedang':
-                return $this->trapezoid($x, 35, 45, 55, 70);
+                return $this->trapezoid($x, 0, 0, 40, 60);
+            case 'cukup':
+                return $this->trapezoid($x, 50, 65, 75, 85);
             case 'baik':
-                return $this->trapezoid($x, 70, 85, 100, 100);
+                return $this->trapezoid($x, 75, 85, 100, 100);
             default:
                 return 0;
         }
@@ -309,92 +304,82 @@ class DashboardController extends Controller
 
     public function calculateFuzzyQuality($ph, $suhu, $tds, $ntu)
     {
-        // 1. Fuzzifikasi pH (3 Variabel: Asam, Netral, Basa)
-        $ph_asam   = $this->trapezoid($ph, 0, 0, 6.5, 7.5);
-        $ph_netral = $this->trapezoid($ph, 7, 7.4, 8.4, 9);
-        $ph_basa   = $this->trapezoid($ph, 8.5, 10, 14, 14);
+        $ph_asam   = $this->trapezoid($ph, 0, 0, 6.0, 6.8);
+        $ph_netral = $this->trapezoid($ph, 6.5, 7.0, 8.2, 8.7);
+        $ph_basa   = $this->trapezoid($ph, 8.4, 8.8, 14, 14);
 
-        // 2. Fuzzifikasi Suhu (3 Variabel: Dingin, Optimal, Panas)
-        $suhu_dingin  = $this->trapezoid($suhu, 0, 0, 25, 28);
-        $suhu_optimal = $this->trapezoid($suhu, 26, 27, 31, 34);
-        $suhu_panas   = $this->trapezoid($suhu, 32, 35, 45, 45);
+        $suhu_dingin  = $this->trapezoid($suhu, 0, 0, 24, 26);
+        $suhu_optimal = $this->trapezoid($suhu, 25, 27, 31, 33);
+        $suhu_panas   = $this->trapezoid($suhu, 32, 34, 45, 45);
 
-        // 3. Fuzzifikasi TDS (3 Variabel: Normal, Sedang, Tinggi)
-        $tds_normal = $this->trapezoid($tds, 0, 0, 500, 1000);
+        $tds_normal = $this->trapezoid($tds, 0, 0, 600, 1000);
         $tds_sedang = $this->trapezoid($tds, 800, 1000, 1500, 2000);
         $tds_tinggi = $this->trapezoid($tds, 1800, 2000, 5000, 5000);
 
-        // 4. Fuzzifikasi Kekeruhan (3 Variabel: Jernih, Optimal, Keruh)
-        $keruh_jernih  = $this->trapezoid($ntu, 0, 0, 3, 5);
-        $keruh_optimal = $this->trapezoid($ntu, 3, 4, 39, 43);
-        $keruh_keruh   = $this->trapezoid($ntu, 40, 44, 100, 100);
+        $keruh_jernih  = $this->trapezoid($ntu, 0, 0, 5, 10);
+        $keruh_optimal = $this->trapezoid($ntu, 5, 10, 30, 40);
+        $keruh_keruh   = $this->trapezoid($ntu, 35, 45, 100, 100);
 
-        // Basis Aturan Fuzzy (pH, Suhu, Kekeruhan)
         $base_rules = [
             ['asam', 'dingin', 'jernih', 'buruk'],
             ['asam', 'dingin', 'optimal', 'buruk'],
             ['asam', 'dingin', 'keruh', 'buruk'],
-            ['asam', 'optimal', 'jernih', 'baik'],
-            ['asam', 'optimal', 'optimal', 'sedang'],
+            ['asam', 'optimal', 'jernih', 'cukup'],
+            ['asam', 'optimal', 'optimal', 'cukup'],
             ['asam', 'optimal', 'keruh', 'buruk'],
             ['asam', 'panas', 'jernih', 'buruk'],
             ['asam', 'panas', 'optimal', 'buruk'],
             ['asam', 'panas', 'keruh', 'buruk'],
 
-            ['netral', 'dingin', 'jernih', 'baik'],
-            ['netral', 'dingin', 'optimal', 'sedang'],
+            ['netral', 'dingin', 'jernih', 'cukup'],
+            ['netral', 'dingin', 'optimal', 'cukup'],
             ['netral', 'dingin', 'keruh', 'buruk'],
             ['netral', 'optimal', 'jernih', 'baik'],
             ['netral', 'optimal', 'optimal', 'baik'],
-            ['netral', 'optimal', 'keruh', 'sedang'],
-            ['netral', 'panas', 'jernih', 'baik'],
-            ['netral', 'panas', 'optimal', 'sedang'],
+            ['netral', 'optimal', 'keruh', 'cukup'],
+            ['netral', 'panas', 'jernih', 'cukup'],
+            ['netral', 'panas', 'optimal', 'cukup'],
             ['netral', 'panas', 'keruh', 'buruk'],
 
             ['basa', 'dingin', 'jernih', 'buruk'],
             ['basa', 'dingin', 'optimal', 'buruk'],
             ['basa', 'dingin', 'keruh', 'buruk'],
-            ['basa', 'optimal', 'jernih', 'baik'],
-            ['basa', 'optimal', 'optimal', 'baik'],
+            ['basa', 'optimal', 'jernih', 'cukup'],
+            ['basa', 'optimal', 'optimal', 'cukup'],
             ['basa', 'optimal', 'keruh', 'buruk'],
             ['basa', 'panas', 'jernih', 'buruk'],
             ['basa', 'panas', 'optimal', 'buruk'],
             ['basa', 'panas', 'keruh', 'buruk'],
         ];
 
-        $rule_outputs = ['buruk' => 0, 'sedang' => 0, 'baik' => 0];
+        $rule_outputs = ['buruk' => 0, 'cukup' => 0, 'baik' => 0];
 
-        // Evaluasi Aturan Terintegrasi 4 Sensor
         foreach ($base_rules as $rule) {
             [$ph_key, $suhu_key, $keruh_key, $output_label] = $rule;
             $mu_ph = ${"ph_" . $ph_key};
             $mu_suhu = ${"suhu_" . $suhu_key};
             $mu_keruh = ${"keruh_" . $keruh_key};
 
-            // Kondisi 1: TDS Normal -> Menjaga kualitas dari aturan dasar
             $mu_normal = min($mu_ph, $mu_suhu, $mu_keruh, $tds_normal);
-            $rule_outputs[$output_label] += $mu_normal;
+            $rule_outputs[$output_label] = max($rule_outputs[$output_label], $mu_normal);
 
-            // Kondisi 2: TDS Sedang -> Menurunkan grade 1 tingkat (Baik -> Sedang, Sedang/Buruk -> Buruk)
             $mu_sedang = min($mu_ph, $mu_suhu, $mu_keruh, $tds_sedang);
-            $sedang_label = ($output_label === 'baik') ? 'sedang' : 'buruk';
-            $rule_outputs[$sedang_label] += $mu_sedang;
+            $sedang_label = ($output_label === 'baik') ? 'cukup' : 'buruk';
+            $rule_outputs[$sedang_label] = max($rule_outputs[$sedang_label], $mu_sedang);
 
-            // Kondisi 3: TDS Tinggi -> Kualitas air langsung dinilai Buruk
             $mu_tinggi = min($mu_ph, $mu_suhu, $mu_keruh, $tds_tinggi);
-            $rule_outputs['buruk'] += $mu_tinggi;
+            $rule_outputs['buruk'] = max($rule_outputs['buruk'], $mu_tinggi);
         }
 
-        // Defuzzifikasi Centroid (Center of Gravity)
         $numerator = 0;
         $denominator = 0;
 
-        for ($x = 0; $x <= 100; $x += 0.1) {
+        for ($x = 0; $x <= 100; $x += 1) { 
             $mu_buruk  = min($rule_outputs['buruk'], $this->output_membership($x, 'buruk'));
-            $mu_sedang = min($rule_outputs['sedang'], $this->output_membership($x, 'sedang'));
+            $mu_cukup  = min($rule_outputs['cukup'], $this->output_membership($x, 'cukup'));
             $mu_baik   = min($rule_outputs['baik'], $this->output_membership($x, 'baik'));
 
-            $mu_total = max($mu_buruk, $mu_sedang, $mu_baik);
+            $mu_total = max($mu_buruk, $mu_cukup, $mu_baik);
 
             $numerator += $x * $mu_total;
             $denominator += $mu_total;
@@ -481,5 +466,190 @@ class DashboardController extends Controller
                 ['jam' => '01:00', 'suhu' => '26°', 'icon' => 'fas fa-moon text-warning', 'angin' => '↙ BD'],
             ]
         ];
+    }
+
+    public function getAiRecommendation()
+    {
+        $latest = Sensor::latest()->first();
+
+        if (!$latest) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Data sensor belum tersedia untuk dianalisis.'
+            ], 200);
+        }
+
+        $kualitas = $latest->kualitas ?? round($this->calculateFuzzyQuality($latest->ph, $latest->suhu, $latest->tds ?? 0, $latest->kekeruhan), 1);
+        $mlKualitas = null;
+        $mlOffline = false;
+
+        // 1. Tembak Server ML Python
+        try {
+            $response = Http::asJson()->timeout(3)->post('http://127.0.0.1:5000/predict', [
+                'ph'        => (float) $latest->ph,
+                'suhu'      => (float) $latest->suhu,
+                'tds'       => (float) ($latest->tds ?? 0),
+                'kekeruhan' => (float) $latest->kekeruhan,
+            ]);
+
+            if ($response->successful()) {
+                $mlKualitas = $response->json()['kualitas'] ?? $response->json()['prediction'] ?? null;
+            } else {
+                $mlOffline = true;
+            }
+        } catch (\Exception $e) {
+            \Log::error("Python ML Service Offline: " . $e->getMessage());
+            $mlOffline = true;
+        }
+
+        // 2. Pembacaan hasil prediksi ML (Hanya jika skor Kualitas Fuzzy juga bagus >= 75)
+        $mlNormalized = strtolower(trim((string) $mlKualitas));
+        if ($kualitas >= 75 && in_array($mlNormalized, ['normal', 'baik', '0', 'success'], true)) {
+            return response()->json([
+                'status'  => 'optimal',
+                'score'   => $kualitas,
+                'message' => "Kualitas air saat ini <strong>Sangat Baik & Optimal (Prediksi ML: Normal)</strong>. Seluruh parameter berada di batas aman budidaya, sehingga <strong>tidak diperlukan tindakan penanganan darurat</strong>."
+            ]);
+        }
+
+        // 3. Jika Server ML Offline tetapi kondisi air bagus berdasarkan Fuzzy Logic
+        if ($mlOffline && $kualitas >= 75) {
+            return response()->json([
+                'status'  => 'optimal',
+                'score'   => $kualitas,
+                'message' => "Kualitas air saat ini <strong>Normal (Fuzzy Score: {$kualitas}/100)</strong>. Seluruh parameter terpantau dalam kisaran aman budidaya."
+            ]);
+        }
+
+        $cacheKey = 'ml_rec_' . round($latest->ph, 1) . '_' . round($latest->suhu, 1) . '_' . round($latest->tds ?? 0) . '_' . round($latest->kekeruhan, 1);
+        if (Cache::has($cacheKey)) {
+            return response()->json([
+                'status'         => 'success',
+                'recommendation' => Cache::get($cacheKey)
+            ]);
+        }
+
+        $solusiLokal = $this->getLocalEmergencyAdvice($latest, $kualitas, $mlKualitas);
+        Cache::put($cacheKey, $solusiLokal, 300);
+
+        return response()->json([
+            'status'         => 'success',
+            'recommendation' => $solusiLokal
+        ]);
+    }
+
+    private function getLocalEmergencyAdvice($latest, $score, $mlKualitas = null)
+    {
+        $status_param = [];
+        $tindakan_kritis = [];
+        $tindakan_warning = [];
+
+        // 1. Evaluasi pH
+        if ($latest->ph < 6.0) {
+            $status_param[] = "pH: {$latest->ph} (🔴 Kritis - Sangat Asam)";
+            $tindakan_kritis[] = "[pH Kritis] Segera tebar kapur pertanian (Dolomit/Kalsit) dosis 10-15 ppm secara merata untuk menaikkan pH dan buffer alkalinitas.";
+        } elseif ($latest->ph < 6.5) {
+            $status_param[] = "pH: {$latest->ph} (🟠 Warning - Cenderung Asam)";
+            $tindakan_warning[] = "[pH Warning] Pantau pergerakan alkalinitas; berikan kapur ringan jika pH terus menunjukkan tren turun pada pagi hari.";
+        } elseif ($latest->ph <= 8.5) {
+            $status_param[] = "pH: {$latest->ph} (🟢 Normal)";
+        } elseif ($latest->ph <= 9.0) {
+            $status_param[] = "pH: {$latest->ph} (🟠 Warning - Cenderung Basa)";
+            $tindakan_warning[] = "[pH Warning] Kurangi pakan sedikit, aplikasikan probiotik (Bacillus sp.) atau molase (sumber karbon) untuk menyeimbangkan pH air.";
+        } else {
+            $status_param[] = "pH: {$latest->ph} (🔴 Kritis - Sangat Basa)";
+            $tindakan_kritis[] = "[pH Kritis] Lakukan pergantian air permukaan 10-20% dan segera berikan fermentasi probiotik + molase dosis tinggi.";
+        }
+
+        // 2. Evaluasi Suhu
+        if ($latest->suhu < 24.0) {
+            $status_param[] = "Suhu: {$latest->suhu}°C (🔴 Kritis - Sangat Dingin)";
+            $tindakan_kritis[] = "[Suhu Kritis] Kurangi pemberian pakan secara drastis (hingga 50%) karena metabolisme udang/ikan menurun tajam untuk mencegah penumpukan amonia.";
+        } elseif ($latest->suhu < 26.0) {
+            $status_param[] = "Suhu: {$latest->suhu}°C (🟠 Warning - Dingin)";
+            $tindakan_warning[] = "[Suhu Warning] Kurangi porsi pakan harian sekitar 10-20% agar tidak terjadi sisa pakan yang membusuk di dasar kolam.";
+        } elseif ($latest->suhu <= 31.5) {
+            $status_param[] = "Suhu: {$latest->suhu}°C (🟢 Normal)";
+        } elseif ($latest->suhu <= 33.0) {
+            $status_param[] = "Suhu: {$latest->suhu}°C (🟠 Warning - Panas)";
+            $tindakan_warning[] = "[Suhu Warning] Optimalkan operasional kincir air untuk memecah stratifikasi suhu panas di permukaan dan meratakan oksigen terlarut.";
+        } else {
+            $status_param[] = "Suhu: {$latest->suhu}°C (🔴 Kritis - Sangat Panas)";
+            $tindakan_kritis[] = "[Suhu Kritis] Segera tambah kedalaman/volume air kolam dan pastikan seluruh kincir aerasi menyala penuh pada siang hari.";
+        }
+
+        // 3. Evaluasi TDS
+        if ($latest->tds <= 800) {
+            $status_param[] = "TDS: {$latest->tds} ppm (🟢 Normal)";
+        } elseif ($latest->tds <= 1500) {
+            $status_param[] = "TDS: {$latest->tds} ppm (🟠 Warning - Tinggi)";
+            $tindakan_warning[] = "[TDS Warning] Indikasi partikel organik mulai pekat. Lakukan pembuangan air dasar (sipon) perlahan dan sirkulasi air baru.";
+        } else {
+            $status_param[] = "TDS: {$latest->tds} ppm (🔴 Kritis - Sangat Tinggi)";
+            $tindakan_kritis[] = "[TDS Kritis] Penumpukan bahan organik/mineral sangat ekstrem. Segera ganti air 20-30% secara bertahap dan tingkatkan suplai aerasi.";
+        }
+
+        // 4. Evaluasi Kekeruhan
+        if ($latest->kekeruhan <= 30) {
+            $status_param[] = "Kekeruhan: {$latest->kekeruhan} NTU (🟢 Normal)";
+        } elseif ($latest->kekeruhan <= 50) {
+            $status_param[] = "Kekeruhan: {$latest->kekeruhan} NTU (🟠 Warning - Mulai Keruh)";
+            $tindakan_warning[] = "[Kekeruhan Warning] Populasi plankton terlalu pekat atau suspensi tinggi. Puasakan biota sementara waktu dan aplikasikan probiotik pengurai (bakteri nitrifikasi).";
+        } else {
+            $status_param[] = "Kekeruhan: {$latest->kekeruhan} NTU (🔴 Kritis - Sangat Keruh)";
+            $tindakan_kritis[] = "[Kekeruhan Kritis] Kualitas air kolam sangat buruk/pekat. Segera sipon dasar kolam (buang lumpur mati), sirkulasi ganti air rutin, dan stop pakan 1-2 hari.";
+        }
+
+        // 5. Menyusun Output Akhir
+        $status_ml_text = $mlKualitas ? "Status Prediksi ML: **{$mlKualitas}**\n\n" : "";
+        $ringkasan_text = "**Rincian Kondisi Air Saat Ini:**\n- " . implode("\n- ", $status_param) . "\n\n";
+
+        if (empty($tindakan_kritis) && empty($tindakan_warning)) {
+            return "{$status_ml_text}{$ringkasan_text}Skor Kualitas Air: **{$score}/100**. Seluruh parameter stabil di rentang aman budidaya. Lanjutkan SOP harian.";
+        }
+
+        // Gabungkan array: Tindakan Kritis di urutan PERTAMA, disusul Tindakan Warning
+        $semua_tindakan = array_merge($tindakan_kritis, $tindakan_warning);
+        
+        $tindakan_text = "**Rekomendasi Tindakan (Diurutkan Berdasarkan Prioritas Darurat):**\n";
+        foreach ($semua_tindakan as $idx => $tindakan) {
+            $nomor = $idx + 1;
+            $tindakan_text .= "{$nomor}. {$tindakan}\n";
+        }
+
+        return "{$status_ml_text}{$ringkasan_text}**Skor Kualitas Gabungan (Fuzzy): {$score}/100**\n\n{$tindakan_text}";
+    }
+
+    public function storeFromDevice(Request $request)
+    {
+        // 1. OTOMATIS HAPUS DATA YANG LEBIH DARI 2 BULAN (60 HARI)
+        Sensor::where('created_at', '<', now()->subMonths(2))->delete();
+
+        // 2. Validasi data yang masuk
+        $validated = $request->validate([
+            'ph'        => 'required|numeric',
+            'suhu'      => 'required|numeric',
+            'tds'       => 'required|numeric',
+            'kekeruhan' => 'required|numeric',
+        ]);
+
+        // 3. Hitung skor kualitas fuzzy
+        $fuzzyScore = $this->calculateFuzzyQuality(
+            $validated['ph'],
+            $validated['suhu'],
+            $validated['tds'],
+            $validated['kekeruhan']
+        );
+
+        // 4. Simpan data baru
+        $sensor = Sensor::create([
+            'ph'        => $validated['ph'],
+            'suhu'      => $validated['suhu'],
+            'tds'       => $validated['tds'],
+            'kekeruhan' => $validated['kekeruhan'],
+            'kualitas'  => $fuzzyScore,
+        ]);
+
+        return response()->json(['status' => 'success', 'data' => $sensor], 201);
     }
 }
