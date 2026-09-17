@@ -133,7 +133,7 @@ body {
     color: #9333ea;
 }
 
-/* Tombol Filter & Export Monitoring Data Sesuai Desain */
+/* Tombol Filter & Export Monitoring Data */
 .btn-chart-filter {
     background-color: #ffffff;
     color: #64748b;
@@ -196,7 +196,7 @@ body.dark-mode .text-secondary {
     color: #94a3b8 !important;
 }
 
-/* Kartu Kualitas Air (Kiri Atas) */
+/* Kartu Kualitas Air */
 body.dark-mode #card-quality {
     background-color: #162238 !important;
     border: 1px solid #1e3a5f !important;
@@ -239,7 +239,7 @@ body.dark-mode .hourly-pill div[style*="color: #417280"] {
     color: #94a3b8 !important;
 }
 
-/* Status Online di Kanan Atas (Dark Mode) */
+/* Status Online di Kanan Atas */
 body.dark-mode #system-status-container {
     background-color: #1e293b !important;
     border: 1px solid #334155 !important;
@@ -254,7 +254,7 @@ body.dark-mode #system-status-container #last-updated-time {
     color: #94a3b8 !important;
 }
 
-/* Box AI Recommendation Dark Mode Dynamic Overrides */
+/* Box AI Recommendation Dark Mode */
 body.dark-mode .border-bottom {
     border-color: #334155 !important;
 }
@@ -274,7 +274,7 @@ body.dark-mode .ai-box-notice.ai-state-warning {
     color: #fca5a5 !important;
 }
 
-/* Tombol Filter & Export Grafik */
+/* Tombol Filter Grafik */
 body.dark-mode .btn-chart-filter,
 body.dark-mode .btn-chart-export {
     background-color: #1e293b !important;
@@ -293,9 +293,14 @@ body.dark-mode .btn-chart-filter.active {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none; 
+    padding-right: 15px;
 }
 .custom-chart-tabs::-webkit-scrollbar {
     display: none; 
+}
+.custom-chart-tabs::after {
+    content: "";
+    flex: 0 0 15px;
 }
 .btn-chart-tab {
     background-color: #f1f5f9;
@@ -313,15 +318,6 @@ body.dark-mode .btn-chart-filter.active {
     background-color: #e0f2fe;
     color: #0284c7;
     border-color: #7dd3fc;
-}
-
-.custom-chart-tabs::after {
-    content: "";
-    flex: 0 0 15px;
-}
-
-.custom-chart-tabs {
-    padding-right: 15px; 
 }
 
 @media (max-width: 767px) {
@@ -370,9 +366,9 @@ body.dark-mode .btn-chart-filter.active {
                     <div class="d-flex flex-column gap-1">
                         <span class="fw-bold"
                             style="font-size: 0.75rem; letter-spacing: 0.5px; color: #52708f;">KUALITAS AIR</span>
-                        <div class="d-inline-flex align-items-center bg-white rounded-pill px-2.5 py-0.5 shadow-sm"
+                        <div class="d-inline-flex align-items-center bg-white rounded-pill px-2 py-1 shadow-sm"
                             style="border: 1px solid #a7f3d0; width: fit-content;">
-                            <i id="quality-dot" class="fas fa-circle me-1.5"
+                            <i id="quality-dot" class="fas fa-circle me-1"
                                 style="font-size: 7px; color: #10b981;"></i>
                             <span id="quality-label" class="fw-bold"
                                 style="color: #10b981; font-size: 0.75rem;">Normal</span>
@@ -392,7 +388,7 @@ body.dark-mode .btn-chart-filter.active {
                             <h2 id="quality-value" class="fw-bolder mb-0 text-dark"
                                 style="font-size: 2.3rem; line-height: 1;">--</h2>
                             <small class="text-secondary fw-medium" style="font-size: 0.75rem;">/ 100</small>
-                            <span id="quality-badge-text" class="fw-bold d-block mt-0.5"
+                            <span id="quality-badge-text" class="fw-bold d-block mt-1"
                                 style="color: #1d4ed8; font-size: 0.85rem; letter-spacing: 0.5px;">--</span>
                         </div>
                     </div>
@@ -405,7 +401,7 @@ body.dark-mode .btn-chart-filter.active {
 
                 <div class="row g-2 text-center position-relative z-1">
                     <div class="col-6">
-                        <div class="bg-white py-1.5 px-1 d-flex flex-column justify-content-center"
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
                             style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
                             <small style="font-size: 0.7rem; color: #64748b;">pH</small>
                             <strong id="mini-ph-val" class="fw-bold"
@@ -413,7 +409,7 @@ body.dark-mode .btn-chart-filter.active {
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="bg-white py-1.5 px-1 d-flex flex-column justify-content-center"
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
                             style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
                             <small style="font-size: 0.7rem; color: #64748b;">Suhu</small>
                             <strong id="mini-suhu-val" class="fw-bold"
@@ -421,7 +417,7 @@ body.dark-mode .btn-chart-filter.active {
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="bg-white py-1.5 px-1 d-flex flex-column justify-content-center"
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
                             style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
                             <small style="font-size: 0.7rem; color: #64748b;">TDS</small>
                             <strong id="mini-tds-val" class="fw-bold"
@@ -429,7 +425,7 @@ body.dark-mode .btn-chart-filter.active {
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="bg-white py-1.5 px-1 d-flex flex-column justify-content-center"
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
                             style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
                             <small style="font-size: 0.7rem; color: #64748b;">NTU</small>
                             <strong id="mini-kekeruhan-val" class="fw-bold"
@@ -789,10 +785,18 @@ let activeTimeRange = 'today';
 let charts = { ph: null, suhu: null, tds: null, kekeruhan: null };
 let scoreChart = null;
 
+// Cross-browser helper untuk parsing date string dari DB/Laravel
+function parseDate(dateStr) {
+    if (!dateStr) return new Date();
+    // Mengubah format SQL YYYY-MM-DD HH:mm:ss menjadi format aman Safari YYYY/MM/DD HH:mm:ss
+    const safeStr = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
+    const d = new Date(safeStr);
+    return isNaN(d.getTime()) ? new Date() : d;
+}
+
 function formatTimeLabel(dateStr) {
     if (!dateStr) return '';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
+    const d = parseDate(dateStr);
 
     const minutes = d.getMinutes();
     const roundedMinutes = Math.round(minutes / 30) * 30;
@@ -814,9 +818,24 @@ function calculateGaugeScore(ph, suhu, tds, ntu) {
 }
 
 function updateChartStats(key, arrData, unit = '') {
-    if (!arrData || !arrData.length) return;
+    const minEl = document.getElementById(`${key}-min`);
+    const maxEl = document.getElementById(`${key}-max`);
+    const avgEl = document.getElementById(`${key}-avg`);
+
+    if (!arrData || !arrData.length) {
+        if (minEl) minEl.textContent = '--';
+        if (maxEl) maxEl.textContent = '--';
+        if (avgEl) avgEl.textContent = '--';
+        return;
+    }
+
     const validNums = arrData.filter(v => v !== null && !isNaN(v));
-    if (!validNums.length) return;
+    if (!validNums.length) {
+        if (minEl) minEl.textContent = '--';
+        if (maxEl) maxEl.textContent = '--';
+        if (avgEl) avgEl.textContent = '--';
+        return;
+    }
 
     const min = Math.min(...validNums).toFixed(1);
     const max = Math.max(...validNums).toFixed(1);
@@ -825,10 +844,6 @@ function updateChartStats(key, arrData, unit = '') {
     const colorMap = { 'ph': '#2563eb', 'suhu': '#10b981', 'tds': '#06b6d4', 'kekeruhan': '#8b5cf6' };
     const themeColor = colorMap[key] || '#64748b';
     const unitHtml = unit ? ` <span style="color: ${themeColor}; font-weight: 600; font-size: 0.75rem;">${unit}</span>` : '';
-
-    const minEl = document.getElementById(`${key}-min`);
-    const maxEl = document.getElementById(`${key}-max`);
-    const avgEl = document.getElementById(`${key}-avg`);
 
     if (minEl) minEl.innerHTML = `${min}${unitHtml}`;
     if (maxEl) maxEl.innerHTML = `${max}${unitHtml}`;
@@ -960,8 +975,9 @@ function initScoreGauge() {
 const crosshairPlugin = {
     id: 'crosshair',
     afterDraw: chart => {
-        if (chart.tooltip?._active?.length) {
-            const x = chart.tooltip._active[0].element.x;
+        const activeElements = chart.tooltip?.getActiveElements();
+        if (activeElements && activeElements.length) {
+            const x = activeElements[0].element.x;
             const yAxis = chart.scales.y;
             const ctx = chart.ctx;
 
@@ -1082,14 +1098,14 @@ function processSensorDataByRange(rawData, range) {
         return { labels: [], ph: [], suhu: [], tds: [], kekeruhan: [] };
     }
 
-    let sortedData = [...rawData].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    let sortedData = [...rawData].sort((a, b) => parseDate(a.created_at) - parseDate(b.created_at));
     const now = new Date();
 
     if (range === 'today') {
         const todayStr = now.toDateString();
         let todayData = sortedData.filter(item => {
             if (!item.created_at) return false;
-            return new Date(item.created_at).toDateString() === todayStr;
+            return parseDate(item.created_at).toDateString() === todayStr;
         });
 
         let grouped = {};
@@ -1118,12 +1134,12 @@ function processSensorDataByRange(rawData, range) {
 
         let filteredData = sortedData.filter(item => {
             if (!item.created_at) return false;
-            return new Date(item.created_at) >= limitDate;
+            return parseDate(item.created_at) >= limitDate;
         });
 
         let grouped = {};
         filteredData.forEach(item => {
-            const d = new Date(item.created_at);
+            const d = parseDate(item.created_at);
             const dateKey = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
 
             if (!grouped[dateKey]) {
@@ -1199,46 +1215,6 @@ function startLiveWeatherClock() {
     setInterval(updateClock, 10000);
 }
 
-function initNavbarThemeSync() {
-    const navbarSwitch = document.querySelector('.navbar input[type="checkbox"], nav input[type="checkbox"], .form-check-input');
-    const navbarIcon = document.querySelector('.navbar i, nav i');
-
-    function applyTheme(isDark) {
-        if (isDark) {
-            document.body.classList.add('dark-mode');
-            if (navbarSwitch) navbarSwitch.checked = true;
-            if (navbarIcon && (navbarIcon.classList.contains('fa-sun') || navbarIcon.classList.contains('fa-moon'))) {
-                navbarIcon.className = 'fas fa-moon text-info';
-            }
-            localStorage.setItem('aquator_theme', 'dark');
-        } else {
-            document.body.classList.remove('dark-mode');
-            if (navbarSwitch) navbarSwitch.checked = false;
-            if (navbarIcon && (navbarIcon.classList.contains('fa-sun') || navbarIcon.classList.contains('fa-moon'))) {
-                navbarIcon.className = 'fas fa-sun text-warning';
-            }
-            localStorage.setItem('aquator_theme', 'light');
-        }
-    }
-
-    const currentSaved = localStorage.getItem('aquator_theme');
-    applyTheme(currentSaved === 'dark');
-
-    if (navbarSwitch) {
-        navbarSwitch.addEventListener('change', function() {
-            applyTheme(this.checked);
-        });
-    } else {
-        const switchWrapper = document.querySelector('.navbar .form-switch, nav .form-switch');
-        if (switchWrapper) {
-            switchWrapper.addEventListener('click', function() {
-                const willBeDark = !document.body.classList.contains('dark-mode');
-                applyTheme(willBeDark);
-            });
-        }
-    }
-}
-
 function fetchRealtimeData() {
     fetch('/api/sensor/latest')
         .then(response => response.ok ? response.json() : Promise.reject('Gagal mengambil data'))
@@ -1267,9 +1243,6 @@ function fetchRealtimeData() {
         });
 }
 
-/**
- * Panggilan AJAX AI Recommendation yang mendukung berbagai format JSON dari Flask app.py
- */
 function triggerAiRecommendation() {
     const btn = document.getElementById('btnAiAction');
     const btnText = document.getElementById('btnAiText');
@@ -1305,7 +1278,6 @@ function triggerAiRecommendation() {
             loading.style.display = 'none';
             contentText.style.display = 'block';
 
-            // Ambil status dan rekomendasi (fleksibel sesuai variabel app.py Flask)
             const status = (data.status || data.state || '').toLowerCase();
             const rawRecommendation = data.recommendation || data.message || data.result || data.action || '';
 
@@ -1364,36 +1336,33 @@ function switchMobileChart(chartId) {
     activeTab.querySelector('.check-icon').classList.remove('d-none');
 }
 
+/* Single Inisialisasi DOMContentLoaded */
 document.addEventListener('DOMContentLoaded', () => {
-    initNavbarThemeSync(); 
     initCharts();
     startLiveWeatherClock();
 
     const now = new Date();
     document.getElementById('last-updated-time').textContent = now.toLocaleTimeString();
     setInterval(fetchRealtimeData, 5000);
-});
 
-document.addEventListener('DOMContentLoaded', function() {
+    // Auto scroll untuk widget hourly forecast
     const scrollContainer = document.querySelector('.hourly-scroll-container');
-    if (!scrollContainer) return;
-
-    let autoScrollTimer;
-
-    function startAutoScroll() {
-        autoScrollTimer = setInterval(() => {
-            const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-            if (scrollContainer.scrollLeft >= maxScroll - 5) {
-                scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
-            } else {
-                scrollContainer.scrollBy({ left: 70, behavior: 'smooth' });
-            }
-        }, 2500);
+    if (scrollContainer) {
+        let autoScrollTimer;
+        function startAutoScroll() {
+            autoScrollTimer = setInterval(() => {
+                const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                if (scrollContainer.scrollLeft >= maxScroll - 5) {
+                    scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    scrollContainer.scrollBy({ left: 70, behavior: 'smooth' });
+                }
+            }, 2500);
+        }
+        startAutoScroll();
+        scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
+        scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
     }
-
-    startAutoScroll();
-    scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
-    scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
 });
 </script>
 @endpush
