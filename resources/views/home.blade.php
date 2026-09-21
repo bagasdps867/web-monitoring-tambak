@@ -606,6 +606,118 @@
         
         .btn-wrap { flex-direction: column; width: 100%; }
     }
+    /* --- TAMBAHAN CSS UNTUK SOP --- */
+    .sop-section-wrap {
+        background-color: #eefafb;
+        position: relative;
+        overflow: hidden;
+        padding: 85px 0;
+        transition: background-color 0.3s ease;
+    }
+    body.dark-mode .sop-section-wrap { background-color: #091D2F; }
+
+    .sop-bg-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: clamp(150px, 25vw, 400px);
+        font-weight: 900;
+        color: rgba(42, 157, 143, 0.12); /* Warna dipertegas */
+        z-index: 1;
+        font-family: 'Playfair Display', serif;
+        pointer-events: none;
+        letter-spacing: -5px;
+        line-height: 1;
+        text-shadow: 0 0 40px rgba(42, 157, 143, 0.25); /* Efek Menyala */
+    }
+    body.dark-mode .sop-bg-text { 
+        color: rgba(44, 196, 181, 0.18); 
+        text-shadow: 0 0 50px rgba(44, 196, 181, 0.35);
+    }
+
+    .sop-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.1fr;
+        gap: 60px;
+        align-items: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .sop-subtitle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .sop-subtitle-line { width: 30px; height: 2px; background: #23a094; }
+    .sop-subtitle-text { color: #23a094; font-size: 11.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    body.dark-mode .sop-subtitle-line { background: #2CC4B5; }
+    body.dark-mode .sop-subtitle-text { color: #2CC4B5; }
+
+    .sop-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Dibuat 2 Kolom */
+        gap: 12px;
+    }
+    .sop-item {
+        background: var(--bg-card);
+        border-radius: 8px;
+        padding: 11px 16px; /* Padding lebih tipis agar ramping */
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+        border: 1px solid var(--border-color);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .sop-item:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06); }
+
+    /* Agar rapi di HP (kembali jadi 1 kolom saat layar kecil) */
+    @media (max-width: 576px) {
+        .sop-list {
+            grid-template-columns: 1fr; 
+        }
+    }
+
+    .sop-num { color: #23a094; font-weight: 800; font-size: 13.5px; min-width: 18px; }
+    body.dark-mode .sop-num { color: #2CC4B5; }
+
+    .sop-divider { width: 1.5px; height: 16px; background: var(--border-color); }
+    .sop-title { color: var(--text-title); font-weight: 600; font-size: 14px; }
+
+    .btn-sop-fill {
+        background: #2a9d8f;
+        color: #ffffff;
+        padding: 12px 26px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+    .btn-sop-fill:hover { background: #21867a; color: #ffffff; transform: translateY(-2px); }
+
+    .btn-sop-line {
+        background: transparent;
+        color: #2a9d8f;
+        border: 1px solid #2a9d8f;
+        padding: 12px 26px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+    .btn-sop-line:hover { background: rgba(42, 157, 143, 0.08); color: #2a9d8f; transform: translateY(-2px); }
+    body.dark-mode .btn-sop-line:hover { background: rgba(44, 196, 181, 0.15); }
 </style>
 @endpush
 
@@ -686,8 +798,82 @@
             </div>
         </div>
     </section>
+</div> <!-- Menutup section-wrap-mint pertama -->
 
-    <section class="section-container" style="padding-top: 0;">
+<!-- ================= BAGIAN SOP BARU ================= -->
+<div class="sop-section-wrap">
+    <div class="sop-bg-text">SOP</div>
+    
+    <section class="section-container" style="padding-top: 0; padding-bottom: 0;">
+        <div class="sop-grid">
+            
+            <!-- Kolom Teks Kiri -->
+            <div data-aos="fade-right" data-aos-duration="600">
+                <div class="sop-subtitle">
+                    <div class="sop-subtitle-line"></div>
+                    <span class="sop-subtitle-text">Panduan Resmi Tambak Bangunsari</span>
+                </div>
+                <h2 class="section-title" style="font-size: clamp(32px, 4vw, 42px); margin-bottom: 18px;">
+                    SOP Budidaya <br> <span style="color: #2a9d8f;">Presisi</span>
+                </h2>
+                <p style="color: var(--text-body); font-size: 15px; line-height: 1.7; margin-bottom: 34px; max-width: 90%;">
+                    Standar operasional lengkap pengelolaan tambak kami — dari persiapan kolam, monitoring IoT, manajemen pakan, hingga evaluasi siklus panen.
+                </p>
+                <div class="btn-wrap" style="justify-content: flex-start;">
+                    <!-- Tombol Baca Dokumen -->
+                    <a href="{{ asset('assets/sop-budidaya.pdf') }}" target="_blank" class="btn-sop-fill">
+                        <i class="bi bi-eye"></i> Baca Dokumen
+                    </a>
+                    
+                    <!-- Tombol Unduh PDF -->
+                    <a href="{{ asset('assets/sop-budidaya.pdf') }}" download="SOP_Budidaya_Presisi.pdf" class="btn-sop-line">
+                        <i class="bi bi-download"></i> Unduh PDF
+                    </a>
+                </div>
+            </div>
+
+            <!-- Kolom List Kanan -->
+            <div class="sop-list" data-aos="fade-left" data-aos-duration="600">
+                <div class="sop-item">
+                    <span class="sop-num">01</span><div class="sop-divider"></div><span class="sop-title">Persiapan Tambak</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">02</span><div class="sop-divider"></div><span class="sop-title">Setup Monitoring IoT</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">03</span><div class="sop-divider"></div><span class="sop-title">Penebaran Udang & Mujair</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">04</span><div class="sop-divider"></div><span class="sop-title">Monitoring Kualitas Air</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">05</span><div class="sop-divider"></div><span class="sop-title">Pemberian Pakan</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">06</span><div class="sop-divider"></div><span class="sop-title">Tindakan Korektif</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">07</span><div class="sop-divider"></div><span class="sop-title">Monitoring Pertumbuhan</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">08</span><div class="sop-divider"></div><span class="sop-title">Panen</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">09</span><div class="sop-divider"></div><span class="sop-title">Pencatatan Data</span>
+                </div>
+                <div class="sop-item">
+                    <span class="sop-num">10</span><div class="sop-divider"></div><span class="sop-title">Evaluasi Siklus</span>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+</div>
+<!-- ================= AKHIR BAGIAN SOP ================= -->
+
+<!-- Buka lagi section-wrap-mint untuk Dari Tambak Kami -->
+<div class="section-wrap-mint">
+    <section class="section-container" style="padding-top: 60px;">
         <div data-aos="fade-right" data-aos-duration="500">
             <h2 class="section-title" style="margin-bottom: 4px;">Dari Tambak Kami</h2>
             <p style="color: var(--text-body); font-size: 14px;">Bagian dari proses budidaya yang kami jalankan setiap hari.</p>
@@ -897,7 +1083,7 @@
         const isMobile = window.innerWidth <= 768;
         
         AOS.init({
-            duration: isMobile ? 250 : 500,  // Durasi instan di HP, sedikit lebih cepat di desktop
+            duration: isMobile ? 250 : 500,  
             once: true,                      
             offset: isMobile ? 10 : 60,      
             easing: 'ease-out-quad',
