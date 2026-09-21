@@ -2,55 +2,171 @@
 
 @push('styles')
 <style>
-/* Background & Font Utama */
+/* =======================================================
+   ANIMATION TOOLKIT & BEHAVIOR
+======================================================= */
+:root {
+    --ai-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 body {
     background-color: #e6f0ed !important;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Kartu Utama */
+/* Custom Scrollbar */
+html,
+body,
+.hourly-scroll-container,
+.custom-chart-tabs {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s var(--ai-easing);
+}
+
+html:hover,
+body:hover,
+.hourly-scroll-container:hover,
+.custom-chart-tabs:hover {
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.3s var(--ai-easing);
+}
+
+:hover::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+}
+
+/* Kartu Utama & Micro-interactions */
 .card-custom {
     background: #ffffff;
     border-radius: 20px;
     border: none;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s var(--ai-easing), box-shadow 0.3s var(--ai-easing);
 }
 
-/* Status Badge */
+.card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* =======================================================
+   STATUS BADGES & PURE CSS DOTS
+======================================================= */
+.badge-normal,
+.badge-warning-custom,
+.badge-danger-custom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    transition: all 0.3s var(--ai-easing);
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
 .badge-normal {
     background-color: #dcfce7;
     color: #15803d;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+.badge-normal .badge-dot {
+    background-color: #16a34a;
 }
 
 .badge-warning-custom {
-    background-color: #fef3c7;
-    color: #b45309;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    background-color: #fef08a;
+    color: #854d0e;
+    border: 1px solid rgba(202, 138, 4, 0.2);
+}
+
+.badge-warning-custom .badge-dot {
+    background-color: #ca8a04;
 }
 
 .badge-danger-custom {
-    background-color: #fee2e2;
+    background-color: #fecaca;
     color: #b91c1c;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 0.75rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
-/* --- KARTU CUACA TERBARU --- */
+.badge-danger-custom .badge-dot {
+    background-color: #dc2626;
+    animation: subtleCriticalPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes subtleCriticalPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+    }
+}
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.85);
+    }
+}
+
+#system-status-dot {
+    animation: statusPulse 2s infinite var(--ai-easing);
+}
+
+/* Weather Card */
 .card-weather-target {
     background: #85caf5;
     border-radius: 28px;
     border: none;
     padding: 1.25rem !important;
     color: #0c2d2a;
+    transition: transform 0.3s var(--ai-easing);
+}
+
+.card-weather-target:hover {
+    transform: translateY(-2px);
 }
 
 .weather-divider {
@@ -63,7 +179,6 @@ body {
     border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Container scroll horizontal */
 .hourly-scroll-container {
     display: flex !important;
     gap: 8px;
@@ -74,15 +189,8 @@ body {
     padding-bottom: 6px;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
 }
 
-.hourly-scroll-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* Item per jam */
 .hourly-pill {
     background: rgba(255, 255, 255, 0.45);
     border-radius: 16px;
@@ -90,29 +198,261 @@ body {
     text-align: center;
     flex: 0 0 62px !important;
     width: 62px;
+    transition: transform 0.25s var(--ai-easing), background 0.25s var(--ai-easing);
 }
 
-/* Box AI Smart Recommendation */
+.hourly-pill:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* AI Recommendation Styles */
+.ai-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    background-color: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-size: 1.5rem;
+    transition: all 0.3s var(--ai-easing);
+    position: relative;
+}
+
+@keyframes aiRobotPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6), 0 0 0 0 rgba(59, 130, 246, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.25), 0 0 0 16px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0), 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+.ai-icon-wrapper.analyzing {
+    animation: aiRobotPulse 1.2s var(--ai-easing) infinite;
+    border-color: #3b82f6;
+    background-color: #e0f2fe;
+}
+
+.badge-ml-engine {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+.btn-ai-analyze {
+    background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.35s var(--ai-easing);
+}
+
+.btn-ai-analyze:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    color: #ffffff;
+}
+
+.btn-ai-loading {
+    background: #475569 !important;
+    color: #ffffff !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.ai-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin360 0.8s linear infinite;
+}
+
+@keyframes spin360 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .ai-box-notice {
-    background-color: #f8fafc;
+    position: relative;
+    overflow: hidden;
+    background: #f8fafc;
     border: 1px dashed #cbd5e1;
-    border-radius: 14px;
-    transition: all 0.3s ease;
+    border-radius: 20px;
+    transition: all 0.4s var(--ai-easing);
+    min-height: 200px;
 }
 
-.ai-box-notice.ai-state-optimal {
-    background-color: #f0fdf4 !important;
-    border: 1px solid #bbf7d0 !important;
-    color: #14532d !important;
+.ai-scan-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.02) 100%);
+    pointer-events: none;
+    opacity: 0;
 }
 
-.ai-box-notice.ai-state-warning {
-    background-color: #fef2f2 !important;
-    border: 1px solid #fecaca !important;
-    color: #991b1b !important;
+.ai-box-notice.analyzing .ai-scan-line {
+    opacity: 1;
+    animation: scanGradient 1.8s var(--ai-easing) infinite;
 }
 
-/* Background Icon Sensor */
+@keyframes scanGradient {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.8;
+    }
+
+    80% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(220%);
+        opacity: 0;
+    }
+}
+
+.loading-steps-container {
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.loading-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    color: #64748b;
+    font-weight: 500;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.4s var(--ai-easing);
+}
+
+.loading-step.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.loading-step.active {
+    background: rgba(224, 242, 254, 0.7);
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.loading-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #94a3b8;
+    border-radius: 50%;
+    transition: all 0.3s var(--ai-easing);
+}
+
+.loading-step.active .loading-dot {
+    background-color: #2563eb;
+    animation: dotPulse 1.2s var(--ai-easing) infinite;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5);
+    }
+
+    50% {
+        transform: scale(1.35);
+        box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    }
+}
+
+.ai-result-container {
+    animation: resultSlideUp 0.6s var(--ai-easing) forwards;
+}
+
+@keyframes resultSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.rec-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardStaggerIn 0.5s var(--ai-easing) forwards;
+    transition: transform 0.3s var(--ai-easing), box-shadow 0.3s var(--ai-easing), border-left-width 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.rec-card-danger {
+    border-left: 6px solid #ef4444;
+}
+
+.rec-card-warning {
+    border-left: 6px solid #f59e0b;
+}
+
+.rec-card-info {
+    border-left: 6px solid #3b82f6;
+}
+
+.rec-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+@keyframes cardStaggerIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .icon-bg-blue {
     background-color: #e0f2fe;
     color: #0284c7;
@@ -133,7 +473,6 @@ body {
     color: #9333ea;
 }
 
-/* Tombol Filter & Export Monitoring Data */
 .btn-chart-filter {
     background-color: #ffffff;
     color: #64748b;
@@ -142,7 +481,7 @@ body {
     border-radius: 8px;
     font-weight: 600;
     font-size: 0.85rem;
-    transition: all 0.2s ease;
+    transition: all 0.25s var(--ai-easing);
 }
 
 .btn-chart-filter.active {
@@ -152,7 +491,6 @@ body {
     box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
 }
 
-/* Header Statistik AVG/MIN/MAX di dalam Grafik */
 .stat-header-label {
     font-size: 0.65rem;
     color: #94a3b8;
@@ -174,7 +512,6 @@ body {
     min-width: 50px;
 }
 
-/* ================== DARK MODE OVERRIDE ================== */
 body.dark-mode {
     background-color: #0b1329 !important;
     color: #f1f5f9 !important;
@@ -187,7 +524,10 @@ body.dark-mode .card-custom {
 }
 
 body.dark-mode .text-dark,
-body.dark-mode h2, body.dark-mode h4, body.dark-mode h5 {
+body.dark-mode h2,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
     color: #f8fafc !important;
 }
 
@@ -196,112 +536,23 @@ body.dark-mode .text-secondary {
     color: #94a3b8 !important;
 }
 
-/* Kartu Kualitas Air */
-body.dark-mode #card-quality {
-    background-color: #162238 !important;
-    border: 1px solid #1e3a5f !important;
-}
-body.dark-mode #card-quality .bg-white {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
-}
-body.dark-mode #card-quality span[style*="color: #52708f"],
-body.dark-mode #card-quality p {
-    color: #94a3b8 !important;
-}
-
-/* Kartu Cuaca BMKG */
-body.dark-mode .card-weather-target {
-    background: #1e293b !important;
-    border: 1px solid #334155 !important;
-    color: #f1f5f9 !important;
-}
-body.dark-mode .card-weather-target div[style*="color: #0c2d2a"] {
-    color: #f8fafc !important;
-}
-body.dark-mode .card-weather-target span[style*="color: #417280"],
-body.dark-mode .card-weather-target div[style*="color: #417280"],
-body.dark-mode .card-weather-target div[style*="color: #3d6875"] {
-    color: #94a3b8 !important;
-}
-body.dark-mode .weather-divider,
-body.dark-mode .weather-border-x {
-    border-color: #334155 !important;
-}
-body.dark-mode .hourly-pill {
-    background: rgba(255, 255, 255, 0.08) !important;
-}
-body.dark-mode .hourly-pill div[style*="color: #0c2d2a"] {
-    color: #f8fafc !important;
-}
-body.dark-mode .hourly-pill div[style*="color: #417280"] {
-    color: #94a3b8 !important;
-}
-
-/* Status Online di Kanan Atas */
-body.dark-mode #system-status-container {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
-}
-
-body.dark-mode #system-status-text {
-    color: #f8fafc !important;
-}
-
-body.dark-mode #system-status-container .text-muted,
-body.dark-mode #system-status-container #last-updated-time {
-    color: #94a3b8 !important;
-}
-
-/* Box AI Recommendation Dark Mode */
-body.dark-mode .border-bottom {
-    border-color: #334155 !important;
-}
 body.dark-mode .ai-box-notice {
-    background-color: #0f172a !important;
+    background: #0f172a !important;
     border-color: #334155 !important;
     color: #f8fafc !important;
 }
-body.dark-mode .ai-box-notice.ai-state-optimal {
-    background-color: #064e3b !important;
-    border: 1px solid #059669 !important;
-    color: #a7f3d0 !important;
-}
-body.dark-mode .ai-box-notice.ai-state-warning {
-    background-color: #450a0a !important;
-    border: 1px solid #dc2626 !important;
-    color: #fca5a5 !important;
+
+body.dark-mode .rec-card {
+    background: #1e293b;
+    border-color: #334155;
 }
 
-/* Tombol Filter Grafik */
-body.dark-mode .btn-chart-filter,
-body.dark-mode .btn-chart-export {
-    background-color: #1e293b !important;
-    color: #cbd5e1 !important;
-    border-color: #334155 !important;
-}
-body.dark-mode .btn-chart-filter.active {
-    background-color: #2563eb !important;
-    color: #ffffff !important;
-    border-color: #2563eb !important;
-}
-
-/* Styling Tombol Filter Chart Mobile */
 .custom-chart-tabs {
     white-space: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; 
-    padding-right: 15px;
 }
-.custom-chart-tabs::-webkit-scrollbar {
-    display: none; 
-}
-.custom-chart-tabs::after {
-    content: "";
-    flex: 0 0 15px;
-}
+
 .btn-chart-tab {
     background-color: #f1f5f9;
     color: #64748b;
@@ -312,18 +563,27 @@ body.dark-mode .btn-chart-filter.active {
     font-size: 0.9rem;
     display: inline-flex;
     align-items: center;
-    transition: all 0.2s ease;
+    transition: all 0.2s var(--ai-easing);
 }
+
 .btn-chart-tab.active {
     background-color: #e0f2fe;
     color: #0284c7;
     border-color: #7dd3fc;
 }
 
+.param-badge-pill {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
 @media (max-width: 767px) {
     .chart-card-wrapper {
         display: none;
     }
+
     .chart-card-wrapper.active-mobile {
         display: block;
     }
@@ -333,30 +593,33 @@ body.dark-mode .btn-chart-filter.active {
 
 @section('content')
 <div class="container-fluid px-4 pt-1" style="padding-bottom: 100px !important;">
-    <!-- Notifikasi Alert Container -->
     <div id="alertContainer" class="mb-3"></div>
 
-    <!-- Header Page -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
         <div>
             <span class="text-uppercase fw-bold text-primary small"
                 style="letter-spacing: 0.5px; font-size: 0.75rem;">WATER QUALITY MONITORING</span>
             <h2 class="fw-bold m-0 text-dark" style="font-size: 1.8rem;">Dashboard Monitoring</h2>
             <p class="text-secondary small m-0">Pantau kondisi kualitas air secara real-time.</p>
         </div>
-        <div id="system-status-container" class="d-inline-flex flex-wrap align-items-center bg-white px-3 py-2 rounded-pill shadow-sm" style="width: fit-content;">
-            <span id="system-status-dot" class="badge bg-success rounded-circle p-1 me-2" style="width: 8px; height: 8px; flex-shrink: 0;"></span>
+        <div id="system-status-container"
+            class="d-inline-flex flex-wrap align-items-center bg-white px-3 py-2 rounded-pill shadow-sm"
+            style="width: fit-content;">
+            <span id="system-status-dot" class="badge bg-success rounded-circle p-1 me-2"
+                style="width: 8px; height: 8px; flex-shrink: 0;"></span>
             <span id="system-status-text" class="fw-bold small me-2 text-dark text-nowrap">System Online</span>
-            <span class="text-muted small text-nowrap" style="font-size: 0.8rem;">Last updated: <span id="last-updated-time">--:--:--</span></span>
+            <span class="text-muted small text-nowrap" style="font-size: 0.8rem;">Last updated: <span
+                    id="last-updated-time">--:--:--</span></span>
         </div>
     </div>
 
     <!-- ROW 1: Top Cards -->
     <div class="row g-3 mb-4 align-items-stretch">
-        <!-- 1. Skor Kualitas Air & Mini Grid -->
+        <!-- KUALITAS AIR CARD -->
         <div class="col-lg-3">
             <div id="card-quality"
-                class="card h-100 p-3 position-relative overflow-hidden shadow-sm d-flex flex-column justify-content-between"
+                class="card card-custom h-100 p-3 position-relative overflow-hidden shadow-sm d-flex flex-column justify-content-between"
                 style="border-radius: 20px; background-color: #eef7f9; border: 1px solid #ccece6;">
                 <div class="position-absolute"
                     style="width: 200px; height: 200px; background: rgba(14, 165, 233, 0.06); border-radius: 50%; top: -60px; right: -60px; z-index: 0;">
@@ -366,12 +629,9 @@ body.dark-mode .btn-chart-filter.active {
                     <div class="d-flex flex-column gap-1">
                         <span class="fw-bold"
                             style="font-size: 0.75rem; letter-spacing: 0.5px; color: #52708f;">KUALITAS AIR</span>
-                        <div class="d-inline-flex align-items-center bg-white rounded-pill px-2 py-1 shadow-sm"
-                            style="border: 1px solid #a7f3d0; width: fit-content;">
-                            <i id="quality-dot" class="fas fa-circle me-1"
-                                style="font-size: 7px; color: #10b981;"></i>
-                            <span id="quality-label" class="fw-bold"
-                                style="color: #10b981; font-size: 0.75rem;">Normal</span>
+                        <div id="quality-pill-wrapper" class="badge-normal shadow-sm">
+                            <span id="quality-dot" class="badge-dot"></span>
+                            <span id="quality-label">Normal</span>
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center shadow-sm"
@@ -436,10 +696,9 @@ body.dark-mode .btn-chart-filter.active {
             </div>
         </div>
 
-        <!-- Weather BMKG Card Dinamis -->
+        <!-- WEATHER CARD -->
         <div class="col-lg-3">
             <div class="card card-weather-target h-100 d-flex flex-column justify-content-between shadow-sm">
-                <!-- Header: Lokasi & Hari -->
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="fw-bold text-uppercase d-flex align-items-center gap-1"
                         style="font-size: 0.72rem; color: #3d6875;">
@@ -451,196 +710,228 @@ body.dark-mode .btn-chart-filter.active {
                     </div>
                 </div>
 
-                <!-- Suhu Utama & Kondisi -->
                 <div class="d-flex align-items-center gap-3 my-2">
                     <i class="{{ $cuaca['icon'] ?? 'fas fa-cloud-sun text-warning' }}"
                         style="font-size: 3.2rem; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.08));"></i>
                     <div>
                         <div class="fw-bold"
                             style="font-size: 2.8rem; line-height: 1; color: #0c2d2a; letter-spacing: -1px;">
-                            {{ $cuaca['suhu'] ?? '--' }}°C</div>
-                        <div style="font-size: 0.85rem; color: #417280; font-weight: 500;">{{ $cuaca['kondisi'] ?? '--' }}</div>
+                            {{ $cuaca['suhu'] ?? '--' }}°C
+                        </div>
+                        <div style="font-size: 0.85rem; color: #417280; font-weight: 500;">
+                            {{ $cuaca['kondisi'] ?? '--' }}
+                        </div>
                     </div>
                 </div>
 
-                <!-- Middle Stats: Kelembaban, Waktu, Angin -->
                 <div class="row text-center py-2 weather-divider my-1">
                     <div class="col-4 px-1">
-                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">{{ $cuaca['kelembaban'] ?? '--' }}%</div>
+                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">
+                            {{ $cuaca['kelembaban'] ?? '--' }}%
+                        </div>
                         <div style="font-size: 0.65rem; color: #417280;">Kelembaban</div>
                     </div>
                     <div class="col-4 px-1 weather-border-x d-flex align-items-center justify-content-center">
                         <div id="weather-time" class="fw-bold" style="font-size: 0.9rem; color: #ef4444;">
-                            {{ $cuaca['waktu'] ?? '--:--' }}</div>
+                            {{ $cuaca['waktu'] ?? '--:--' }}
+                        </div>
                     </div>
                     <div class="col-4 px-1">
-                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">{{ $cuaca['angin'] ?? '--' }}</div>
-                        <div style="font-size: 0.65rem; color: #417280;">Angin · {{ $cuaca['arah_angin'] ?? '--' }}</div>
+                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">{{ $cuaca['angin'] ?? '--' }}
+                        </div>
+                        <div style="font-size: 0.65rem; color: #417280;">Angin · {{ $cuaca['arah_angin'] ?? '--' }}
+                        </div>
                     </div>
                 </div>
 
-                <!-- Hourly Forecast (Horizontal Scroll) -->
                 <div class="hourly-scroll-container pt-1">
-                    @if(isset($cuaca['hourly']))
-                        @foreach($cuaca['hourly'] as $item)
-                        <div class="hourly-pill">
-                            <div style="font-size: 0.68rem; color: #417280; font-weight: 600;">{{ $item['jam'] }}</div>
-                            <i class="{{ $item['icon'] }} my-1 d-block" style="font-size: 0.85rem;"></i>
-                            <div class="fw-bold" style="font-size: 0.85rem; color: #0c2d2a;">{{ $item['suhu'] }}</div>
-                            <div style="font-size: 0.6rem; color: #417280;">{{ $item['angin'] }}</div>
+                    @if(isset($cuaca['hourly']) && is_iterable($cuaca['hourly']))
+                    @foreach($cuaca['hourly'] as $item)
+                    <div class="hourly-pill">
+                        <div style="font-size: 0.68rem; color: #417280; font-weight: 600;">{{ $item['jam'] ?? '' }}
                         </div>
-                        @endforeach
+                        <i class="{{ $item['icon'] ?? 'fas fa-cloud' }} my-1 d-block" style="font-size: 0.85rem;"></i>
+                        <div class="fw-bold" style="font-size: 0.85rem; color: #0c2d2a;">{{ $item['suhu'] ?? '' }}</div>
+                        <div style="font-size: 0.6rem; color: #417280;">{{ $item['angin'] ?? '' }}</div>
+                    </div>
+                    @endforeach
                     @endif
                 </div>
             </div>
         </div>
 
-        <!-- 3. Daftar Kartu Sensor Kanan -->
+        <!-- SENSOR SUMMARY CARDS -->
         <div class="col-lg-6">
             <div class="d-flex flex-column justify-content-between h-100 gap-2">
-                <!-- pH -->
                 <div id="card-ph"
-                    class="card card-custom px-3 py-2.5 d-flex flex-row justify-content-between align-items-center h-100">
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-3 icon-bg-blue d-flex align-items-center justify-content-center"
-                            style="width: 42px; height: 42px;">
-                            <i class="fas fa-droplet"></i>
+                            style="width: 48px; height: 48px;">
+                            <i class="fas fa-vial fs-5"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block" style="font-size: 0.7rem;">pH</small>
-                            <div class="d-flex align-items-baseline gap-1">
-                                <h5 id="ph-value" class="fw-bold m-0 text-dark">--</h5>
-                                <span class="text-muted small" style="font-size: 0.75rem;">pH</span>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">pH</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="ph-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">pH</span>
                             </div>
-                            <small class="text-muted" style="font-size: 0.7rem;">Tingkat keasaman air</small>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Tingkat keasaman air</div>
                         </div>
                     </div>
-                    <span id="ph-badge" class="badge-normal"><i class="fas fa-circle me-1" style="font-size: 5px;"></i> Normal</span>
+                    <span id="ph-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
                 </div>
 
-                <!-- Suhu -->
                 <div id="card-suhu"
-                    class="card card-custom px-3 py-2.5 d-flex flex-row justify-content-between align-items-center h-100">
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-3 icon-bg-green d-flex align-items-center justify-content-center"
-                            style="width: 42px; height: 42px;">
-                            <i class="fas fa-temperature-half"></i>
+                            style="width: 48px; height: 48px;">
+                            <i class="fas fa-temperature-half fs-5"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block" style="font-size: 0.7rem;">Suhu</small>
-                            <div class="d-flex align-items-baseline gap-1">
-                                <h5 id="suhu-value" class="fw-bold m-0 text-dark">--</h5>
-                                <span class="text-muted small" style="font-size: 0.75rem;">°C</span>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">Suhu</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="suhu-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">°C</span>
                             </div>
-                            <small class="text-muted" style="font-size: 0.7rem;">Temperatur air tambak</small>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Temperatur air tambak</div>
                         </div>
                     </div>
-                    <span id="suhu-badge" class="badge-normal"><i class="fas fa-circle me-1" style="font-size: 5px;"></i> Normal</span>
+                    <span id="suhu-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
                 </div>
 
-                <!-- TDS -->
                 <div id="card-tds"
-                    class="card card-custom px-3 py-2.5 d-flex flex-row justify-content-between align-items-center h-100">
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-3 icon-bg-cyan d-flex align-items-center justify-content-center"
-                            style="width: 42px; height: 42px;">
-                            <i class="fas fa-circle-dot"></i>
+                            style="width: 48px; height: 48px;">
+                            <i class="fas fa-filter fs-5"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block" style="font-size: 0.7rem;">TDS</small>
-                            <div class="d-flex align-items-baseline gap-1">
-                                <h5 id="tds-value" class="fw-bold m-0 text-dark">--</h5>
-                                <span class="text-muted small" style="font-size: 0.75rem;">ppm</span>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">TDS</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="tds-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">ppm</span>
                             </div>
-                            <small class="text-muted" style="font-size: 0.7rem;">Total padatan terlarut</small>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Total padatan terlarut</div>
                         </div>
                     </div>
-                    <span id="tds-badge" class="badge-normal"><i class="fas fa-circle me-1" style="font-size: 5px;"></i> Normal</span>
+                    <span id="tds-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
                 </div>
 
-                <!-- Kekeruhan -->
                 <div id="card-kekeruhan"
-                    class="card card-custom px-3 py-2.5 d-flex flex-row justify-content-between align-items-center h-100">
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
                     <div class="d-flex align-items-center gap-3">
                         <div class="rounded-3 icon-bg-purple d-flex align-items-center justify-content-center"
-                            style="width: 42px; height: 42px;">
-                            <i class="fas fa-water"></i>
+                            style="width: 48px; height: 48px;">
+                            <i class="fas fa-water fs-5"></i>
                         </div>
                         <div>
-                            <small class="text-muted d-block" style="font-size: 0.7rem;">Kekeruhan</small>
-                            <div class="d-flex align-items-baseline gap-1">
-                                <h5 id="kekeruhan-value" class="fw-bold m-0 text-dark">--</h5>
-                                <span class="text-muted small" style="font-size: 0.75rem;">NTU</span>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">Kekeruhan</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="kekeruhan-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--
+                                </h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">NTU</span>
                             </div>
-                            <small class="text-muted" style="font-size: 0.7rem;">Tingkat kekeruhan air</small>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Tingkat kekeruhan air</div>
                         </div>
                     </div>
-                    <span id="kekeruhan-badge" class="badge-normal"><i class="fas fa-circle me-1" style="font-size: 5px;"></i> Normal</span>
+                    <span id="kekeruhan-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ROW 2: AI SMART RECOMMENDATION -->
+    <!-- ROW 2: HYBRID AI SMART RECOMMENDATION -->
     <div class="row mb-4">
         <div class="col-12">
-            <div id="tips-card" class="card card-custom p-3 p-md-4">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 pb-3 mb-3 border-bottom">
-                    <!-- Sisi Kiri: Ikon & Teks -->
+            <div id="tips-card" class="card card-custom p-3 p-md-4" style="border-radius: 20px;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 pb-4 mb-4"
+                    style="border-bottom: 1px solid #f1f5f9;">
                     <div class="d-flex align-items-center gap-3 pe-md-4">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center text-white shadow-sm flex-shrink-0"
-                            style="width: 48px; height: 48px; background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
-                            <i class="fas fa-robot fs-5"></i>
+                        <div id="aiIconWrapper" class="ai-icon-wrapper flex-shrink-0">
+                            <i class="fas fa-robot"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-1 text-dark">AI Smart Recommendation</h5>
-                            <div class="text-muted" style="font-size: 0.85rem; line-height: 1.4;">
-                                Saran tindakan cerdas berbasis Machine Learning saat kondisi air kolam bermasalah
+                            <h4 class="fw-bold mb-1 text-dark d-flex align-items-center flex-wrap gap-2">
+                                Hybrid AI Recommendation
+                                <span class="badge-ml-engine">ML &amp; FUZZY SOP</span>
+                            </h4>
+                            <div class="text-muted" style="font-size: 0.9rem;">
+                                Evaluasi kondisi kolam secara cerdas menggunakan perpaduan Machine Learning, Logic
+                                Fuzzy, dan SOP Budidaya.
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Sisi Kanan: Tombol -->
+
                     <div class="flex-shrink-0 mt-2 mt-md-0" style="min-width: fit-content;">
-                        <button id="btnAiAction" onclick="triggerAiRecommendation()" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-flex align-items-center justify-content-center gap-2 w-100">
+                        <button id="btnAiAction" onclick="triggerAiRecommendation()"
+                            class="btn btn-ai-analyze d-flex align-items-center justify-content-center gap-2">
                             <i class="fas fa-wand-magic-sparkles"></i>
-                            <span id="btnAiText">Cek Tindakan AI</span>
+                            <span>Analisis Hybrid AI</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Box Konten Pesan -->
-                <div id="ai-container-box" class="ai-box-notice p-4 border rounded">
-                    <div id="ai-standby" class="text-center py-2 text-muted" style="font-size: 0.9rem;">
-                        <i class="fas fa-circle-info text-primary me-2 fs-5 align-middle"></i>
-                        <span class="align-middle">Klik tombol <strong>"Cek Tindakan AI"</strong> di atas jika Anda ingin mengevaluasi tindakan penanganan parameter air.</span>
+                <div id="ai-container-box" class="ai-box-notice p-4 mx-md-2 mb-2">
+                    <div class="ai-scan-line"></div>
+
+                    <div id="ai-standby" class="text-center py-4">
+                        <div class="ai-icon-wrapper mx-auto mb-3"
+                            style="width: 48px; height: 48px; font-size: 1.25rem;">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        <p class="text-muted mb-0 mx-auto" style="max-width: 480px; line-height: 1.6;">
+                            Klik tombol <strong>"Analisis Hybrid AI"</strong> untuk membaca parameter real-time,
+                            mendapatkan status diagnosis, serta tindakan SOP terpilih.
+                        </p>
                     </div>
-                    <div id="ai-loading" style="display: none;" class="text-center py-2 text-muted small">
-                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                        Mengevaluasi parameter air tambak via Model Machine Learning...
+
+                    <div id="ai-loading" style="display: none;" class="w-100 py-3">
+                        <div class="loading-steps-container">
+                            <div class="loading-step" id="step-1">
+                                <div class="loading-dot"></div>
+                                <span>Membaca sensor air real-time...</span>
+                            </div>
+                            <div class="loading-step" id="step-2">
+                                <div class="loading-dot"></div>
+                                <span>Menjalankan model Machine Learning...</span>
+                            </div>
+                            <div class="loading-step" id="step-3">
+                                <div class="loading-dot"></div>
+                                <span>Mengevaluasi Logic Fuzzy &amp; SOP Mitigasi...</span>
+                            </div>
+                        </div>
                     </div>
-                    <div id="ai-content-text" style="display: none; font-size: 0.9rem; line-height: 1.65;"></div>
+
+                    <div id="ai-content-text" style="display: none;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- ROW 3: MONITORING DATA HEADER & FILTER -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 mt-4">
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 mt-4">
         <div>
             <h4 class="fw-bold mb-0 text-dark">Monitoring Data</h4>
             <small class="text-muted">Grafik historis parameter kualitas air</small>
         </div>
-        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto justify-content-between justify-content-md-end">
+        <div
+            class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto justify-content-between justify-content-md-end">
             <div class="btn-group btn-group-sm" role="group">
-                <button type="button" id="btn-today" class="btn btn-outline-primary btn-chart-filter active" onclick="filterChartTime('today')">Today</button>
-                <button type="button" id="btn-7days" class="btn btn-outline-primary btn-chart-filter" onclick="filterChartTime('7days')">7 Days</button>
-                <button type="button" id="btn-30days" class="btn btn-outline-primary btn-chart-filter" onclick="filterChartTime('30days')">30 Days</button>
+                <button type="button" id="btn-today" class="btn btn-outline-primary btn-chart-filter active"
+                    onclick="filterChartTime('today')">Today</button>
+                <button type="button" id="btn-7days" class="btn btn-outline-primary btn-chart-filter"
+                    onclick="filterChartTime('7days')">7 Days</button>
+                <button type="button" id="btn-30days" class="btn btn-outline-primary btn-chart-filter"
+                    onclick="filterChartTime('30days')">30 Days</button>
             </div>
         </div>
     </div>
 
-    <!-- Tombol Tab Chart (Hanya Tampil di Mobile) -->
+    <!-- Mobile Chart Tabs -->
     <div class="d-flex d-md-none gap-2 mb-3 pb-2 custom-chart-tabs">
         <button class="btn btn-chart-tab active" onclick="switchMobileChart('ph')" id="tab-ph">
             <i class="fas fa-check me-2 check-icon"></i> pH
@@ -663,7 +954,8 @@ body.dark-mode .btn-chart-filter.active {
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik pH</h5>
-                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat pH dari waktu ke waktu</small>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat pH dari waktu ke
+                            waktu</small>
                     </div>
                     <div class="d-flex gap-3">
                         <div class="stat-box">
@@ -721,7 +1013,8 @@ body.dark-mode .btn-chart-filter.active {
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik TDS</h5>
-                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan total padatan terlarut dalam air</small>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan total padatan terlarut dalam
+                            air</small>
                     </div>
                     <div class="d-flex gap-3">
                         <div class="stat-box">
@@ -750,7 +1043,8 @@ body.dark-mode .btn-chart-filter.active {
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik Kekeruhan</h5>
-                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat kekeruhan air</small>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat kekeruhan
+                            air</small>
                     </div>
                     <div class="d-flex gap-3">
                         <div class="stat-box">
@@ -782,27 +1076,32 @@ body.dark-mode .btn-chart-filter.active {
 let sensorData = @json($sensorData ?? []);
 let activeTimeRange = 'today';
 
-let charts = { ph: null, suhu: null, tds: null, kekeruhan: null };
+let charts = {
+    ph: null,
+    suhu: null,
+    tds: null,
+    kekeruhan: null
+};
 let scoreChart = null;
 
-// Cross-browser helper untuk parsing date string dari DB/Laravel
 function parseDate(dateStr) {
     if (!dateStr) return new Date();
-    // Mengubah format SQL YYYY-MM-DD HH:mm:ss menjadi format aman Safari YYYY/MM/DD HH:mm:ss
-    const safeStr = typeof dateStr === 'string' ? dateStr.replace(/-/g, '/') : dateStr;
-    const d = new Date(safeStr);
+    if (typeof dateStr === 'string') {
+        const isoStr = dateStr.replace(' ', 'T');
+        const d = new Date(isoStr);
+        if (!isNaN(d.getTime())) return d;
+    }
+    const d = new Date(dateStr);
     return isNaN(d.getTime()) ? new Date() : d;
 }
 
 function formatTimeLabel(dateStr) {
     if (!dateStr) return '';
     const d = parseDate(dateStr);
-
     const minutes = d.getMinutes();
     const roundedMinutes = Math.round(minutes / 30) * 30;
     d.setMinutes(roundedMinutes);
     d.setSeconds(0);
-
     const hours = String(d.getHours()).padStart(2, '0');
     const mins = String(d.getMinutes()).padStart(2, '0');
     return `${hours}:${mins}`;
@@ -830,20 +1129,21 @@ function updateChartStats(key, arrData, unit = '') {
     }
 
     const validNums = arrData.filter(v => v !== null && !isNaN(v));
-    if (!validNums.length) {
-        if (minEl) minEl.textContent = '--';
-        if (maxEl) maxEl.textContent = '--';
-        if (avgEl) avgEl.textContent = '--';
-        return;
-    }
+    if (!validNums.length) return;
 
     const min = Math.min(...validNums).toFixed(1);
     const max = Math.max(...validNums).toFixed(1);
     const avg = (validNums.reduce((a, b) => a + b, 0) / validNums.length).toFixed(1);
 
-    const colorMap = { 'ph': '#2563eb', 'suhu': '#10b981', 'tds': '#06b6d4', 'kekeruhan': '#8b5cf6' };
+    const colorMap = {
+        'ph': '#2563eb',
+        'suhu': '#10b981',
+        'tds': '#06b6d4',
+        'kekeruhan': '#8b5cf6'
+    };
     const themeColor = colorMap[key] || '#64748b';
-    const unitHtml = unit ? ` <span style="color: ${themeColor}; font-weight: 600; font-size: 0.75rem;">${unit}</span>` : '';
+    const unitHtml = unit ?
+        ` <span style="color: ${themeColor}; font-weight: 600; font-size: 0.75rem;">${unit}</span>` : '';
 
     if (minEl) minEl.innerHTML = `${min}${unitHtml}`;
     if (maxEl) maxEl.innerHTML = `${max}${unitHtml}`;
@@ -877,16 +1177,46 @@ function evalKekeruhan(val) {
 function updateBadgeUI(elementId, status) {
     const el = document.getElementById(elementId);
     if (!el) return;
-
     if (status === 'Normal') {
         el.className = 'badge-normal';
-        el.innerHTML = `<i class="fas fa-circle me-1" style="font-size: 5px;"></i> Normal`;
+        el.innerHTML = `<span class="badge-dot"></span> Normal`;
     } else if (status === 'Warning') {
         el.className = 'badge-warning-custom';
-        el.innerHTML = `<i class="fas fa-circle me-1" style="font-size: 5px;"></i> Warning`;
+        el.innerHTML = `<span class="badge-dot"></span> Warning`;
     } else {
         el.className = 'badge-danger-custom';
-        el.innerHTML = `<i class="fas fa-circle me-1" style="font-size: 5px;"></i> Critical`;
+        el.innerHTML = `<span class="badge-dot"></span> Critical`;
+    }
+}
+
+function animateGaugeScore(targetScore, color) {
+    if (!scoreChart) return;
+
+    scoreChart.data.datasets[0].data = [targetScore, 100 - targetScore];
+    scoreChart.data.datasets[0].backgroundColor[0] = color;
+    scoreChart.options.animation = {
+        duration: 900,
+        easing: 'easeOutCubic'
+    };
+    scoreChart.update();
+
+    const valueEl = document.getElementById('quality-value');
+    if (valueEl) {
+        let startVal = parseInt(valueEl.textContent) || 0;
+        const duration = 900;
+        const startTime = performance.now();
+
+        function step(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.round(startVal + (targetScore - startVal) * easeProgress);
+            valueEl.textContent = currentVal;
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
     }
 }
 
@@ -894,57 +1224,70 @@ function updateSensorBadgesAndValues(latest) {
     if (!latest) return;
 
     const phVal = parseFloat(latest.ph) || 0;
-    document.getElementById('ph-value').textContent = phVal.toFixed(1);
-    document.getElementById('mini-ph-val').textContent = phVal.toFixed(1);
+    const phEl = document.getElementById('ph-value');
+    const miniPhEl = document.getElementById('mini-ph-val');
+    if (phEl) phEl.textContent = phVal.toFixed(1);
+    if (miniPhEl) miniPhEl.textContent = phVal.toFixed(1);
     updateBadgeUI('ph-badge', evalPh(phVal));
 
     const suhuVal = parseFloat(latest.suhu) || 0;
-    document.getElementById('suhu-value').textContent = suhuVal.toFixed(1);
-    document.getElementById('mini-suhu-val').textContent = `${suhuVal.toFixed(1)}°`;
+    const suhuEl = document.getElementById('suhu-value');
+    const miniSuhuEl = document.getElementById('mini-suhu-val');
+    if (suhuEl) suhuEl.textContent = suhuVal.toFixed(1);
+    if (miniSuhuEl) miniSuhuEl.textContent = `${suhuVal.toFixed(1)}°`;
     updateBadgeUI('suhu-badge', evalSuhu(suhuVal));
 
     const tdsVal = parseFloat(latest.tds) || 0;
-    document.getElementById('tds-value').textContent = Math.round(tdsVal);
-    document.getElementById('mini-tds-val').textContent = Math.round(tdsVal);
+    const tdsEl = document.getElementById('tds-value');
+    const miniTdsEl = document.getElementById('mini-tds-val');
+    if (tdsEl) tdsEl.textContent = Math.round(tdsVal);
+    if (miniTdsEl) miniTdsEl.textContent = Math.round(tdsVal);
     updateBadgeUI('tds-badge', evalTds(tdsVal));
 
-    const ntuVal = parseFloat(latest.kekeruhan) || 0;
-    document.getElementById('kekeruhan-value').textContent = ntuVal.toFixed(1);
-    document.getElementById('mini-kekeruhan-val').textContent = ntuVal.toFixed(1);
+    const ntuVal = parseFloat(latest.kekeruhan ?? latest.ntu) || 0;
+    const kekeruhanEl = document.getElementById('kekeruhan-value');
+    const miniKekeruhanEl = document.getElementById('mini-kekeruhan-val');
+    if (kekeruhanEl) kekeruhanEl.textContent = ntuVal.toFixed(1);
+    if (miniKekeruhanEl) miniKekeruhanEl.textContent = ntuVal.toFixed(1);
     updateBadgeUI('kekeruhan-badge', evalKekeruhan(ntuVal));
 
-    const qualityScore = latest.kualitas !== null && latest.kualitas !== undefined ?
+    const qualityScore = (latest.kualitas !== null && latest.kualitas !== undefined) ?
         Math.round(parseFloat(latest.kualitas)) :
         calculateGaugeScore(phVal, suhuVal, tdsVal, ntuVal);
 
-    document.getElementById('quality-value').textContent = qualityScore;
-
-    let qualityText = 'Normal'; 
+    let qualityText = 'Normal';
     let qualityColor = '#10b981';
     let summary = 'Semua parameter dalam kondisi aman dan optimal.';
+    let pillClass = 'badge-normal shadow-sm';
 
     if (qualityScore < 50) {
         qualityText = 'Critical';
         qualityColor = '#ef4444';
         summary = 'Kualitas air kritis, perlu tindakan pengondisian segera.';
+        pillClass = 'badge-danger-custom shadow-sm';
     } else if (qualityScore < 75) {
-        qualityText = 'Warning'; 
+        qualityText = 'Warning';
         qualityColor = '#f59e0b';
         summary = 'Kualitas air kurang stabil, pantau perubahan pH & suhu.';
+        pillClass = 'badge-warning-custom shadow-sm';
     }
 
-    document.getElementById('quality-label').textContent = qualityText;
-    document.getElementById('quality-label').style.color = qualityColor;
-    document.getElementById('quality-dot').style.color = qualityColor;
-    document.getElementById('quality-badge-text').textContent = qualityText.toUpperCase();
-    document.getElementById('quality-badge-text').style.color = qualityColor;
-    document.getElementById('quality-summary-text').textContent = summary;
+    const qualityPill = document.getElementById('quality-pill-wrapper');
+    if (qualityPill) qualityPill.className = pillClass;
 
-    if (scoreChart) {
-        scoreChart.data.datasets[0].data = [qualityScore, 100 - qualityScore];
-        scoreChart.data.datasets[0].backgroundColor[0] = qualityColor;
-        scoreChart.update();
+    const labelEl = document.getElementById('quality-label');
+    if (labelEl) labelEl.textContent = qualityText;
+
+    const badgeTextEl = document.getElementById('quality-badge-text');
+    if (badgeTextEl) {
+        badgeTextEl.textContent = qualityText.toUpperCase();
+        badgeTextEl.style.color = qualityColor;
     }
+
+    const summaryEl = document.getElementById('quality-summary-text');
+    if (summaryEl) summaryEl.textContent = summary;
+
+    animateGaugeScore(qualityScore, qualityColor);
 }
 
 function initScoreGauge() {
@@ -966,8 +1309,11 @@ function initScoreGauge() {
             rotation: 210,
             circumference: 360,
             responsive: true,
-            maintainAspectRatio: true,
-            plugins: { tooltip: { enabled: false }, legend: { display: false } }
+            plugins: {
+                tooltip: {
+                    enabled: false
+                }
+            }
         }
     });
 }
@@ -980,7 +1326,6 @@ const crosshairPlugin = {
             const x = activeElements[0].element.x;
             const yAxis = chart.scales.y;
             const ctx = chart.ctx;
-
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(x, yAxis.top);
@@ -994,10 +1339,12 @@ const crosshairPlugin = {
     }
 };
 
-function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgColor, threshold = null, thresholdColor = '#cbd5e1') {
+function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgColor, threshold = null, thresholdColor =
+    '#cbd5e1') {
     const canvas = document.getElementById(id);
     if (!canvas) return null;
     const ctx = canvas.getContext('2d');
+
     let gradient = ctx.createLinearGradient(0, 0, 0, 220);
     gradient.addColorStop(0, bgColor);
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -1013,8 +1360,7 @@ function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgCo
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBackgroundColor: borderColor,
-        pointHoverBorderColor: '#ffffff',
-        pointHoverBorderWidth: 2
+        pointHoverBorderColor: '#ffffff'
     }];
 
     if (threshold !== null) {
@@ -1030,48 +1376,62 @@ function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgCo
         });
     }
 
-    let unit = '';
-    if (label.includes('pH')) unit = 'pH';
-    else if (label.includes('Suhu')) unit = '°C';
-    else if (label.includes('TDS')) unit = 'ppm';
-    else if (label.includes('Kekeruhan')) unit = 'NTU';
-
     return new Chart(ctx, {
         type: 'line',
-        data: { labels: initialLabels, datasets: datasets },
+        data: {
+            labels: initialLabels,
+            datasets: datasets
+        },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: { padding: { top: 15, bottom: 5 } },
-            interaction: { mode: 'index', intersect: false },
+            animation: false,
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 5
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
             plugins: {
-                legend: { display: false },
+                legend: {
+                    display: false
+                },
                 tooltip: {
-                    enabled: true,
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
                     titleColor: '#64748b',
-                    titleFont: { size: 12, weight: 'normal', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
                     bodyColor: borderColor,
-                    bodyFont: { size: 16, weight: 'bold', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
                     borderColor: '#e2e8f0',
-                    borderWidth: 1.5,
-                    padding: { top: 10, bottom: 10, left: 14, right: 14 },
-                    cornerRadius: 8,
-                    displayColors: false,
-                    callbacks: {
-                        title: function(context) { return context[0].label; },
-                        label: function(context) {
-                            if (context.dataset.label === 'Ambang Batas') {
-                                return `Batas: ${context.parsed.y} ${unit}`;
-                            }
-                            return `${context.parsed.y} ${unit}`;
-                        }
-                    }
+                    borderWidth: 1.5
                 }
             },
             scales: {
-                x: { grid: { display: false, drawBorder: false }, ticks: { font: { size: 11 }, color: '#94a3b8', padding: 8 }, border: { display: false } },
-                y: { grid: { display: true, color: '#f8fafc', drawBorder: false, borderDash: [4, 4] }, ticks: { font: { size: 11 }, color: '#94a3b8', padding: 10, maxTicksLimit: 5 }, border: { display: false } }
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    border: {
+                        display: false
+                    }
+                },
+                y: {
+                    grid: {
+                        color: '#f8fafc',
+                        borderDash: [4, 4]
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    border: {
+                        display: false
+                    }
+                }
             }
         },
         plugins: [crosshairPlugin]
@@ -1080,90 +1440,101 @@ function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgCo
 
 function initCharts() {
     initScoreGauge();
-
     charts.ph = createLineChart('phChart', 'pH', [], [], '#2563eb', 'rgba(37, 99, 235, 0.1)', 7.5, '#bfdbfe');
-    charts.suhu = createLineChart('suhuChart', 'Suhu (°C)', [], [], '#10b981', 'rgba(16, 185, 129, 0.1)', 30, '#bbf7d0');
+    charts.suhu = createLineChart('suhuChart', 'Suhu (°C)', [], [], '#10b981', 'rgba(16, 185, 129, 0.1)', 30,
+        '#bbf7d0');
     charts.tds = createLineChart('tdsChart', 'TDS (ppm)', [], [], '#06b6d4', 'rgba(6, 182, 212, 0.1)', 500, '#fca5a5');
-    charts.kekeruhan = createLineChart('kekeruhanChart', 'Kekeruhan (NTU)', [], [], '#8b5cf6', 'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
+    charts.kekeruhan = createLineChart('kekeruhanChart', 'Kekeruhan (NTU)', [], [], '#8b5cf6',
+        'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
 
     filterChartTime(activeTimeRange);
-
-    if (sensorData.length > 0) {
-        updateSensorBadgesAndValues(sensorData[0]);
-    }
+    if (sensorData.length > 0) updateSensorBadgesAndValues(sensorData[0]);
 }
 
 function processSensorDataByRange(rawData, range) {
-    if (!rawData || rawData.length === 0) {
-        return { labels: [], ph: [], suhu: [], tds: [], kekeruhan: [] };
-    }
+    if (!rawData || rawData.length === 0) return {
+        labels: [],
+        ph: [],
+        suhu: [],
+        tds: [],
+        kekeruhan: []
+    };
 
     let sortedData = [...rawData].sort((a, b) => parseDate(a.created_at) - parseDate(b.created_at));
     const now = new Date();
 
     if (range === 'today') {
         const todayStr = now.toDateString();
-        let todayData = sortedData.filter(item => {
-            if (!item.created_at) return false;
-            return parseDate(item.created_at).toDateString() === todayStr;
-        });
-
+        let todayData = sortedData.filter(item => parseDate(item.created_at).toDateString() === todayStr);
         let grouped = {};
         todayData.forEach(item => {
             const timeKey = formatTimeLabel(item.created_at);
-            if (!grouped[timeKey]) {
-                grouped[timeKey] = { ph: [], suhu: [], tds: [], kekeruhan: [] };
-            }
+            if (!grouped[timeKey]) grouped[timeKey] = {
+                ph: [],
+                suhu: [],
+                tds: [],
+                kekeruhan: []
+            };
             grouped[timeKey].ph.push(parseFloat(item.ph) || 0);
             grouped[timeKey].suhu.push(parseFloat(item.suhu) || 0);
             grouped[timeKey].tds.push(parseFloat(item.tds) || 0);
-            grouped[timeKey].kekeruhan.push(parseFloat(item.kekeruhan) || 0);
+            grouped[timeKey].kekeruhan.push(parseFloat(item.kekeruhan ?? item.ntu) || 0);
         });
 
         let labels = Object.keys(grouped);
-        let ph = labels.map(k => (grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length));
-        let suhu = labels.map(k => (grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length));
-        let tds = labels.map(k => (grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length));
-        let kekeruhan = labels.map(k => (grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length));
+        let ph = labels.map(k => grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length);
+        let suhu = labels.map(k => grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length);
+        let tds = labels.map(k => grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length);
+        let kekeruhan = labels.map(k => grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length);
 
-        return { labels, ph, suhu, tds, kekeruhan };
+        return {
+            labels,
+            ph,
+            suhu,
+            tds,
+            kekeruhan
+        };
     } else {
         const daysCount = range === '7days' ? 7 : 30;
         const limitDate = new Date();
         limitDate.setDate(limitDate.getDate() - daysCount);
-
-        let filteredData = sortedData.filter(item => {
-            if (!item.created_at) return false;
-            return parseDate(item.created_at) >= limitDate;
-        });
-
+        let filteredData = sortedData.filter(item => parseDate(item.created_at) >= limitDate);
         let grouped = {};
         filteredData.forEach(item => {
-            const d = parseDate(item.created_at);
-            const dateKey = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
-
-            if (!grouped[dateKey]) {
-                grouped[dateKey] = { ph: [], suhu: [], tds: [], kekeruhan: [] };
-            }
+            const dateKey = parseDate(item.created_at).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short'
+            });
+            if (!grouped[dateKey]) grouped[dateKey] = {
+                ph: [],
+                suhu: [],
+                tds: [],
+                kekeruhan: []
+            };
             grouped[dateKey].ph.push(parseFloat(item.ph) || 0);
             grouped[dateKey].suhu.push(parseFloat(item.suhu) || 0);
             grouped[dateKey].tds.push(parseFloat(item.tds) || 0);
-            grouped[dateKey].kekeruhan.push(parseFloat(item.kekeruhan) || 0);
+            grouped[dateKey].kekeruhan.push(parseFloat(item.kekeruhan ?? item.ntu) || 0);
         });
 
         let labels = Object.keys(grouped);
-        let ph = labels.map(k => (grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length));
-        let suhu = labels.map(k => (grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length));
-        let tds = labels.map(k => (grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length));
-        let kekeruhan = labels.map(k => (grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length));
+        let ph = labels.map(k => grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length);
+        let suhu = labels.map(k => grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length);
+        let tds = labels.map(k => grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length);
+        let kekeruhan = labels.map(k => grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length);
 
-        return { labels, ph, suhu, tds, kekeruhan };
+        return {
+            labels,
+            ph,
+            suhu,
+            tds,
+            kekeruhan
+        };
     }
 }
 
 function filterChartTime(range) {
     activeTimeRange = range;
-
     ['btn-today', 'btn-7days', 'btn-30days'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) btn.classList.remove('active');
@@ -1177,21 +1548,33 @@ function filterChartTime(range) {
     if (charts.ph) {
         charts.ph.data.labels = processed.labels;
         charts.ph.data.datasets[0].data = processed.ph;
+        if (charts.ph.data.datasets[1]) {
+            charts.ph.data.datasets[1].data = Array(processed.labels.length).fill(7.5);
+        }
         charts.ph.update();
     }
     if (charts.suhu) {
         charts.suhu.data.labels = processed.labels;
         charts.suhu.data.datasets[0].data = processed.suhu;
+        if (charts.suhu.data.datasets[1]) {
+            charts.suhu.data.datasets[1].data = Array(processed.labels.length).fill(30);
+        }
         charts.suhu.update();
     }
     if (charts.tds) {
         charts.tds.data.labels = processed.labels;
         charts.tds.data.datasets[0].data = processed.tds;
+        if (charts.tds.data.datasets[1]) {
+            charts.tds.data.datasets[1].data = Array(processed.labels.length).fill(500);
+        }
         charts.tds.update();
     }
     if (charts.kekeruhan) {
         charts.kekeruhan.data.labels = processed.labels;
         charts.kekeruhan.data.datasets[0].data = processed.kekeruhan;
+        if (charts.kekeruhan.data.datasets[1]) {
+            charts.kekeruhan.data.datasets[1].data = Array(processed.labels.length).fill(20);
+        }
         charts.kekeruhan.update();
     }
 
@@ -1204,11 +1587,10 @@ function filterChartTime(range) {
 function startLiveWeatherClock() {
     function updateClock() {
         const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
         const weatherTimeEl = document.getElementById('weather-time');
         if (weatherTimeEl) {
-            weatherTimeEl.textContent = `${hours}:${minutes} WIB`;
+            weatherTimeEl.textContent =
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
         }
     }
     updateClock();
@@ -1218,144 +1600,347 @@ function startLiveWeatherClock() {
 function fetchRealtimeData() {
     fetch('/api/sensor/latest')
         .then(response => response.ok ? response.json() : Promise.reject('Gagal mengambil data'))
-        .then(data => {
-            const latest = data.sensors ? data.sensors[0] : (Array.isArray(data) ? data[0] : data);
-
+        .then(res => {
+            const latest = res.data;
             if (latest && latest.ph !== undefined) {
-                if (sensorData.length === 0 || sensorData[0].id !== latest.id) {
+                const isNew = sensorData.length === 0 ||
+                    (latest.id && latest.id !== sensorData[0].id) ||
+                    (latest.created_at !== sensorData[0].created_at);
+
+                if (isNew) {
                     sensorData.unshift(latest);
+                    if (sensorData.length > 1440) sensorData.pop();
+                    updateSensorBadgesAndValues(latest);
+                    filterChartTime(activeTimeRange);
+                } else {
+                    updateSensorBadgesAndValues(latest);
                 }
-
-                updateSensorBadgesAndValues(latest);
-                filterChartTime(activeTimeRange);
             }
+            const updatedEl = document.getElementById('last-updated-time');
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
 
-            const now = new Date();
-            document.getElementById('last-updated-time').textContent = now.toLocaleTimeString();
-            document.getElementById('system-status-dot').className = 'badge bg-success rounded-circle p-1 me-2';
-            document.getElementById('system-status-text').textContent = 'System Online';
+            const dotEl = document.getElementById('system-status-dot');
+            if (dotEl) dotEl.className = 'badge bg-success rounded-circle p-1 me-2';
+
+            const statusTextEl = document.getElementById('system-status-text');
+            if (statusTextEl) statusTextEl.textContent = 'System Online';
         })
         .catch(() => {
-            const now = new Date();
-            document.getElementById('last-updated-time').textContent = now.toLocaleTimeString();
-            document.getElementById('system-status-dot').className = 'badge bg-warning rounded-circle p-1 me-2';
-            document.getElementById('system-status-text').textContent = 'Live Cache';
+            const updatedEl = document.getElementById('last-updated-time');
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
+
+            const dotEl = document.getElementById('system-status-dot');
+            if (dotEl) dotEl.className = 'badge bg-warning rounded-circle p-1 me-2';
+
+            const statusTextEl = document.getElementById('system-status-text');
+            if (statusTextEl) statusTextEl.textContent = 'Live Cache';
         });
+}
+
+/* =======================================================
+   OUTPUT ML & HYBRID AI RECOMMENDATION GENERATOR
+======================================================= */
+function generateRecommendationCardsHtml(data) {
+    if (!data || data.status === 'error') {
+        return `
+            <div class="alert alert-warning rounded-4 mb-0" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> ${data?.message || 'Gagal memuat analisis Hybrid AI. Menggunakan mode cadangan.'}
+            </div>
+        `;
+    }
+
+    const hybrid = data.hybrid_ai || {};
+    const sopList = data.tindakan_sop || [];
+    const adviceList = data.advice || data.recommendations || [];
+    const paramStatus = data.parameter_status || {};
+
+    // 1. Ambil status yang dikirimkan oleh backend
+    const mlPred = hybrid.status_prediksi || 'Baik';
+    const fuzzyStat = hybrid.status_saat_ini || 'Baik';
+
+    // GUNA LANGSUNG HASIL FUSION STATUS DARI PYTHON (BERHASIL DISARING LOGIC RULE)
+    const finalStatus = hybrid.final_status || 'Baik';
+
+    const confidence = hybrid.confidence ? `${hybrid.confidence}%` : null;
+    const isOffline = hybrid.is_offline || false;
+
+    // 2. Tentukan warna badge berdasarkan finalStatus
+    let statusBadgeClass = 'bg-success-subtle text-success border-success';
+    let statusIcon = 'fa-circle-check';
+
+    const fsLower = finalStatus.toLowerCase();
+    if (fsLower === 'buruk' || fsLower === 'critical' || fsLower === 'kritis') {
+        statusBadgeClass = 'bg-danger-subtle text-danger border-danger';
+        statusIcon = 'fa-triangle-exclamation';
+    } else if (fsLower === 'sedang' || fsLower === 'warning' || fsLower === 'waspada') {
+        statusBadgeClass = 'bg-warning-subtle text-warning border-warning';
+        statusIcon = 'fa-triangle-exclamation';
+    }
+
+    let html = `
+        <div class="card bg-white border border-light-subtle rounded-4 p-3 mb-4 shadow-sm">
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge border px-3 py-2 rounded-pill ${statusBadgeClass} fw-bold d-inline-flex align-items-center gap-2" style="font-size: 0.9rem;">
+                        <i class="fas ${statusIcon}"></i> Status Diagnosis: ${finalStatus}
+                    </span>
+                    ${isOffline ? '<span class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-plug-circle-xmark me-1"></i> Mode Offline / Fallback</span>' : ''}
+                </div>
+                <div class="d-flex flex-wrap align-items-center gap-2 text-muted small">
+                    <span class="bg-light px-2 py-1 rounded border">
+                        <i class="fas fa-brain text-primary me-1"></i> Model ML: <strong class="text-dark">${mlPred}</strong> ${confidence ? `(${confidence})` : ''}
+                    </span>
+                    <span class="bg-light px-2 py-1 rounded border">
+                        <i class="fas fa-sliders text-info me-1"></i> Logic Fuzzy: <strong class="text-dark">${fuzzyStat}</strong>
+                    </span>
+                </div>
+            </div>
+    `;
+
+    if (Object.keys(paramStatus).length > 0) {
+        html += `
+            <div class="row g-2 mt-2 pt-3 border-top">
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
+                        <span class="small text-secondary fw-semibold">pH</span>
+                        <span class="badge ${paramStatus.ph === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.ph || 'Normal'}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
+                        <span class="small text-secondary fw-semibold">Suhu</span>
+                        <span class="badge ${paramStatus.suhu === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.suhu || 'Normal'}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
+                        <span class="small text-secondary fw-semibold">TDS</span>
+                        <span class="badge ${paramStatus.tds === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.tds || 'Normal'}</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
+                        <span class="small text-secondary fw-semibold">Kekeruhan</span>
+                        <span class="badge ${paramStatus.kekeruhan === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.kekeruhan || 'Normal'}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    html += `</div>`;
+
+    let combinedItems = [];
+    if (adviceList.length > 0) {
+        combinedItems = adviceList;
+    } else if (sopList.length > 0) {
+        const itemLevel = (fsLower === 'buruk' || fsLower === 'critical' || fsLower === 'kritis') ? 'danger' : ((
+            fsLower === 'sedang' || fsLower === 'warning' || fsLower === 'waspada') ? 'warning' : 'info');
+        combinedItems = sopList.map((sop, idx) => ({
+            num: `#${idx + 1}`,
+            type: 'SOP ACTION',
+            time: 'Segera',
+            title: `Langkah Tindakan ${idx + 1}`,
+            desc: sop,
+            level: itemLevel,
+            icon: 'fa-clipboard-check'
+        }));
+    }
+
+    html += `
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Rekomendasi &amp; Langkah Mitigasi</h5>
+                <span class="badge bg-primary-subtle text-primary fw-bold rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.75rem;">${combinedItems.length}</span>
+            </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+    `;
+
+    if (combinedItems.length === 0) {
+        html += `
+            <div class="rec-card rec-card-info d-flex p-3">
+                <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center mb-1 icon-bg-blue" style="width: 44px; height: 44px;">
+                        <i class="fas fa-circle-check fs-5"></i>
+                    </div>
+                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">#1</span>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span class="badge rounded-pill px-3 py-1" style="background-color: #e0f2fe; color: #0369a1; font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">SISTEM NORMAL</span>
+                        <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> Rutin</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">Kondisi Air Tambak Optimal</h6>
+                    <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">Seluruh parameter berada pada batas aman budidaya. Lakukan perawatan rutin dan monitoring berkala.</p>
+                </div>
+            </div>
+        `;
+    } else {
+        combinedItems.forEach((item, index) => {
+            const isDanger = item.level === 'danger';
+            const isWarning = item.level === 'warning';
+            const stripClass = isDanger ? 'rec-card-danger' : (isWarning ? 'rec-card-warning' :
+            'rec-card-info');
+            const badgeBg = isDanger ? 'background-color: #fee2e2; color: #b91c1c;' : (isWarning ?
+                'background-color: #ffedd5; color: #c2410c;' : 'background-color: #e0f2fe; color: #0369a1;');
+            const iconBg = isDanger ? 'background: #fee2e2; color: #ef4444;' : (isWarning ?
+                'background: #ffedd5; color: #f97316;' : 'background: #e0f2fe; color: #0284c7;');
+
+            html += `
+                <div class="rec-card ${stripClass} d-flex p-3">
+                    <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center mb-1" style="width: 44px; height: 44px; ${iconBg}">
+                            <i class="fas ${item.icon || 'fa-clipboard-check'} fs-5"></i>
+                        </div>
+                        <span class="text-muted fw-bold" style="font-size: 0.75rem;">${item.num || ('#' + (index + 1))}</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                            <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.type || 'SOP MITIGASI'}</span>
+                            <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> ${item.time || 'Segera'}</span>
+                        </div>
+                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title || ('Langkah ' + (index + 1))}</h6>
+                        <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">${item.desc || item}</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    html += `
+        </div>
+        <div class="text-center text-muted small mt-4 pt-2">
+            <i class="fas fa-wand-magic-sparkles me-1 text-primary"></i> Rekomendasi dianalisis oleh Hybrid AI (Machine Learning & Fuzzy Logic)
+        </div>
+    `;
+
+    return html;
 }
 
 function triggerAiRecommendation() {
     const btn = document.getElementById('btnAiAction');
-    const btnText = document.getElementById('btnAiText');
+    const iconWrapper = document.getElementById('aiIconWrapper');
     const standby = document.getElementById('ai-standby');
     const loading = document.getElementById('ai-loading');
     const contentText = document.getElementById('ai-content-text');
     const containerBox = document.getElementById('ai-container-box');
 
-    if (!btn || !btnText || !standby || !loading || !contentText || !containerBox) return;
+    if (!btn || !loading || !contentText || !containerBox) return;
 
     btn.disabled = true;
-    btnText.textContent = 'Mengevaluasi...';
-    standby.style.display = 'none';
+    btn.classList.remove('btn-ai-analyze');
+    btn.classList.add('btn-ai-loading');
+    btn.innerHTML = `<span class="ai-spinner me-2"></span><span>Menganalisis…</span>`;
+
+    if (iconWrapper) iconWrapper.classList.add('analyzing');
+    containerBox.classList.add('analyzing');
+    if (standby) standby.style.display = 'none';
     contentText.style.display = 'none';
+    contentText.innerHTML = '';
     loading.style.display = 'block';
 
-    containerBox.classList.remove('ai-state-optimal', 'ai-state-warning');
-    containerBox.removeAttribute('style');
+    const steps = [
+        document.getElementById('step-1'),
+        document.getElementById('step-2'),
+        document.getElementById('step-3')
+    ];
+    steps.forEach(s => {
+        if (s) s.classList.remove('visible', 'active');
+    });
 
-    fetch("{{ route('dashboard.ai') }}", {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-        }
-    })
-        .then(res => {
-            if (!res.ok) throw new Error('Network error status: ' + res.status);
-            return res.json();
-        })
-        .then(data => {
-            btn.disabled = false;
-            btnText.textContent = 'Cek Tindakan AI';
-            loading.style.display = 'none';
-            contentText.style.display = 'block';
+    setTimeout(() => {
+        if (steps[0]) steps[0].classList.add('visible', 'active');
+    }, 100);
+    setTimeout(() => {
+        if (steps[0]) steps[0].classList.remove('active');
+        if (steps[1]) steps[1].classList.add('visible', 'active');
+    }, 700);
+    setTimeout(() => {
+        if (steps[1]) steps[1].classList.remove('active');
+        if (steps[2]) steps[2].classList.add('visible', 'active');
+    }, 1300);
+    setTimeout(() => {
+        executeAiFetch();
+    }, 1900);
 
-            const status = (data.status || data.state || '').toLowerCase();
-            const rawRecommendation = data.recommendation || data.message || data.result || data.action || '';
+    function executeAiFetch() {
+        fetch("{{ route('dashboard.ai') }}", {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.ok ? res.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                finishAiAnalysis(data);
+            })
+            .catch(() => {
+                finishAiAnalysis({});
+            });
+    }
 
-            if (status === 'optimal' || status === 'normal' || status === 'safe') {
-                containerBox.classList.add('ai-state-optimal');
-                contentText.innerHTML = `<div class="d-flex align-items-center gap-2">
-                    <i class="fas fa-circle-check fs-5 text-success"></i>
-                    <div>${rawRecommendation || 'Kualitas air tambak dalam kondisi optimal dan aman.'}</div>
-                </div>`;
+    function finishAiAnalysis(data) {
+        btn.disabled = false;
+        btn.classList.remove('btn-ai-loading');
+        btn.classList.add('btn-ai-analyze');
+        btn.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i><span>Analisis Hybrid AI</span>`;
 
-            } else if (status === 'success' || status === 'warning' || status === 'critical' || status === 'danger') {
-                containerBox.classList.add('ai-state-warning');
+        if (iconWrapper) iconWrapper.classList.remove('analyzing');
+        containerBox.classList.remove('analyzing');
+        loading.style.display = 'none';
 
-                let formatted = rawRecommendation
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/\n/g, '<br>');
-
-                contentText.innerHTML = `<div class="mb-2 fw-bold d-flex align-items-center gap-2">
-                    <i class="fas fa-triangle-exclamation"></i> Rekomendasi Penanganan AI:
-                </div>` + formatted;
-
-            } else if (data.error) {
-                contentText.innerHTML = `<span class="text-danger small">⚠️ ${data.error}</span>`;
-            } else {
-                let formatted = rawRecommendation
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                    .replace(/\n/g, '<br>');
-                contentText.innerHTML = formatted || 'Evaluasi AI telah selesai dilakukan.';
-            }
-        })
-        .catch(err => {
-            btn.disabled = false;
-            btnText.textContent = 'Cek Tindakan AI';
-            loading.style.display = 'none';
-            contentText.style.display = 'block';
-            contentText.innerHTML = '<span class="text-danger small">Gagal menghubungkan ke server AI ML (Port 5000). Pastikan Flask <code>app.py</code> aktif.</span>';
-        });
+        contentText.style.display = 'block';
+        contentText.className = 'ai-result-container';
+        contentText.innerHTML = generateRecommendationCardsHtml(data);
+    }
 }
 
 function switchMobileChart(chartId) {
-    document.querySelectorAll('.chart-card-wrapper').forEach(card => {
-        card.classList.remove('active-mobile');
-    });
-    
-    document.getElementById('chart-wrapper-' + chartId).classList.add('active-mobile');
+    document.querySelectorAll('.chart-card-wrapper').forEach(card => card.classList.remove('active-mobile'));
+    const targetChartWrapper = document.getElementById('chart-wrapper-' + chartId);
+    if (targetChartWrapper) targetChartWrapper.classList.add('active-mobile');
 
     document.querySelectorAll('.btn-chart-tab').forEach(btn => {
         btn.classList.remove('active');
-        btn.querySelector('.check-icon').classList.add('d-none');
+        const icon = btn.querySelector('.check-icon');
+        if (icon) icon.classList.add('d-none');
     });
 
     const activeTab = document.getElementById('tab-' + chartId);
-    activeTab.classList.add('active');
-    activeTab.querySelector('.check-icon').classList.remove('d-none');
+    if (activeTab) {
+        activeTab.classList.add('active');
+        const activeIcon = activeTab.querySelector('.check-icon');
+        if (activeIcon) activeIcon.classList.remove('d-none');
+    }
 }
 
-/* Single Inisialisasi DOMContentLoaded */
 document.addEventListener('DOMContentLoaded', () => {
     initCharts();
     startLiveWeatherClock();
 
-    const now = new Date();
-    document.getElementById('last-updated-time').textContent = now.toLocaleTimeString();
+    const timeEl = document.getElementById('last-updated-time');
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+
     setInterval(fetchRealtimeData, 5000);
 
-    // Auto scroll untuk widget hourly forecast
     const scrollContainer = document.querySelector('.hourly-scroll-container');
     if (scrollContainer) {
         let autoScrollTimer;
+
         function startAutoScroll() {
             autoScrollTimer = setInterval(() => {
                 const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
                 if (scrollContainer.scrollLeft >= maxScroll - 5) {
-                    scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                    scrollContainer.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
                 } else {
-                    scrollContainer.scrollBy({ left: 70, behavior: 'smooth' });
+                    scrollContainer.scrollBy({
+                        left: 70,
+                        behavior: 'smooth'
+                    });
                 }
             }, 2500);
         }
