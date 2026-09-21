@@ -588,6 +588,150 @@ body.dark-mode .rec-card {
         display: block;
     }
 }
+
+/* =======================================================
+   EXACT DESIGN HYBRID AI (STATUS CARD, TABS, & INTRO BOX)
+======================================================= */
+
+/* 1. Header Card Status Diagnosis */
+.status-summary-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.badge-status-diag {
+    background-color: #e6f7f0;
+    color: #0d8a5f;
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-pill-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    color: #4b5563;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 2. Custom Tab Switcher (Rekomendasi vs Cara Kerja AI) */
+.custom-tab-wrapper {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 4px;
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.custom-tab-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 12px 20px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #475569;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.custom-tab-btn.active {
+    background: #0d89ec;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(13, 137, 236, 0.25);
+}
+
+/* 3. Intro Box Cara Kerja AI */
+.ai-intro-box {
+    background: #f0f7ff;
+    border: 1px solid #dbeafe;
+    border-radius: 16px;
+    padding: 22px 26px;
+    color: #1e293b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* 4. AI Method Cards Comparison */
+.ai-method-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    height: 100%;
+}
+
+.ai-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.ai-section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #0284c7;
+    margin-bottom: 4px;
+}
+
+.ai-reason-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 24px;
+}
+
+.num-badge-circle {
+    width: 26px;
+    height: 26px;
+    background: #2563eb;
+    color: #ffffff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* TAB ANIMATION */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-tab-pane {
+    animation: fadeSlideIn 0.4s var(--ai-easing) forwards;
+}
 </style>
 @endpush
 
@@ -1638,13 +1782,13 @@ function fetchRealtimeData() {
 }
 
 /* =======================================================
-   OUTPUT ML & HYBRID AI RECOMMENDATION GENERATOR
+   EXACT UI HYBRID AI RECOMMENDATION GENERATOR
 ======================================================= */
 function generateRecommendationCardsHtml(data) {
     if (!data || data.status === 'error') {
         return `
             <div class="alert alert-warning rounded-4 mb-0" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i> ${data?.message || 'Gagal memuat analisis Hybrid AI. Menggunakan mode cadangan.'}
+                <i class="fas fa-exclamation-triangle me-2"></i> ${data?.message || 'Gagal memuat analisis Hybrid AI.'}
             </div>
         `;
     }
@@ -1652,90 +1796,32 @@ function generateRecommendationCardsHtml(data) {
     const hybrid = data.hybrid_ai || {};
     const sopList = data.tindakan_sop || [];
     const adviceList = data.advice || data.recommendations || [];
-    const paramStatus = data.parameter_status || {};
 
-    // 1. Ambil status yang dikirimkan oleh backend
-    const mlPred = hybrid.status_prediksi || 'Baik';
+    // Status & Prediksi
+    const mlPred = hybrid.status_prediksi || 'Sedang';
     const fuzzyStat = hybrid.status_saat_ini || 'Baik';
-
-    // GUNA LANGSUNG HASIL FUSION STATUS DARI PYTHON (BERHASIL DISARING LOGIC RULE)
     const finalStatus = hybrid.final_status || 'Baik';
 
-    const confidence = hybrid.confidence ? `${hybrid.confidence}%` : null;
-    const isOffline = hybrid.is_offline || false;
-
-    // 2. Tentukan warna badge berdasarkan finalStatus
-    let statusBadgeClass = 'bg-success-subtle text-success border-success';
-    let statusIcon = 'fa-circle-check';
-
+    // Dinamisasi Badge Status Diagnosis
+    let diagBadgeStyle = 'background-color: #e6f7f0; color: #0d8a5f;';
+    let diagIcon = 'fa-circle-check';
     const fsLower = finalStatus.toLowerCase();
-    if (fsLower === 'buruk' || fsLower === 'critical' || fsLower === 'kritis') {
-        statusBadgeClass = 'bg-danger-subtle text-danger border-danger';
-        statusIcon = 'fa-triangle-exclamation';
-    } else if (fsLower === 'sedang' || fsLower === 'warning' || fsLower === 'waspada') {
-        statusBadgeClass = 'bg-warning-subtle text-warning border-warning';
-        statusIcon = 'fa-triangle-exclamation';
+
+    if (fsLower === 'buruk' || fsLower === 'kritis') {
+        diagBadgeStyle = 'background-color: #fef2f2; color: #dc2626;';
+        diagIcon = 'fa-triangle-exclamation';
+    } else if (fsLower === 'sedang' || fsLower === 'waspada') {
+        diagBadgeStyle = 'background-color: #fffbeb; color: #d97706;';
+        diagIcon = 'fa-triangle-exclamation';
     }
 
-    let html = `
-        <div class="card bg-white border border-light-subtle rounded-4 p-3 mb-4 shadow-sm">
-            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-                <div class="d-flex align-items-center gap-3">
-                    <span class="badge border px-3 py-2 rounded-pill ${statusBadgeClass} fw-bold d-inline-flex align-items-center gap-2" style="font-size: 0.9rem;">
-                        <i class="fas ${statusIcon}"></i> Status Diagnosis: ${finalStatus}
-                    </span>
-                    ${isOffline ? '<span class="badge bg-secondary-subtle text-secondary rounded-pill px-2 py-1" style="font-size: 0.7rem;"><i class="fas fa-plug-circle-xmark me-1"></i> Mode Offline / Fallback</span>' : ''}
-                </div>
-                <div class="d-flex flex-wrap align-items-center gap-2 text-muted small">
-                    <span class="bg-light px-2 py-1 rounded border">
-                        <i class="fas fa-brain text-primary me-1"></i> Model ML: <strong class="text-dark">${mlPred}</strong> ${confidence ? `(${confidence})` : ''}
-                    </span>
-                    <span class="bg-light px-2 py-1 rounded border">
-                        <i class="fas fa-sliders text-info me-1"></i> Logic Fuzzy: <strong class="text-dark">${fuzzyStat}</strong>
-                    </span>
-                </div>
-            </div>
-    `;
-
-    if (Object.keys(paramStatus).length > 0) {
-        html += `
-            <div class="row g-2 mt-2 pt-3 border-top">
-                <div class="col-6 col-md-3">
-                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
-                        <span class="small text-secondary fw-semibold">pH</span>
-                        <span class="badge ${paramStatus.ph === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.ph || 'Normal'}</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
-                        <span class="small text-secondary fw-semibold">Suhu</span>
-                        <span class="badge ${paramStatus.suhu === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.suhu || 'Normal'}</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
-                        <span class="small text-secondary fw-semibold">TDS</span>
-                        <span class="badge ${paramStatus.tds === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.tds || 'Normal'}</span>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="p-2 rounded bg-light d-flex justify-content-between align-items-center">
-                        <span class="small text-secondary fw-semibold">Kekeruhan</span>
-                        <span class="badge ${paramStatus.kekeruhan === 'Normal' ? 'bg-success' : 'bg-warning'} param-badge-pill">${paramStatus.kekeruhan || 'Normal'}</span>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    html += `</div>`;
-
+    // Gabungkan List Rekomendasi
     let combinedItems = [];
     if (adviceList.length > 0) {
         combinedItems = adviceList;
     } else if (sopList.length > 0) {
-        const itemLevel = (fsLower === 'buruk' || fsLower === 'critical' || fsLower === 'kritis') ? 'danger' : ((
-            fsLower === 'sedang' || fsLower === 'warning' || fsLower === 'waspada') ? 'warning' : 'info');
+        const itemLevel = (fsLower === 'buruk' || fsLower === 'kritis') ? 'danger' : ((fsLower === 'sedang' ||
+            fsLower === 'waspada') ? 'warning' : 'info');
         combinedItems = sopList.map((sop, idx) => ({
             num: `#${idx + 1}`,
             type: 'SOP ACTION',
@@ -1747,19 +1833,11 @@ function generateRecommendationCardsHtml(data) {
         }));
     }
 
-    html += `
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="d-flex align-items-center gap-2">
-                <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Rekomendasi &amp; Langkah Mitigasi</h5>
-                <span class="badge bg-primary-subtle text-primary fw-bold rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.75rem;">${combinedItems.length}</span>
-            </div>
-        </div>
-        <div class="d-flex flex-column gap-3">
-    `;
-
+    // Generate List Rekomendasi HTML
+    let sopListHtml = '';
     if (combinedItems.length === 0) {
-        html += `
-            <div class="rec-card rec-card-info d-flex p-3">
+        sopListHtml = `
+            <div class="rec-card rec-card-info d-flex p-3 mb-3">
                 <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
                     <div class="rounded-3 d-flex align-items-center justify-content-center mb-1 icon-bg-blue" style="width: 44px; height: 44px;">
                         <i class="fas fa-circle-check fs-5"></i>
@@ -1768,11 +1846,11 @@ function generateRecommendationCardsHtml(data) {
                 </div>
                 <div class="flex-grow-1">
                     <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                        <span class="badge rounded-pill px-3 py-1" style="background-color: #e0f2fe; color: #0369a1; font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">SISTEM NORMAL</span>
+                        <span class="badge rounded-pill px-3 py-1" style="background-color: #e0f2fe; color: #0369a1; font-size: 0.65rem; font-weight: 700;">SISTEM NORMAL</span>
                         <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> Rutin</span>
                     </div>
                     <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">Kondisi Air Tambak Optimal</h6>
-                    <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">Seluruh parameter berada pada batas aman budidaya. Lakukan perawatan rutin dan monitoring berkala.</p>
+                    <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">Budidaya dilanjutkan secara normal. Lakukan pemantauan rutin berkala.</p>
                 </div>
             </div>
         `;
@@ -1781,14 +1859,14 @@ function generateRecommendationCardsHtml(data) {
             const isDanger = item.level === 'danger';
             const isWarning = item.level === 'warning';
             const stripClass = isDanger ? 'rec-card-danger' : (isWarning ? 'rec-card-warning' :
-            'rec-card-info');
+                'rec-card-info');
             const badgeBg = isDanger ? 'background-color: #fee2e2; color: #b91c1c;' : (isWarning ?
                 'background-color: #ffedd5; color: #c2410c;' : 'background-color: #e0f2fe; color: #0369a1;');
             const iconBg = isDanger ? 'background: #fee2e2; color: #ef4444;' : (isWarning ?
                 'background: #ffedd5; color: #f97316;' : 'background: #e0f2fe; color: #0284c7;');
 
-            html += `
-                <div class="rec-card ${stripClass} d-flex p-3">
+            sopListHtml += `
+                <div class="rec-card ${stripClass} d-flex p-3 mb-3">
                     <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
                         <div class="rounded-3 d-flex align-items-center justify-content-center mb-1" style="width: 44px; height: 44px; ${iconBg}">
                             <i class="fas ${item.icon || 'fa-clipboard-check'} fs-5"></i>
@@ -1797,10 +1875,10 @@ function generateRecommendationCardsHtml(data) {
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                            <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.type || 'SOP MITIGASI'}</span>
+                            <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.type || 'SOP ACTION'}</span>
                             <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> ${item.time || 'Segera'}</span>
                         </div>
-                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title || ('Langkah ' + (index + 1))}</h6>
+                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title || ('Langkah Tindakan ' + (index + 1))}</h6>
                         <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">${item.desc || item}</p>
                     </div>
                 </div>
@@ -1808,15 +1886,186 @@ function generateRecommendationCardsHtml(data) {
         });
     }
 
-    html += `
+    return `
+        <!-- 1. HEADER SUMMARY DIAGNOSIS CARD -->
+        <div class="status-summary-card">
+            <div class="mb-3">
+                <span class="badge-status-diag" style="${diagBadgeStyle}">
+                    <i class="fas ${diagIcon}"></i> Status Diagnosis: ${finalStatus.charAt(0).toUpperCase() + finalStatus.slice(1)}
+                </span>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <div class="info-pill-card mb-1">
+                    <i class="fas fa-microchip text-primary"></i>
+                    <span>Model ML: <strong class="text-dark">${mlPred}</strong></span>
+                </div>
+                <div class="info-pill-card mb-1">
+                    <i class="fas fa-sliders text-info"></i>
+                    <span>Logic Fuzzy: <strong class="text-dark">${fuzzyStat}</strong></span>
+                </div>
+            </div>
         </div>
-        <div class="text-center text-muted small mt-4 pt-2">
-            <i class="fas fa-wand-magic-sparkles me-1 text-primary"></i> Rekomendasi dianalisis oleh Hybrid AI (Machine Learning & Fuzzy Logic)
+
+        <!-- 2. CUSTOM FULL-WIDTH TAB SWITCHER -->
+        <div class="custom-tab-wrapper">
+            <button class="custom-tab-btn active" id="btn-tab-rekomendasi" onclick="switchAiTab('rekomendasi')">
+                Rekomendasi
+            </button>
+            <button class="custom-tab-btn" id="btn-tab-carakerja" onclick="switchAiTab('carakerja')">
+                Cara Kerja AI
+            </button>
+        </div>
+
+        <!-- 3. TAB CONTENT PANES -->
+        <!-- PANE REKOMENDASI -->
+        <div id="pane-rekomendasi" class="animate-tab-pane">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Rekomendasi &amp; Langkah Mitigasi</h5>
+                    <span class="badge bg-primary-subtle text-primary fw-bold rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 0.75rem;">${combinedItems.length}</span>
+                </div>
+            </div>
+            ${sopListHtml}
+        </div>
+
+        <!-- PANE CARA KERJA AI -->
+        <div id="pane-carakerja" class="animate-tab-pane" style="display: none;">
+            <!-- INTRO DESKRIPSI BOX -->
+            <div class="ai-intro-box mb-4">
+                Bayangkan kolammu dijaga oleh <strong>dua asisten</strong> sekaligus. Yang pertama mengecek keadaan air <strong>saat ini juga</strong>, yang kedua <strong>meramal</strong> akan seperti apa airnya nanti. Gabungan keduanya disebut <strong class="text-primary">Hybrid AI</strong> — supaya kamu tahu masalah hari ini sekaligus siap menghadapi masalah besok.
+            </div>
+
+            <!-- DUAL CARDS COMPARISON -->
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6">
+                    <div class="ai-method-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="ai-icon-box bg-info-subtle text-info">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-2.5 py-1 fw-bold mb-1" style="font-size: 0.65rem;">REAL-TIME · T</span>
+                                <h5 class="fw-bold text-dark m-0" style="font-size: 1.1rem;">Fuzzy / Rule-Based</h5>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ai-section-label">FUNGSI</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Memeriksa nilai sensor saat ini (pH, suhu, TDS, kekeruhan) terhadap ambang batas baku budidaya.
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ai-section-label">CARA KERJA</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Mengevaluasi kondisi detik ini ke dalam kategori Baik, Sedang, atau Buruk.
+                            </p>
+                        </div>
+
+                        <div>
+                            <div class="ai-section-label">KEUNGGULAN</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Sangat cepat, transparan, dan pasti — kondisi kritis langsung terdeteksi tanpa ragu.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="ai-method-card">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="ai-icon-box bg-primary-subtle text-primary">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fw-bold mb-1" style="font-size: 0.65rem;">PREDIKSI · T+1</span>
+                                <h5 class="fw-bold text-dark m-0" style="font-size: 1.1rem;">Machine Learning</h5>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ai-section-label">FUNGSI</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Memprediksi nilai parameter sensor satu langkah ke depan (t+1) berdasarkan model regresi.
+                            </p>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="ai-section-label">CARA KERJA</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Menganalisis tren data untuk memperkirakan pergerakan kualitas air di masa mendatang.
+                            </p>
+                        </div>
+
+                        <div>
+                            <div class="ai-section-label">KEUNGGULAN</div>
+                            <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
+                                Memberikan peringatan dini (proaktif) sebelum masalah benar-benar terjadi di tambak.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REASON CARD -->
+            <div class="ai-reason-card">
+                <h6 class="fw-bold text-dark mb-3" style="font-size: 0.95rem;">Alasan keduanya digabungkan</h6>
+                
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <span class="num-badge-circle">1</span>
+                    <div>
+                        <strong class="text-dark d-block mb-0.5" style="font-size: 0.9rem;">Responsif sekaligus proaktif</strong>
+                        <p class="text-secondary mb-0" style="font-size: 0.83rem; line-height: 1.5;">
+                            Fuzzy menangani kondisi saat ini agar penanganan darurat tidak terlambat, sedangkan ML mengantisipasi kondisi masa depan agar pencegahan bisa lebih awal.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-start gap-3">
+                    <span class="num-badge-circle">2</span>
+                    <div>
+                        <strong class="text-dark d-block mb-0.5" style="font-size: 0.9rem;">Pengambilan keputusan lebih aman (Safety First)</strong>
+                        <p class="text-secondary mb-0" style="font-size: 0.83rem; line-height: 1.5;">
+                            Penggabungan (Fusion Rule) memastikan mitigasi darurat tetap diprioritaskan jika kondisi real-time sudah memburuk, terlepas dari hasil prediksi.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     `;
-
-    return html;
 }
+
+// Handler Switch Tab Sederhana + Animasi
+function switchAiTab(tabName) {
+    const btnRekomendasi = document.getElementById('btn-tab-rekomendasi');
+    const btnCaraKerja = document.getElementById('btn-tab-carakerja');
+    const paneRekomendasi = document.getElementById('pane-rekomendasi');
+    const paneCaraKerja = document.getElementById('pane-carakerja');
+
+    // Reset animasi agar bisa di-trigger ulang
+    paneRekomendasi.classList.remove('animate-tab-pane');
+    paneCaraKerja.classList.remove('animate-tab-pane');
+
+    // Trik kecil memicu reflow agar animasi direstart dengan mulus
+    void paneRekomendasi.offsetWidth;
+    void paneCaraKerja.offsetWidth;
+
+    if (tabName === 'rekomendasi') {
+        btnRekomendasi.classList.add('active');
+        btnCaraKerja.classList.remove('active');
+        paneRekomendasi.style.display = 'block';
+        paneCaraKerja.style.display = 'none';
+        paneRekomendasi.classList.add('animate-tab-pane');
+    } else {
+        btnCaraKerja.classList.add('active');
+        btnRekomendasi.classList.remove('active');
+        paneCaraKerja.style.display = 'block';
+        paneRekomendasi.style.display = 'none';
+        paneCaraKerja.classList.add('animate-tab-pane');
+    }
+}
+
 
 function triggerAiRecommendation() {
     const btn = document.getElementById('btnAiAction');
@@ -1916,38 +2165,39 @@ function switchMobileChart(chartId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initCharts();
-    startLiveWeatherClock();
+            initCharts();
+            startLiveWeatherClock();
 
-    const timeEl = document.getElementById('last-updated-time');
-    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+            const timeEl = document.getElementById('last-updated-time');
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
 
-    setInterval(fetchRealtimeData, 5000);
+            setInterval(fetchRealtimeData, 5000);
 
-    const scrollContainer = document.querySelector('.hourly-scroll-container');
-    if (scrollContainer) {
-        let autoScrollTimer;
+            const scrollContainer = document.querySelector('.hourly-scroll-container');
+            if (scrollContainer) {
+                let autoScrollTimer;
 
-        function startAutoScroll() {
-            autoScrollTimer = setInterval(() => {
-                const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-                if (scrollContainer.scrollLeft >= maxScroll - 5) {
-                    scrollContainer.scrollTo({
-                        left: 0,
-                        behavior: 'smooth'
-                    });
-                } else {
-                    scrollContainer.scrollBy({
-                        left: 70,
-                        behavior: 'smooth'
-                    });
+                function startAutoScroll() {
+                    autoScrollTimer = setInterval(() => {
+                        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                        if (scrollContainer.scrollLeft >= maxScroll - 5) {
+                            scrollContainer.scrollTo({
+                                left: 0,
+                                behavior: 'smooth'
+                            });
+                        } else {
+                            scrollContainer.scrollBy({
+                                left: 70,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 2500);
                 }
-            }, 2500);
+                startAutoScroll();
+                scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
+                scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
+            }
         }
-        startAutoScroll();
-        scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
-        scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
-    }
-});
+        gi
 </script>
 @endpush
