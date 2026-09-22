@@ -7,7 +7,7 @@
 ======================================================= */
 :root {
     --ai-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
-}   
+}
 
 body {
     background-color: #e6f0ed !important;
@@ -513,7 +513,7 @@ body:hover,
 }
 
 /* =======================================================
-   DARK MODE OVERRIDES (Sesuai Foto 1 - Slate Theme)
+   DARK MODE OVERRIDES (Slate Theme)
 ======================================================= */
 body.dark-mode {
     background-color: #0B1120 !important;
@@ -522,17 +522,17 @@ body.dark-mode {
 
 /* System Status Container (Pill Pojok Kanan Atas) */
 body.dark-mode #system-status-container {
-    background-color: rgba(15, 23, 42, 0.8) !important; 
+    background-color: rgba(15, 23, 42, 0.8) !important;
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 body.dark-mode #system-status-text {
-    color: #F8FAFC !important; /* Teks 'System Online' menjadi putih */
+    color: #F8FAFC !important;
 }
 
 body.dark-mode #system-status-container .text-muted {
-    color: #94A3B8 !important; /* Teks 'Last updated' dan jam menjadi abu-abu elegan */
+    color: #94A3B8 !important;
 }
 
 /* Background Kartu dan Kontainer Utama (General) */
@@ -548,40 +548,39 @@ body.dark-mode .ai-reason-card {
 }
 
 /* =======================================================
-   ATRAKTIF & BERWARNA UNTUK TOP CARDS (Dark Mode)
+   TOP CARDS (Dark Mode)
 ======================================================= */
-/* 1. Kualitas Air Card - Deep Ocean Gradient */
+/* 1. Kualitas Air Card */
 body.dark-mode #card-quality {
     background: linear-gradient(145deg, #111827 0%, #083344 100%) !important;
     border: 1px solid rgba(6, 182, 212, 0.3) !important;
     box-shadow: 0 8px 20px rgba(6, 182, 212, 0.1) !important;
 }
 
-/* Box kecil (pH, Suhu, dll) di dalam Kualitas Air */
 body.dark-mode #card-quality .bg-white {
-    background: rgba(15, 23, 42, 0.6) !important; 
+    background: rgba(15, 23, 42, 0.6) !important;
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-/* 2. Weather Card - Night Sky Gradient */
+/* 2. Weather Card */
 body.dark-mode .card-weather-target {
     background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
     border: 1px solid rgba(59, 130, 246, 0.3) !important;
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15) !important;
 }
 
-/* Pill jam cuaca menjadi transparan elegan */
 body.dark-mode .card-weather-target .hourly-pill {
     background: rgba(255, 255, 255, 0.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.05);
     color: #F8FAFC !important;
 }
+
 body.dark-mode .card-weather-target .hourly-pill:hover {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* 3. Sensor Cards (pH, Suhu, TDS, Kekeruhan) - Glow & Accent Border */
+/* 3. Sensor Cards */
 body.dark-mode #card-ph {
     background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, #111827 50%) !important;
     border-left: 4px solid #3B82F6 !important;
@@ -602,19 +601,31 @@ body.dark-mode #card-kekeruhan {
     border-left: 4px solid #8B5CF6 !important;
 }
 
-/* Icon background di mode gelap (agar lebih menyala) */
-body.dark-mode .icon-bg-blue { background-color: rgba(59, 130, 246, 0.2) !important; color: #60A5FA !important; }
-body.dark-mode .icon-bg-green { background-color: rgba(16, 185, 129, 0.2) !important; color: #34D399 !important; }
-body.dark-mode .icon-bg-cyan { background-color: rgba(6, 182, 212, 0.2) !important; color: #22D3EE !important; }
-body.dark-mode .icon-bg-purple { background-color: rgba(139, 92, 246, 0.2) !important; color: #A78BFA !important; }
+body.dark-mode .icon-bg-blue {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    color: #60A5FA !important;
+}
 
-/* System Status Container (Pojok Kanan Atas) */
+body.dark-mode .icon-bg-green {
+    background-color: rgba(16, 185, 129, 0.2) !important;
+    color: #34D399 !important;
+}
+
+body.dark-mode .icon-bg-cyan {
+    background-color: rgba(6, 182, 212, 0.2) !important;
+    color: #22D3EE !important;
+}
+
+body.dark-mode .icon-bg-purple {
+    background-color: rgba(139, 92, 246, 0.2) !important;
+    color: #A78BFA !important;
+}
+
 body.dark-mode #system-status-container {
     background-color: #111827 !important;
     border: 1px solid #1F2937 !important;
 }
 
-/* Penyesuaian Warna Teks Utama */
 body.dark-mode .text-dark,
 body.dark-mode h2,
 body.dark-mode h4,
@@ -625,7 +636,6 @@ body.dark-mode #quality-value {
     color: #F8FAFC !important;
 }
 
-/* Penyesuaian Warna Teks Sekunder (Muted) */
 body.dark-mode .text-muted,
 body.dark-mode .text-secondary,
 body.dark-mode .stat-header-label,
@@ -634,7 +644,6 @@ body.dark-mode .card-weather-target .text-secondary {
     color: #94A3B8 !important;
 }
 
-/* Override spesifik untuk teks di dalam Weather Card & Quality Card agar terbaca */
 body.dark-mode .card-weather-target div,
 body.dark-mode .card-weather-target span,
 body.dark-mode .card-weather-target i,
@@ -654,7 +663,6 @@ body.dark-mode .card-weather-target #weather-time {
     color: #F87171 !important;
 }
 
-/* Panel AI Notice dan Intro Box */
 body.dark-mode .ai-box-notice,
 body.dark-mode .ai-intro-box {
     background: #0B1120 !important;
@@ -662,7 +670,6 @@ body.dark-mode .ai-intro-box {
     color: #F8FAFC !important;
 }
 
-/* Kartu Rekomendasi (List) */
 body.dark-mode .rec-card {
     background: #111827 !important;
     border-color: #1F2937 !important;
@@ -672,38 +679,37 @@ body.dark-mode .rec-card h6 {
     color: #F8FAFC !important;
 }
 
-/* Warna Tab Switcher Aktif di Mode Gelap */
 body.dark-mode .custom-tab-btn {
     color: #94A3B8;
 }
+
 body.dark-mode .custom-tab-btn.active {
     background: #3B82F6 !important;
     color: #FFFFFF !important;
 }
 
-/* Tombol Filter Chart Data (Today, 7 Days, 30 Days) */
 body.dark-mode .btn-chart-filter {
     background-color: #111827;
     color: #94A3B8;
     border: 1px solid #1F2937;
 }
+
 body.dark-mode .btn-chart-filter.active {
     background-color: #3B82F6;
     color: #FFFFFF;
     border-color: #3B82F6;
 }
 
-/* Garis pembatas (Divider) di weather card */
 body.dark-mode .weather-divider {
     border-top-color: #1F2937 !important;
     border-bottom-color: #1F2937 !important;
 }
+
 body.dark-mode .weather-border-x {
     border-left-color: #1F2937 !important;
     border-right-color: #1F2937 !important;
 }
 
-/* Penyesuaian Shadow Tombol AI */
 body.dark-mode #btnAiAction {
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
@@ -762,7 +768,6 @@ body.dark-mode .btn-chart-tab.active {
     }
 }
 
-/* HEADER CARD STATUS DIAGNOSIS & LAIN-LAIN */
 .status-summary-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -887,6 +892,7 @@ body.dark-mode .btn-chart-tab.active {
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1437,7 +1443,12 @@ function updateChartStats(key, arrData, unit = '') {
     }
 
     const validNums = arrData.filter(v => v !== null && !isNaN(v));
-    if (!validNums.length) return;
+    if (!validNums.length) {
+        if (minEl) minEl.textContent = '--';
+        if (maxEl) maxEl.textContent = '--';
+        if (avgEl) avgEl.textContent = '--';
+        return;
+    }
 
     const min = Math.min(...validNums).toFixed(1);
     const max = Math.max(...validNums).toFixed(1);
@@ -1750,13 +1761,17 @@ function initCharts() {
     initScoreGauge();
     charts.ph = createLineChart('phChart', 'pH', [], [], '#2563eb', 'rgba(37, 99, 235, 0.1)', 7.5, '#bfdbfe');
     charts.suhu = createLineChart('suhuChart', 'Suhu (°C)', [], [], '#10b981', 'rgba(16, 185, 129, 0.1)', 30,
-        '#bbf7d0');
+    '#bbf7d0');
     charts.tds = createLineChart('tdsChart', 'TDS (ppm)', [], [], '#06b6d4', 'rgba(6, 182, 212, 0.1)', 500, '#fca5a5');
     charts.kekeruhan = createLineChart('kekeruhanChart', 'Kekeruhan (NTU)', [], [], '#8b5cf6',
         'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
 
     filterChartTime(activeTimeRange);
-    //if (sensorData.length > 0) updateSensorBadgesAndValues(sensorData[0]);
+
+    // PERBAIKAN: Jalankan pembacaan data awal jika sensorData tersedia
+    if (sensorData.length > 0) {
+        updateSensorBadgesAndValues(sensorData[0]);
+    }
 }
 
 function processSensorDataByRange(rawData, range) {
@@ -1911,9 +1926,10 @@ function fetchRealtimeData() {
         .then(res => {
             const latest = res.data;
             if (latest && latest.ph !== undefined) {
+                // PERBAIKAN: Pemeriksaan aman untuk sensorData[0] agar tidak memicu TypeError
                 const isNew = sensorData.length === 0 ||
-                    (latest.id && latest.id !== sensorData[0].id) ||
-                    (latest.created_at !== sensorData[0].created_at);
+                    (latest.id && sensorData[0] && latest.id !== sensorData[0].id) ||
+                    (latest.created_at && sensorData[0] && latest.created_at !== sensorData[0].created_at);
 
                 if (isNew) {
                     sensorData.unshift(latest);
@@ -1925,7 +1941,9 @@ function fetchRealtimeData() {
                 }
             }
             const updatedEl = document.getElementById('last-updated-time');
-            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', {
+                hour12: false
+            });
 
             const dotEl = document.getElementById('system-status-dot');
             if (dotEl) dotEl.className = 'badge bg-success rounded-circle p-1 me-2';
@@ -1935,7 +1953,9 @@ function fetchRealtimeData() {
         })
         .catch(() => {
             const updatedEl = document.getElementById('last-updated-time');
-            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', {
+                hour12: false
+            });
 
             const dotEl = document.getElementById('system-status-dot');
             if (dotEl) dotEl.className = 'badge bg-warning rounded-circle p-1 me-2';
@@ -2023,7 +2043,7 @@ function generateRecommendationCardsHtml(data) {
             const isDanger = item.level === 'danger';
             const isWarning = item.level === 'warning';
             const stripClass = isDanger ? 'rec-card-danger' : (isWarning ? 'rec-card-warning' :
-                'rec-card-info');
+            'rec-card-info');
             const badgeBg = isDanger ? 'background-color: #fee2e2; color: #b91c1c;' : (isWarning ?
                 'background-color: #ffedd5; color: #c2410c;' : 'background-color: #e0f2fe; color: #0369a1;');
             const iconBg = isDanger ? 'background: #fee2e2; color: #ef4444;' : (isWarning ?
@@ -2108,7 +2128,7 @@ function generateRecommendationCardsHtml(data) {
                                 <i class="fas fa-bolt"></i>
                             </div>
                             <div>
-                                <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-2.5 py-1 fw-bold mb-1" style="font-size: 0.65rem;">REAL-TIME · T</span>
+                                <span class="badge bg-info-subtle text-info-emphasis rounded-pill px-3 py-1 fw-bold mb-1" style="font-size: 0.65rem;">REAL-TIME · T</span>
                                 <h5 class="fw-bold text-dark m-0" style="font-size: 1.1rem;">Fuzzy / Rule-Based</h5>
                             </div>
                         </div>
@@ -2143,7 +2163,7 @@ function generateRecommendationCardsHtml(data) {
                                 <i class="fas fa-chart-line"></i>
                             </div>
                             <div>
-                                <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fw-bold mb-1" style="font-size: 0.65rem;">PREDIKSI · T+1</span>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 fw-bold mb-1" style="font-size: 0.65rem;">PREDIKSI · T+1</span>
                                 <h5 class="fw-bold text-dark m-0" style="font-size: 1.1rem;">Machine Learning</h5>
                             </div>
                         </div>
@@ -2179,7 +2199,7 @@ function generateRecommendationCardsHtml(data) {
                 <div class="d-flex align-items-start gap-3 mb-3">
                     <span class="num-badge-circle">1</span>
                     <div>
-                        <strong class="text-dark d-block mb-0.5" style="font-size: 0.9rem;">Responsif sekaligus proaktif</strong>
+                        <strong class="text-dark d-block mb-1" style="font-size: 0.9rem;">Responsif sekaligus proaktif</strong>
                         <p class="text-secondary mb-0" style="font-size: 0.83rem; line-height: 1.5;">
                             Fuzzy menangani kondisi saat ini agar penanganan darurat tidak terlambat, sedangkan ML mengantisipasi kondisi masa depan agar pencegahan bisa lebih awal.
                         </p>
@@ -2189,7 +2209,7 @@ function generateRecommendationCardsHtml(data) {
                 <div class="d-flex align-items-start gap-3">
                     <span class="num-badge-circle">2</span>
                     <div>
-                        <strong class="text-dark d-block mb-0.5" style="font-size: 0.9rem;">Pengambilan keputusan lebih aman (Safety First)</strong>
+                        <strong class="text-dark d-block mb-1" style="font-size: 0.9rem;">Pengambilan keputusan lebih aman (Safety First)</strong>
                         <p class="text-secondary mb-0" style="font-size: 0.83rem; line-height: 1.5;">
                             Penggabungan (Fusion Rule) memastikan mitigasi darurat tetap diprioritaskan jika kondisi real-time sudah memburuk, terlepas dari hasil prediksi.
                         </p>
@@ -2200,36 +2220,34 @@ function generateRecommendationCardsHtml(data) {
     `;
 }
 
-// Handler Switch Tab Sederhana + Animasi
 function switchAiTab(tabName) {
     const btnRekomendasi = document.getElementById('btn-tab-rekomendasi');
     const btnCaraKerja = document.getElementById('btn-tab-carakerja');
     const paneRekomendasi = document.getElementById('pane-rekomendasi');
     const paneCaraKerja = document.getElementById('pane-carakerja');
 
-    // Reset animasi agar bisa di-trigger ulang
+    if (!paneRekomendasi || !paneCaraKerja) return;
+
     paneRekomendasi.classList.remove('animate-tab-pane');
     paneCaraKerja.classList.remove('animate-tab-pane');
 
-    // Trik kecil memicu reflow agar animasi direstart dengan mulus
     void paneRekomendasi.offsetWidth;
     void paneCaraKerja.offsetWidth;
 
     if (tabName === 'rekomendasi') {
-        btnRekomendasi.classList.add('active');
-        btnCaraKerja.classList.remove('active');
+        if (btnRekomendasi) btnRekomendasi.classList.add('active');
+        if (btnCaraKerja) btnCaraKerja.classList.remove('active');
         paneRekomendasi.style.display = 'block';
         paneCaraKerja.style.display = 'none';
         paneRekomendasi.classList.add('animate-tab-pane');
     } else {
-        btnCaraKerja.classList.add('active');
-        btnRekomendasi.classList.remove('active');
+        if (btnCaraKerja) btnCaraKerja.classList.add('active');
+        if (btnRekomendasi) btnRekomendasi.classList.remove('active');
         paneCaraKerja.style.display = 'block';
         paneRekomendasi.style.display = 'none';
         paneCaraKerja.classList.add('animate-tab-pane');
     }
 }
-
 
 function triggerAiRecommendation() {
     const btn = document.getElementById('btnAiAction');
@@ -2289,7 +2307,11 @@ function triggerAiRecommendation() {
                 finishAiAnalysis(data);
             })
             .catch(() => {
-                finishAiAnalysis({});
+                // PERBAIKAN: Berikan indikasi error jika API AI gagal diakses
+                finishAiAnalysis({
+                    status: 'error',
+                    message: 'Gagal terhubung ke modul AI. Pastikan server terhubung dengan baik.'
+                });
             });
     }
 
@@ -2329,38 +2351,41 @@ function switchMobileChart(chartId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-            initCharts();
-            startLiveWeatherClock();
+    initCharts();
+    startLiveWeatherClock();
 
-            const timeEl = document.getElementById('last-updated-time');
-            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
+    const timeEl = document.getElementById('last-updated-time');
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('id-ID', {
+        hour12: false
+    });
 
-            //setInterval(fetchRealtimeData, 5000);
+    // PERBAIKAN: Mengaktifkan polling real-time setiap 5 detik
+    setInterval(fetchRealtimeData, 5000);
 
-            const scrollContainer = document.querySelector('.hourly-scroll-container');
-            if (scrollContainer) {
-                let autoScrollTimer;
+    const scrollContainer = document.querySelector('.hourly-scroll-container');
+    if (scrollContainer) {
+        let autoScrollTimer;
 
-                function startAutoScroll() {
-                    autoScrollTimer = setInterval(() => {
-                        const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-                        if (scrollContainer.scrollLeft >= maxScroll - 5) {
-                            scrollContainer.scrollTo({
-                                left: 0,
-                                behavior: 'smooth'
-                            });
-                        } else {
-                            scrollContainer.scrollBy({
-                                left: 70,
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 2500);
+        function startAutoScroll() {
+            autoScrollTimer = setInterval(() => {
+                const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                if (scrollContainer.scrollLeft >= maxScroll - 5) {
+                    scrollContainer.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    scrollContainer.scrollBy({
+                        left: 70,
+                        behavior: 'smooth'
+                    });
                 }
-                startAutoScroll();
-                scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
-                scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
-            }
-        });
-    </script>
+            }, 2500);
+        }
+        startAutoScroll();
+        scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
+        scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
+    }
+});
+</script>
 @endpush
