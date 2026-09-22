@@ -144,20 +144,20 @@
     }
 
     /* ================= DYNAMIC DARK MODE OVERRIDES ================= */
-    /* Warna Background disesuaikan menggunakan palet: Background Utama #071929, Navbar #0C2338 */
+    /* Warna Background disesuaikan menggunakan palet Slate: Background Utama #0B1120, Navbar #111827 */
     body.dark-mode {
-        background-color: #071929 !important;
-        color: #E8F4FA !important;
+        background-color: #0B1120 !important;
+        color: #F8FAFC !important;
     }
 
     body.dark-mode .navbar.d-none.d-md-flex {
-        background-color: #0C2338 !important;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        background-color: #111827 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     body.dark-mode .navbar.fixed-bottom {
-        background-color: #0C2338 !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background-color: #111827 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
     
     /* Perbaikan link mobile agar rapih */

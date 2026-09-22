@@ -7,7 +7,7 @@
 ======================================================= */
 :root {
     --ai-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
-}
+}   
 
 body {
     background-color: #e6f0ed !important;
@@ -512,39 +512,200 @@ body:hover,
     min-width: 50px;
 }
 
+/* =======================================================
+   DARK MODE OVERRIDES (Sesuai Foto 1 - Slate Theme)
+======================================================= */
 body.dark-mode {
-    background-color: #0b1329 !important;
-    color: #f1f5f9 !important;
+    background-color: #0B1120 !important;
+    color: #F8FAFC !important;
 }
 
-body.dark-mode .card-custom {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+/* System Status Container (Pill Pojok Kanan Atas) */
+body.dark-mode #system-status-container {
+    background-color: rgba(15, 23, 42, 0.8) !important; 
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
+body.dark-mode #system-status-text {
+    color: #F8FAFC !important; /* Teks 'System Online' menjadi putih */
+}
+
+body.dark-mode #system-status-container .text-muted {
+    color: #94A3B8 !important; /* Teks 'Last updated' dan jam menjadi abu-abu elegan */
+}
+
+/* Background Kartu dan Kontainer Utama (General) */
+body.dark-mode .card-custom,
+body.dark-mode .status-summary-card,
+body.dark-mode .info-pill-card,
+body.dark-mode .custom-tab-wrapper,
+body.dark-mode .ai-method-card,
+body.dark-mode .ai-reason-card {
+    background-color: #111827 !important;
+    border: 1px solid #1F2937 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* =======================================================
+   ATRAKTIF & BERWARNA UNTUK TOP CARDS (Dark Mode)
+======================================================= */
+/* 1. Kualitas Air Card - Deep Ocean Gradient */
+body.dark-mode #card-quality {
+    background: linear-gradient(145deg, #111827 0%, #083344 100%) !important;
+    border: 1px solid rgba(6, 182, 212, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.1) !important;
+}
+
+/* Box kecil (pH, Suhu, dll) di dalam Kualitas Air */
+body.dark-mode #card-quality .bg-white {
+    background: rgba(15, 23, 42, 0.6) !important; 
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 2. Weather Card - Night Sky Gradient */
+body.dark-mode .card-weather-target {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Pill jam cuaca menjadi transparan elegan */
+body.dark-mode .card-weather-target .hourly-pill {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: #F8FAFC !important;
+}
+body.dark-mode .card-weather-target .hourly-pill:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 3. Sensor Cards (pH, Suhu, TDS, Kekeruhan) - Glow & Accent Border */
+body.dark-mode #card-ph {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, #111827 50%) !important;
+    border-left: 4px solid #3B82F6 !important;
+}
+
+body.dark-mode #card-suhu {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, #111827 50%) !important;
+    border-left: 4px solid #10B981 !important;
+}
+
+body.dark-mode #card-tds {
+    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1) 0%, #111827 50%) !important;
+    border-left: 4px solid #06B6D4 !important;
+}
+
+body.dark-mode #card-kekeruhan {
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, #111827 50%) !important;
+    border-left: 4px solid #8B5CF6 !important;
+}
+
+/* Icon background di mode gelap (agar lebih menyala) */
+body.dark-mode .icon-bg-blue { background-color: rgba(59, 130, 246, 0.2) !important; color: #60A5FA !important; }
+body.dark-mode .icon-bg-green { background-color: rgba(16, 185, 129, 0.2) !important; color: #34D399 !important; }
+body.dark-mode .icon-bg-cyan { background-color: rgba(6, 182, 212, 0.2) !important; color: #22D3EE !important; }
+body.dark-mode .icon-bg-purple { background-color: rgba(139, 92, 246, 0.2) !important; color: #A78BFA !important; }
+
+/* System Status Container (Pojok Kanan Atas) */
+body.dark-mode #system-status-container {
+    background-color: #111827 !important;
+    border: 1px solid #1F2937 !important;
+}
+
+/* Penyesuaian Warna Teks Utama */
 body.dark-mode .text-dark,
 body.dark-mode h2,
 body.dark-mode h4,
 body.dark-mode h5,
-body.dark-mode h6 {
-    color: #f8fafc !important;
+body.dark-mode h6,
+body.dark-mode .stat-header-val,
+body.dark-mode #quality-value {
+    color: #F8FAFC !important;
 }
 
+/* Penyesuaian Warna Teks Sekunder (Muted) */
 body.dark-mode .text-muted,
-body.dark-mode .text-secondary {
-    color: #94a3b8 !important;
+body.dark-mode .text-secondary,
+body.dark-mode .stat-header-label,
+body.dark-mode .ai-section-label,
+body.dark-mode .card-weather-target .text-secondary {
+    color: #94A3B8 !important;
 }
 
-body.dark-mode .ai-box-notice {
-    background: #0f172a !important;
-    border-color: #334155 !important;
-    color: #f8fafc !important;
+/* Override spesifik untuk teks di dalam Weather Card & Quality Card agar terbaca */
+body.dark-mode .card-weather-target div,
+body.dark-mode .card-weather-target span,
+body.dark-mode .card-weather-target i,
+body.dark-mode #card-quality span,
+body.dark-mode #card-quality strong,
+body.dark-mode #card-quality i {
+    color: #F8FAFC !important;
 }
 
+body.dark-mode .card-weather-target div[style*="color: #417280"],
+body.dark-mode .card-weather-target span[style*="color: #417280"],
+body.dark-mode #card-quality small {
+    color: #94A3B8 !important;
+}
+
+body.dark-mode .card-weather-target #weather-time {
+    color: #F87171 !important;
+}
+
+/* Panel AI Notice dan Intro Box */
+body.dark-mode .ai-box-notice,
+body.dark-mode .ai-intro-box {
+    background: #0B1120 !important;
+    border-color: #1F2937 !important;
+    color: #F8FAFC !important;
+}
+
+/* Kartu Rekomendasi (List) */
 body.dark-mode .rec-card {
-    background: #1e293b;
-    border-color: #334155;
+    background: #111827 !important;
+    border-color: #1F2937 !important;
+}
+
+body.dark-mode .rec-card h6 {
+    color: #F8FAFC !important;
+}
+
+/* Warna Tab Switcher Aktif di Mode Gelap */
+body.dark-mode .custom-tab-btn {
+    color: #94A3B8;
+}
+body.dark-mode .custom-tab-btn.active {
+    background: #3B82F6 !important;
+    color: #FFFFFF !important;
+}
+
+/* Tombol Filter Chart Data (Today, 7 Days, 30 Days) */
+body.dark-mode .btn-chart-filter {
+    background-color: #111827;
+    color: #94A3B8;
+    border: 1px solid #1F2937;
+}
+body.dark-mode .btn-chart-filter.active {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border-color: #3B82F6;
+}
+
+/* Garis pembatas (Divider) di weather card */
+body.dark-mode .weather-divider {
+    border-top-color: #1F2937 !important;
+    border-bottom-color: #1F2937 !important;
+}
+body.dark-mode .weather-border-x {
+    border-left-color: #1F2937 !important;
+    border-right-color: #1F2937 !important;
+}
+
+/* Penyesuaian Shadow Tombol AI */
+body.dark-mode #btnAiAction {
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .custom-chart-tabs {
@@ -572,6 +733,18 @@ body.dark-mode .rec-card {
     border-color: #7dd3fc;
 }
 
+body.dark-mode .btn-chart-tab {
+    background-color: #111827;
+    color: #94A3B8;
+    border: 1px solid #1F2937;
+}
+
+body.dark-mode .btn-chart-tab.active {
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border-color: #3B82F6;
+}
+
 .param-badge-pill {
     font-size: 0.72rem;
     padding: 4px 10px;
@@ -589,11 +762,7 @@ body.dark-mode .rec-card {
     }
 }
 
-/* =======================================================
-   EXACT DESIGN HYBRID AI (STATUS CARD, TABS, & INTRO BOX)
-======================================================= */
-
-/* 1. Header Card Status Diagnosis */
+/* HEADER CARD STATUS DIAGNOSIS & LAIN-LAIN */
 .status-summary-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -626,7 +795,6 @@ body.dark-mode .rec-card {
     gap: 8px;
 }
 
-/* 2. Custom Tab Switcher (Rekomendasi vs Cara Kerja AI) */
 .custom-tab-wrapper {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -656,7 +824,6 @@ body.dark-mode .rec-card {
     box-shadow: 0 4px 12px rgba(13, 137, 236, 0.25);
 }
 
-/* 3. Intro Box Cara Kerja AI */
 .ai-intro-box {
     background: #f0f7ff;
     border: 1px solid #dbeafe;
@@ -667,7 +834,6 @@ body.dark-mode .rec-card {
     line-height: 1.6;
 }
 
-/* 4. AI Method Cards Comparison */
 .ai-method-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -716,13 +882,11 @@ body.dark-mode .rec-card {
     flex-shrink: 0;
 }
 
-/* TAB ANIMATION */
 @keyframes fadeSlideIn {
     from {
         opacity: 0;
         transform: translateY(10px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1592,7 +1756,7 @@ function initCharts() {
         'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
 
     filterChartTime(activeTimeRange);
-    if (sensorData.length > 0) updateSensorBadgesAndValues(sensorData[0]);
+    //if (sensorData.length > 0) updateSensorBadgesAndValues(sensorData[0]);
 }
 
 function processSensorDataByRange(rawData, range) {
@@ -1761,7 +1925,7 @@ function fetchRealtimeData() {
                 }
             }
             const updatedEl = document.getElementById('last-updated-time');
-            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
 
             const dotEl = document.getElementById('system-status-dot');
             if (dotEl) dotEl.className = 'badge bg-success rounded-circle p-1 me-2';
@@ -1771,7 +1935,7 @@ function fetchRealtimeData() {
         })
         .catch(() => {
             const updatedEl = document.getElementById('last-updated-time');
-            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString();
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
 
             const dotEl = document.getElementById('system-status-dot');
             if (dotEl) dotEl.className = 'badge bg-warning rounded-circle p-1 me-2';
@@ -2169,9 +2333,9 @@ document.addEventListener('DOMContentLoaded', () => {
             startLiveWeatherClock();
 
             const timeEl = document.getElementById('last-updated-time');
-            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString();
+            if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('id-ID', { hour12: false });
 
-            setInterval(fetchRealtimeData, 5000);
+            //setInterval(fetchRealtimeData, 5000);
 
             const scrollContainer = document.querySelector('.hourly-scroll-container');
             if (scrollContainer) {
@@ -2197,7 +2361,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
                 scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
             }
-        }
-        gi
-</script>
+        });
+    </script>
 @endpush
