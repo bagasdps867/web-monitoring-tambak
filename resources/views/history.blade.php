@@ -252,6 +252,50 @@ html.dark .summary-icon svg rect[fill="#F8FAFC"],
 }
 .btn-filter-apply:hover { background-color: #125296; }
 
+/*TOMBOL BERSIHKAN (MODERN)*/
+.btn-filter-clear {
+    background: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%); /* Gradasi Rose/Merah */
+    color: #FFFFFF !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(225, 29, 72, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px; /* Jarak antara ikon dan teks */
+}
+
+.btn-filter-clear:hover { 
+    background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+    box-shadow: 0 6px 14px rgba(225, 29, 72, 0.35);
+    transform: translateY(-2px); /* Efek tombol naik saat di-hover */
+}
+
+.btn-filter-clear:active {
+    transform: translateY(1px); /* Efek ditekan */
+    box-shadow: 0 2px 5px rgba(225, 29, 72, 0.2);
+}
+
+/* Penyesuaian tombol bersihkan untuk Dark Mode */
+html.dark .btn-filter-clear, 
+[data-bs-theme="dark"] .btn-filter-clear, 
+body.dark .btn-filter-clear {
+    background: linear-gradient(135deg, #9F1239 0%, #881337 100%);
+    box-shadow: 0 4px 10px rgba(136, 19, 55, 0.3);
+    color: #FECDD3 !important;
+}
+
+html.dark .btn-filter-clear:hover, 
+[data-bs-theme="dark"] .btn-filter-clear:hover, 
+body.dark .btn-filter-clear:hover {
+    background: linear-gradient(135deg, #881337 0%, #4C0519 100%);
+    color: #FFFFFF !important;
+}
+
 /* ================= TABEL DATA MONITORING ================= */
 .card-table {
     background-color: var(--bg-card) !important;
@@ -500,9 +544,12 @@ html.dark .summary-icon svg rect[fill="#F8FAFC"],
                         <option value="critical">Critical / Buruk</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <button class="btn-filter-apply shadow-sm" onclick="loadHistoryData()">
-                        Terapkan Filter
+                <div class="col-md-3 d-flex gap-2">
+                    <button class="btn-filter-apply shadow-sm w-100" onclick="loadHistoryData()">
+                        Terapkan
+                    </button>
+                    <button class="btn-filter-clear shadow-sm w-100" onclick="clearFilter()">
+                        Bersihkan
                     </button>
                 </div>
             </div>
@@ -638,11 +685,28 @@ function loadHistoryData() {
             
             // 1. Filter Data Client-Side
             rawList = rawList.filter(item => {
-                let itemDate = (item.created_at || item.updated_at || "").substring(0, 10);
+                let rawDate = item.created_at || item.updated_at || "";
+                // Konversi ke format yang aman (mengganti spasi dengan T untuk kompatibilitas browser)
+                let itemDateObj = new Date(rawDate.replace(' ', 'T')); 
                 let evalRes = evaluateWaterQuality(item);
                 
-                let passStartDate = startDate ? (itemDate >= startDate) : true;
-                let passEndDate = endDate ? (itemDate <= endDate) : true;
+                let passStartDate = true;
+                let passEndDate = true;
+                
+                // Pastikan tanggal valid sebelum membandingkan
+                if (!isNaN(itemDateObj.getTime())) {
+                    if (startDate) {
+                        let startObj = new Date(startDate);
+                        startObj.setHours(0, 0, 0, 0); // Mulai dari 00:00:00
+                        passStartDate = itemDateObj >= startObj;
+                    }
+                    if (endDate) {
+                        let endObj = new Date(endDate);
+                        endObj.setHours(23, 59, 59, 999); // Sampai 23:59:59
+                        passEndDate = itemDateObj <= endObj;
+                    }
+                }
+                
                 let passStatus = (status === 'all' || !status) ? true : (evalRes.category === status);
                 
                 return passStartDate && passEndDate && passStatus;
@@ -861,5 +925,18 @@ $(document).ready(function() {
         }
     }, 20000);
 });
+
+function clearFilter() {
+    // Mengosongkan nilai input tanggal
+    $("#start_date").val("");
+    $("#end_date").val("");
+    
+    // Mengembalikan dropdown ke pilihan default
+    $("#status_filter").val("all");
+    $("#sort_order").val("latest");
+    
+    // Memuat ulang tabel dengan data tanpa filter
+    loadHistoryData();
+}
 </script>
 @endsection
