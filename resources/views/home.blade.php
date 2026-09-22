@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <style>
     :root {
@@ -20,6 +21,8 @@
         --footer-grad: linear-gradient(90deg, #177ba5 0%, #1a839e 40%, #159599 100%);
         --stat-num: #0284c7;
         --card-num: #c2dfe4;
+        --slide2-grad-1: rgba(16, 85, 122, 0.92);
+        --slide2-grad-2: rgba(30, 161, 145, 0.88)
     }
 
     body.dark-mode {
@@ -34,6 +37,8 @@
         --footer-grad: linear-gradient(90deg, #1A6DC4 0%, #2CC4B5 100%);
         --stat-num: #3AA8E8;
         --card-num: rgba(255, 255, 255, 0.05);
+        --slide2-grad-1: rgba(7, 25, 41, 0.95);
+        --slide2-grad-2: rgba(14, 52, 75, 0.90);
     }
 
     body {
@@ -63,18 +68,107 @@
         z-index: 2;
     }
 
-    .hero {
-        min-height: 85vh;
-        background: linear-gradient(rgba(8, 20, 34, 0.72), rgba(8, 20, 34, 0.78)), 
-                    url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+/* --- CSS SLIDER HEADER BARU --- */
+    .hero-slider {
+        width: 100%;
+        height: 85vh; /* Menjaga tinggi header tetap pas di layar */
+        position: relative;
+        background-color: #081422;
+    }
+    
+    .swiper-wrapper {
+        height: 100%;
+    }
+    
+    .hero-slide {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        text-align: center;
+        justify-content: center;
         padding: 70px 24px 80px;
         color: #ffffff;
+        box-sizing: border-box;
+        height: 100%;
+        will-change: opacity;
+        backface-visibility: hidden;
     }
+    
+    /* Slide 1 - Pengaturan arah konten */
+    .slide-1 {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Slide 2 - Grid untuk foto dan card */
+    .hero-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 60px;
+        max-width: 1140px;
+        margin: 0 auto;
+        width: 100%;
+        align-items: center;
+    }
+
+    .hero-left {
+        text-align: left;
+    }
+
+    .hero-left .hero-title {
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 20px 25px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        transform: translateZ(0);
+    }
+
+    .glass-card h3 {
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+        color: #ffffff;
+    }
+
+    .glass-card h3 span {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        color: #a5f3fc;
+        text-transform: uppercase;
+    }
+
+    .glass-card p {
+        margin: 0;
+        font-size: 14px;
+        color: #e2e8f0;
+    }
+
+    /* Kustomisasi Navigasi Swiper */
+    .swiper-button-next, .swiper-button-prev {
+        color: rgba(255, 255, 255, 0.5) !important;
+        transition: 0.3s;
+    }
+    .swiper-button-next:hover, .swiper-button-prev:hover {
+        color: #ffffff !important;
+    }
+    .swiper-pagination-bullet {
+        background: #ffffff !important;
+    }
+
+    @media (max-width: 900px) {
+        .hero-grid { grid-template-columns: 1fr; gap: 30px; }
+        .hero-left, .hero-left .hero-title { text-align: center; }
+    }
+
+    /* --- Akhir CSS Slider --- */
 
     .hero-tag {
         color: var(--badge-blue);
@@ -501,7 +595,7 @@
         .map-wrapper { height: 280px; }
     }
 
-    /* CSS FOOTER BARU */
+    /* CSS FOOTER BARU (3 KOLOM SEIMBANG) */
     footer {
         background: var(--footer-grad);
         color: #ffffff;
@@ -515,7 +609,7 @@
 
     .footer-grid {
         display: grid;
-        grid-template-columns: 1.6fr 1fr 1fr 1fr;
+        grid-template-columns: 1.8fr 1fr 1fr;
         gap: 40px;
         margin-bottom: 45px;
         align-items: start;
@@ -534,7 +628,7 @@
         line-height: 1.6;
         color: rgba(255, 255, 255, 0.85);
         margin-bottom: 18px;
-        max-width: 290px;
+        max-width: 320px;
     }
 
     .footer-brand-col .quote-text {
@@ -566,11 +660,13 @@
         color: rgba(255, 255, 255, 0.9);
         text-decoration: none;
         font-size: 13.5px;
-        transition: color 0.2s;
+        transition: color 0.2s, transform 0.2s;
+        display: inline-block;
     }
 
     .footer-col a:hover {
         color: #ffffff;
+        transform: translateX(3px);
     }
 
     .footer-divider {
@@ -589,8 +685,8 @@
         .grid-split, .gallery-grid, .location-grid { grid-template-columns: 1fr; }
         .feature-grid, .stats-grid { grid-template-columns: 1fr; }
         .footer-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 35px;
+            grid-template-columns: 1fr;
+            gap: 30px;
         }
     }
 
@@ -718,19 +814,62 @@
     }
     .btn-sop-line:hover { background: rgba(42, 157, 143, 0.08); color: #2a9d8f; transform: translateY(-2px); }
     body.dark-mode .btn-sop-line:hover { background: rgba(44, 196, 181, 0.15); }
+
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
 @endpush
 
 @section('content')
 
-<header class="hero">
-    <span class="hero-tag" data-aos="fade-down" data-aos-duration="500">TENTANG TAMBAK KAMI</span>
-    <h1 class="hero-title" data-aos="zoom-in" data-aos-duration="600" data-aos-delay="50">Tambak Tradisional Kami</h1>
-    <p class="hero-subtitle" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">Budidaya Udang Vaname & Ikan Mujaer<br>dengan Perawatan Alami</p>
-    <p class="hero-desc" data-aos="fade-up" data-aos-duration="600" data-aos-delay="150">Memadukan pengalaman budidaya tradisional dengan pemantauan kualitas air berbasis digital.</p>
-    <div class="btn-wrap" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
-        <a href="#budidaya" class="btn-fill">Lihat Budidaya Kami</a>
-        <a href="#kontak" class="btn-line">Hubungi Kami</a>
+<!-- ================= HEADER SLIDER ================= -->
+<header class="swiper hero-slider">
+    <div class="swiper-wrapper">
+        
+        <!-- SLIDE 1 -->
+        <div class="swiper-slide hero-slide slide-1" style="background: linear-gradient(rgba(8, 20, 34, 0.72), rgba(8, 20, 34, 0.78)), url('{{ asset('assets/image-hero.png') }}') center/cover no-repeat;">
+            <div class="hero-content">
+                <span class="hero-tag">TENTANG TAMBAK KAMI</span>
+                <h1 class="hero-title">Tambak Tradisional Kami</h1>
+                <p class="hero-subtitle">Budidaya Udang Vaname & Ikan Mujaer<br>dengan Perawatan Alami</p>
+                <p class="hero-desc" style="margin: 0 auto 34px;">Memadukan pengalaman budidaya tradisional dengan pemantauan kualitas air berbasis digital.</p>
+                <div class="btn-wrap">
+                    <a href="#budidaya" class="btn-fill">Lihat Budidaya Kami</a>
+                    <a href="#kontak" class="btn-line">Hubungi Kami</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2 -->
+        <div class="swiper-slide hero-slide slide-2" style="background: linear-gradient(to right, var(--slide2-grad-1), var(--slide2-grad-2)), url('{{ asset('assets/image-hero2.png') }}') center/cover no-repeat;">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <span class="hero-tag" style="color: #cbd5e1;">— PANDUAN RESMI | TAMBAK BANGUNSARI</span>
+                    <h1 class="hero-title">Budidaya yang Terukur,<br>Panen yang Pasti.</h1>
+                    <p class="hero-desc" style="max-width: 100%; margin-bottom: 24px;">Kami tidak sekadar membudidayakan — kami menjalankan setiap langkah berdasarkan standar yang telah teruji. Dari persiapan tambak, monitoring IoT, hingga keputusan panen berbasis data.</p>
+                    <div class="btn-wrap" style="justify-content: flex-start;">
+                        <a href="#sop" class="btn-fill">Lihat SOP Lengkap <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="hero-right">
+                    <div class="glass-card">
+                        <h3>28 <span>HARI</span></h3>
+                        <p>Prosedur lengkap</p>
+                    </div>
+                    <div class="glass-card">
+                        <h3>4 <span>SENSOR</span></h3>
+                        <p>Parameter terpantau</p>
+                    </div>
+                    <div class="glass-card">
+                        <h3>10 <span>TAHAP</span></h3>
+                        <p>Alur budidaya</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </header>
 
@@ -798,10 +937,10 @@
             </div>
         </div>
     </section>
-</div> <!-- Menutup section-wrap-mint pertama -->
+</div>
 
 <!-- ================= BAGIAN SOP BARU ================= -->
-<div class="sop-section-wrap">
+<div id="sop" class="sop-section-wrap">
     <div class="sop-bg-text">SOP</div>
     
     <section class="section-container" style="padding-top: 0; padding-bottom: 0;">
@@ -838,28 +977,28 @@
                     <span class="sop-num">01</span><div class="sop-divider"></div><span class="sop-title">Persiapan Tambak</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">02</span><div class="sop-divider"></div><span class="sop-title">Setup Monitoring IoT</span>
+                    <span class="sop-num">02</span><div class="sop-divider"></div><span class="sop-title">Persiapan Sistem IoT</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">03</span><div class="sop-divider"></div><span class="sop-title">Penebaran Udang & Mujair</span>
+                    <span class="sop-num">03</span><div class="sop-divider"></div><span class="sop-title">Penebaran bibit</span>
                 </div>
                 <div class="sop-item">
                     <span class="sop-num">04</span><div class="sop-divider"></div><span class="sop-title">Monitoring Kualitas Air</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">05</span><div class="sop-divider"></div><span class="sop-title">Pemberian Pakan</span>
+                    <span class="sop-num">05</span><div class="sop-divider"></div><span class="sop-title">Klasifikasi Kondisi Air</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">06</span><div class="sop-divider"></div><span class="sop-title">Tindakan Korektif</span>
+                    <span class="sop-num">06</span><div class="sop-divider"></div><span class="sop-title">Pemberian Pakan</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">07</span><div class="sop-divider"></div><span class="sop-title">Monitoring Pertumbuhan</span>
+                    <span class="sop-num">07</span><div class="sop-divider"></div><span class="sop-title">Tindakan Korektif</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">08</span><div class="sop-divider"></div><span class="sop-title">Panen</span>
+                    <span class="sop-num">08</span><div class="sop-divider"></div><span class="sop-title">Monitoring Pertumbuhan</span>
                 </div>
                 <div class="sop-item">
-                    <span class="sop-num">09</span><div class="sop-divider"></div><span class="sop-title">Pencatatan Data</span>
+                    <span class="sop-num">09</span><div class="sop-divider"></div><span class="sop-title">Panen & Pencatatan</span>
                 </div>
                 <div class="sop-item">
                     <span class="sop-num">10</span><div class="sop-divider"></div><span class="sop-title">Evaluasi Siklus</span>
@@ -869,7 +1008,6 @@
         </div>
     </section>
 </div>
-<!-- ================= AKHIR BAGIAN SOP ================= -->
 
 <!-- Buka lagi section-wrap-mint untuk Dari Tambak Kami -->
 <div class="section-wrap-mint">
@@ -881,10 +1019,10 @@
 
         <div class="gallery-grid">
             <div class="gal-big" data-aos="zoom-in" data-aos-duration="600">
-                <img src="{{ asset('assets/mujaer.png') }}" alt="Budidaya Ikan Mujaer" class="gal-img">
+                <img src="{{ asset('assets/pirik.png') }}" alt="Budidaya Ikan Mujaer" class="gal-img">
                 <div class="gal-overlay">
                     <span class="gal-tag">MUJAER</span>
-                    <div class="gal-title">Budidaya Ikan Mujaer</div>
+                    <div class="gal-title">Ikan Mujaer</div>
                 </div>
             </div>
             <div class="gal-right">
@@ -938,7 +1076,7 @@
     <section class="section-container">
         <div class="grid-split">
             <div class="split-img-card" data-aos="fade-right" data-aos-duration="600">
-                <img src="https://images.unsplash.com/photo-1534043464124-3be32fe00099?auto=format&fit=crop&w=1000&q=80" alt="Kualitas Panen" style="height: 480px;">
+                <img src="{{ asset('assets/mujaer.png') }}" alt="Kualitas Panen" style="height: 480px;">
             </div>
             <div data-aos="fade-left" data-aos-duration="600">
                 <span class="badge-sub">PROSES</span>
@@ -987,10 +1125,10 @@
         </div>
 
         <div class="location-grid" data-aos="fade-up" data-aos-duration="600">
-            <!-- Peta Utama (Besar) -->
-            <div class="map-wrapper">
-                <iframe src="https://maps.google.com/maps?q=Jabon%20Sidoarjo&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
-            </div>
+        <!-- Peta Utama (Besar) -->
+        <div class="map-wrapper">
+            <iframe src="https://maps.google.com/maps?q=-7.539009,112.790448&t=k&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
 
             <!-- Kartu Info (Kecil & Ringkas) -->
             <div class="loc-cards">
@@ -1001,7 +1139,7 @@
                     <p style="color: var(--text-body); font-size: 12px; line-height: 1.4; margin: 0;">
                         Dusun Bangunsari, Kecamatan Jabon,<br>Kabupaten Sidoarjo, Jawa Timur.
                     </p>
-                    <a href="https://maps.google.com" target="_blank" style="color: var(--primary-blue); text-decoration: none; font-size: 11.5px; font-weight: 600; display: inline-block; margin-top: 6px;">
+                    <a href="https://maps.app.goo.gl/sUfxWwUgjt6U7Le58" target="_blank" style="color: var(--primary-blue); text-decoration: none; font-size: 11.5px; font-weight: 600; display: inline-block; margin-top: 6px;">
                         Lihat di Google Maps &rarr;
                     </a>
                 </div>
@@ -1023,7 +1161,7 @@
     </section>
 </div>
 
-<!-- FOOTER -->
+<!-- FOOTER (3 KOLOM REFRESHED) -->
 <footer>
     <div class="footer-container">
         <div class="footer-grid">
@@ -1045,18 +1183,9 @@
             <div class="footer-col">
                 <h5>JELAJAHI</h5>
                 <ul>
+                    <li><a href="{{ url('/home') }}">Home</a></li>
                     <li><a href="{{ url('/dashboard') }}">Dashboard</a></li>
                     <li><a href="{{ url('/history') }}">Laporan</a></li>
-                    <li><a href="{{ url('/home') }}">Home</a></li>
-                </ul>
-            </div>
-
-            <!-- Kunjungi Kami -->
-            <div class="footer-col">
-                <h5>KUNJUNGI KAMI</h5>
-                <ul>
-                    <li><a href="#kontak">Lokasi Tambak</a></li>
-                    <li><a href="#">Pemancingan Harian</a></li>
                 </ul>
             </div>
 
@@ -1076,6 +1205,27 @@
         </div>
     </div>
 </footer>
+
+<!-- Script Swiper -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var swiper = new Swiper(".hero-slider", {
+            loop: true,
+            speed: 1200,
+            grabCursor: true,
+            allowTouchMove: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            effect: "fade",
+            fadeEffect: {
+                crossFade: true
+            }
+        });
+    });
+</script>
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
