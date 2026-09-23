@@ -301,8 +301,8 @@ body:hover,
 .ai-box-notice {
     position: relative;
     overflow: hidden;
-    background: #f8fafc;
-    border: 1px dashed #cbd5e1;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 20px;
     transition: all 0.4s var(--ai-easing);
     min-height: 200px;
@@ -418,6 +418,109 @@ body:hover,
     }
 }
 
+/* LAYOUT HYBRID AI DIAGNOSIS STATUS CARD */
+.status-summary-card-custom {
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+    transition: all 0.3s ease;
+}
+
+.status-summary-card-custom.theme-green {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 6px solid #22c55e;
+}
+
+.status-summary-card-custom.theme-orange {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 6px solid #f59e0b;
+}
+
+.status-summary-card-custom.theme-red {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-left: 6px solid #ef4444;
+}
+
+.badge-diag-main {
+    padding: 6px 16px;
+    border-radius: 50rem;
+    font-weight: 700;
+    font-size: 0.88rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.badge-diag-main.theme-green {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+
+.badge-diag-main.theme-orange {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fcd34d;
+}
+
+.badge-diag-main.theme-red {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+
+.badge-sub-pill {
+    padding: 6px 14px;
+    border-radius: 50rem;
+    font-weight: 600;
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.badge-dot-small {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.notice-warning-box {
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notice-warning-box.theme-green {
+    background-color: #ffffff;
+    border: 1px solid #dcfce7;
+    color: #166534;
+}
+
+.notice-warning-box.theme-orange {
+    background-color: #fff7ed;
+    border: 1px solid #ffedd5;
+    color: #9a3412;
+}
+
+.notice-warning-box.theme-red {
+    background-color: #fff1f2;
+    border: 1px solid #ffe4e6;
+    color: #9f1239;
+}
+
+/* RECOMMENDATION CARDS */
 .rec-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -512,33 +615,13 @@ body:hover,
     min-width: 50px;
 }
 
-/* =======================================================
-   DARK MODE OVERRIDES (Slate Theme)
-======================================================= */
+/* DARK MODE OVERRIDES */
 body.dark-mode {
     background-color: #0B1120 !important;
     color: #F8FAFC !important;
 }
 
-/* System Status Container (Pill Pojok Kanan Atas) */
-body.dark-mode #system-status-container {
-    background-color: rgba(15, 23, 42, 0.8) !important;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-body.dark-mode #system-status-text {
-    color: #F8FAFC !important;
-}
-
-body.dark-mode #system-status-container .text-muted {
-    color: #94A3B8 !important;
-}
-
-/* Background Kartu dan Kontainer Utama (General) */
 body.dark-mode .card-custom,
-body.dark-mode .status-summary-card,
-body.dark-mode .info-pill-card,
 body.dark-mode .custom-tab-wrapper,
 body.dark-mode .ai-method-card,
 body.dark-mode .ai-reason-card {
@@ -547,120 +630,19 @@ body.dark-mode .ai-reason-card {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* =======================================================
-   TOP CARDS (Dark Mode)
-======================================================= */
-/* 1. Kualitas Air Card */
-body.dark-mode #card-quality {
-    background: linear-gradient(145deg, #111827 0%, #083344 100%) !important;
-    border: 1px solid rgba(6, 182, 212, 0.3) !important;
-    box-shadow: 0 8px 20px rgba(6, 182, 212, 0.1) !important;
+body.dark-mode .status-summary-card-custom.theme-green {
+    background: #064e3b !important;
+    border-color: #047857 !important;
 }
 
-body.dark-mode #card-quality .bg-white {
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+body.dark-mode .status-summary-card-custom.theme-orange {
+    background: #78350f !important;
+    border-color: #b45309 !important;
 }
 
-/* 2. Weather Card */
-body.dark-mode .card-weather-target {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%) !important;
-    border: 1px solid rgba(59, 130, 246, 0.3) !important;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15) !important;
-}
-
-body.dark-mode .card-weather-target .hourly-pill {
-    background: rgba(255, 255, 255, 0.08) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: #F8FAFC !important;
-}
-
-body.dark-mode .card-weather-target .hourly-pill:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-
-/* 3. Sensor Cards */
-body.dark-mode #card-ph {
-    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, #111827 50%) !important;
-    border-left: 4px solid #3B82F6 !important;
-}
-
-body.dark-mode #card-suhu {
-    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1) 0%, #111827 50%) !important;
-    border-left: 4px solid #10B981 !important;
-}
-
-body.dark-mode #card-tds {
-    background: linear-gradient(90deg, rgba(6, 182, 212, 0.1) 0%, #111827 50%) !important;
-    border-left: 4px solid #06B6D4 !important;
-}
-
-body.dark-mode #card-kekeruhan {
-    background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, #111827 50%) !important;
-    border-left: 4px solid #8B5CF6 !important;
-}
-
-body.dark-mode .icon-bg-blue {
-    background-color: rgba(59, 130, 246, 0.2) !important;
-    color: #60A5FA !important;
-}
-
-body.dark-mode .icon-bg-green {
-    background-color: rgba(16, 185, 129, 0.2) !important;
-    color: #34D399 !important;
-}
-
-body.dark-mode .icon-bg-cyan {
-    background-color: rgba(6, 182, 212, 0.2) !important;
-    color: #22D3EE !important;
-}
-
-body.dark-mode .icon-bg-purple {
-    background-color: rgba(139, 92, 246, 0.2) !important;
-    color: #A78BFA !important;
-}
-
-body.dark-mode #system-status-container {
-    background-color: #111827 !important;
-    border: 1px solid #1F2937 !important;
-}
-
-body.dark-mode .text-dark,
-body.dark-mode h2,
-body.dark-mode h4,
-body.dark-mode h5,
-body.dark-mode h6,
-body.dark-mode .stat-header-val,
-body.dark-mode #quality-value {
-    color: #F8FAFC !important;
-}
-
-body.dark-mode .text-muted,
-body.dark-mode .text-secondary,
-body.dark-mode .stat-header-label,
-body.dark-mode .ai-section-label,
-body.dark-mode .card-weather-target .text-secondary {
-    color: #94A3B8 !important;
-}
-
-body.dark-mode .card-weather-target div,
-body.dark-mode .card-weather-target span,
-body.dark-mode .card-weather-target i,
-body.dark-mode #card-quality span,
-body.dark-mode #card-quality strong,
-body.dark-mode #card-quality i {
-    color: #F8FAFC !important;
-}
-
-body.dark-mode .card-weather-target div[style*="color: #417280"],
-body.dark-mode .card-weather-target span[style*="color: #417280"],
-body.dark-mode #card-quality small {
-    color: #94A3B8 !important;
-}
-
-body.dark-mode .card-weather-target #weather-time {
-    color: #F87171 !important;
+body.dark-mode .status-summary-card-custom.theme-red {
+    background: #7f1d1d !important;
+    border-color: #b91c1c !important;
 }
 
 body.dark-mode .ai-box-notice,
@@ -677,127 +659,6 @@ body.dark-mode .rec-card {
 
 body.dark-mode .rec-card h6 {
     color: #F8FAFC !important;
-}
-
-body.dark-mode .custom-tab-btn {
-    color: #94A3B8;
-}
-
-body.dark-mode .custom-tab-btn.active {
-    background: #3B82F6 !important;
-    color: #FFFFFF !important;
-}
-
-body.dark-mode .btn-chart-filter {
-    background-color: #111827;
-    color: #94A3B8;
-    border: 1px solid #1F2937;
-}
-
-body.dark-mode .btn-chart-filter.active {
-    background-color: #3B82F6;
-    color: #FFFFFF;
-    border-color: #3B82F6;
-}
-
-body.dark-mode .weather-divider {
-    border-top-color: #1F2937 !important;
-    border-bottom-color: #1F2937 !important;
-}
-
-body.dark-mode .weather-border-x {
-    border-left-color: #1F2937 !important;
-    border-right-color: #1F2937 !important;
-}
-
-body.dark-mode #btnAiAction {
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-}
-
-.custom-chart-tabs {
-    white-space: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.btn-chart-tab {
-    background-color: #f1f5f9;
-    color: #64748b;
-    border-radius: 50rem;
-    padding: 0.5rem 1.25rem;
-    font-weight: 600;
-    border: 1px solid transparent;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    transition: all 0.2s var(--ai-easing);
-}
-
-.btn-chart-tab.active {
-    background-color: #e0f2fe;
-    color: #0284c7;
-    border-color: #7dd3fc;
-}
-
-body.dark-mode .btn-chart-tab {
-    background-color: #111827;
-    color: #94A3B8;
-    border: 1px solid #1F2937;
-}
-
-body.dark-mode .btn-chart-tab.active {
-    background-color: #3B82F6;
-    color: #FFFFFF;
-    border-color: #3B82F6;
-}
-
-.param-badge-pill {
-    font-size: 0.72rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-weight: 600;
-}
-
-@media (max-width: 767px) {
-    .chart-card-wrapper {
-        display: none;
-    }
-
-    .chart-card-wrapper.active-mobile {
-        display: block;
-    }
-}
-
-.status-summary-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-bottom: 20px;
-}
-
-.badge-status-diag {
-    background-color: #e6f7f0;
-    color: #0d8a5f;
-    border-radius: 999px;
-    padding: 8px 18px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.info-pill-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 8px 16px;
-    font-size: 0.88rem;
-    color: #4b5563;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .custom-tab-wrapper {
@@ -1041,14 +902,12 @@ body.dark-mode .btn-chart-tab.active {
                 <div class="row text-center py-2 weather-divider my-1">
                     <div class="col-4 px-1">
                         <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">
-                            {{ $cuaca['kelembaban'] ?? '--' }}%
-                        </div>
+                            {{ $cuaca['kelembaban'] ?? '--' }}%</div>
                         <div style="font-size: 0.65rem; color: #417280;">Kelembaban</div>
                     </div>
                     <div class="col-4 px-1 weather-border-x d-flex align-items-center justify-content-center">
                         <div id="weather-time" class="fw-bold" style="font-size: 0.9rem; color: #ef4444;">
-                            {{ $cuaca['waktu'] ?? '--:--' }}
-                        </div>
+                            {{ $cuaca['waktu'] ?? '--:--' }}</div>
                     </div>
                     <div class="col-4 px-1">
                         <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">{{ $cuaca['angin'] ?? '--' }}
@@ -1761,14 +1620,13 @@ function initCharts() {
     initScoreGauge();
     charts.ph = createLineChart('phChart', 'pH', [], [], '#2563eb', 'rgba(37, 99, 235, 0.1)', 7.5, '#bfdbfe');
     charts.suhu = createLineChart('suhuChart', 'Suhu (°C)', [], [], '#10b981', 'rgba(16, 185, 129, 0.1)', 30,
-    '#bbf7d0');
+        '#bbf7d0');
     charts.tds = createLineChart('tdsChart', 'TDS (ppm)', [], [], '#06b6d4', 'rgba(6, 182, 212, 0.1)', 500, '#fca5a5');
     charts.kekeruhan = createLineChart('kekeruhanChart', 'Kekeruhan (NTU)', [], [], '#8b5cf6',
         'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
 
     filterChartTime(activeTimeRange);
 
-    // PERBAIKAN: Jalankan pembacaan data awal jika sensorData tersedia
     if (sensorData.length > 0) {
         updateSensorBadgesAndValues(sensorData[0]);
     }
@@ -1871,33 +1729,26 @@ function filterChartTime(range) {
     if (charts.ph) {
         charts.ph.data.labels = processed.labels;
         charts.ph.data.datasets[0].data = processed.ph;
-        if (charts.ph.data.datasets[1]) {
-            charts.ph.data.datasets[1].data = Array(processed.labels.length).fill(7.5);
-        }
+        if (charts.ph.data.datasets[1]) charts.ph.data.datasets[1].data = Array(processed.labels.length).fill(7.5);
         charts.ph.update();
     }
     if (charts.suhu) {
         charts.suhu.data.labels = processed.labels;
         charts.suhu.data.datasets[0].data = processed.suhu;
-        if (charts.suhu.data.datasets[1]) {
-            charts.suhu.data.datasets[1].data = Array(processed.labels.length).fill(30);
-        }
+        if (charts.suhu.data.datasets[1]) charts.suhu.data.datasets[1].data = Array(processed.labels.length).fill(30);
         charts.suhu.update();
     }
     if (charts.tds) {
         charts.tds.data.labels = processed.labels;
         charts.tds.data.datasets[0].data = processed.tds;
-        if (charts.tds.data.datasets[1]) {
-            charts.tds.data.datasets[1].data = Array(processed.labels.length).fill(500);
-        }
+        if (charts.tds.data.datasets[1]) charts.tds.data.datasets[1].data = Array(processed.labels.length).fill(500);
         charts.tds.update();
     }
     if (charts.kekeruhan) {
         charts.kekeruhan.data.labels = processed.labels;
         charts.kekeruhan.data.datasets[0].data = processed.kekeruhan;
-        if (charts.kekeruhan.data.datasets[1]) {
-            charts.kekeruhan.data.datasets[1].data = Array(processed.labels.length).fill(20);
-        }
+        if (charts.kekeruhan.data.datasets[1]) charts.kekeruhan.data.datasets[1].data = Array(processed.labels.length)
+            .fill(20);
         charts.kekeruhan.update();
     }
 
@@ -1926,7 +1777,6 @@ function fetchRealtimeData() {
         .then(res => {
             const latest = res.data;
             if (latest && latest.ph !== undefined) {
-                // PERBAIKAN: Pemeriksaan aman untuk sensorData[0] agar tidak memicu TypeError
                 const isNew = sensorData.length === 0 ||
                     (latest.id && sensorData[0] && latest.id !== sensorData[0].id) ||
                     (latest.created_at && sensorData[0] && latest.created_at !== sensorData[0].created_at);
@@ -1981,43 +1831,150 @@ function generateRecommendationCardsHtml(data) {
     const sopList = data.tindakan_sop || [];
     const adviceList = data.advice || data.recommendations || [];
 
-    // Status & Prediksi
-    const mlPred = hybrid.status_prediksi || 'Sedang';
-    const fuzzyStat = hybrid.status_saat_ini || 'Baik';
-    const finalStatus = hybrid.final_status || 'Baik';
+    // 1. Dapatkan string status asli & Deteksi Status Offline ML
+    const isMlOffline = hybrid.is_offline ||
+        (hybrid.status_prediksi && hybrid.status_prediksi.toString().toLowerCase() === 'offline') ||
+        (hybrid.status_prediksi_masa_depan && hybrid.status_prediksi_masa_depan.toString().toLowerCase() === 'offline');
 
-    // Dinamisasi Badge Status Diagnosis
-    let diagBadgeStyle = 'background-color: #e6f7f0; color: #0d8a5f;';
-    let diagIcon = 'fa-circle-check';
-    const fsLower = finalStatus.toLowerCase();
+    let rawFuzzy = (data.sensor_realtime_t?.status_saat_ini || hybrid.status_saat_ini || 'Baik').toString()
+    .toLowerCase();
+    let rawMl = isMlOffline ? 'offline' : (hybrid.status_prediksi_masa_depan || hybrid.status_prediksi || 'Baik')
+        .toString().toLowerCase();
 
-    if (fsLower === 'buruk' || fsLower === 'kritis') {
-        diagBadgeStyle = 'background-color: #fef2f2; color: #dc2626;';
-        diagIcon = 'fa-triangle-exclamation';
-    } else if (fsLower === 'sedang' || fsLower === 'waspada') {
-        diagBadgeStyle = 'background-color: #fffbeb; color: #d97706;';
-        diagIcon = 'fa-triangle-exclamation';
+    // 2. Klasifikasi kondisi Fuzzy & ML
+    let isFuzzyCritical = rawFuzzy.includes('buruk') || rawFuzzy.includes('critical') || rawFuzzy.includes('kritis') ||
+        rawFuzzy.includes('danger');
+    let isFuzzyWarning = rawFuzzy.includes('sedang') || rawFuzzy.includes('waspada') || rawFuzzy.includes('warning');
+    let isFuzzyBaik = !isFuzzyCritical && !isFuzzyWarning;
+
+    let isMlCritical = rawMl.includes('buruk') || rawMl.includes('critical') || rawMl.includes('kritis') || rawMl
+        .includes('danger');
+    let isMlWarning = rawMl.includes('sedang') || rawMl.includes('waspada') || rawMl.includes('warning');
+    let isMlBaik = !isMlOffline && !isMlCritical && !isMlWarning;
+
+    // 3. Evaluasi Matriks Kondisi Hybrid AI
+    let theme = 'green';
+    let diagText = 'Aman / Baik';
+    let fuzzyBadgeText = isFuzzyBaik ? 'Baik' : (isFuzzyWarning ? 'Sedang / Waspada' : 'Buruk / Critical');
+    let mlBadgeText = isMlOffline ? 'Offline' : (isMlBaik ? 'Baik' : (isMlWarning ? 'Sedang / Waspada' :
+        'Buruk / Critical'));
+    let narasi = '';
+
+    if (isMlOffline) {
+        // ML OFFLINE: Status Diagnosis, Tema, dan Peringatan Dini MURNI MENGIKUTI LOGIC FUZZY
+        if (isFuzzyBaik) {
+            theme = 'green';
+            diagText = 'Aman / Baik';
+            narasi =
+                'Kondisi air saat ini (real-time) dalam kondisi BAIK. Model Machine Learning saat ini sedang Offline.';
+        } else if (isFuzzyWarning) {
+            theme = 'orange';
+            diagText = 'Sedang / Waspada';
+            narasi =
+                'Kondisi air saat ini (real-time) dalam kondisi WASPADA / SEDANG. Model Machine Learning saat ini sedang Offline.';
+        } else {
+            theme = 'red';
+            diagText = 'Kritis';
+            narasi =
+                'Kondisi air saat ini (real-time) dalam kondisi KRITIS. Model Machine Learning saat ini sedang Offline, segera lakukan tindakan mitigasi berdasarkan SOP!';
+        }
+    } else {
+        // ML ONLINE: Evaluasi Kombinasi Hybrid AI
+        if (isFuzzyBaik && isMlBaik) {
+            theme = 'green';
+            diagText = 'Aman / Baik';
+            narasi = 'Kondisi air saat ini aman dan optimal, serta diprediksi tetap stabil hingga 1 jam ke depan.';
+        } else if (isFuzzyBaik && !isMlBaik) {
+            theme = 'orange';
+            diagText = 'Sedang / Waspada';
+            narasi =
+                'Kondisi air saat ini (real-time) dalam kondisi BAIK, namun Machine Learning memprediksi adanya penurunan kualitas air dalam 1 jam ke depan.';
+        } else if (isFuzzyWarning && isMlBaik) {
+            theme = 'orange';
+            diagText = 'Sedang / Waspada';
+            narasi =
+                'Kondisi air saat ini WASPADA, namun Machine Learning memprediksi tren pemulihan kualitas air dalam 1 jam ke depan.';
+        } else if (isFuzzyCritical && isMlBaik) {
+            theme = 'red';
+            diagText = 'Kritis';
+            narasi =
+                'Kondisi air saat ini KRITIS, namun Machine Learning memprediksi tren pemulihan kualitas air dalam 1 jam ke depan.';
+        } else if (isFuzzyWarning) {
+            theme = 'orange';
+            diagText = 'Sedang / Waspada';
+            narasi = 'Kondisi air saat ini WASPADA dan diprediksi berisiko memburuk dalam 1 jam ke depan.';
+        } else {
+            theme = 'red';
+            diagText = 'Kritis';
+            narasi =
+                'Kondisi air saat ini KRITIS dan diprediksi akan terus memburuk dalam 1 jam ke depan. Segera lakukan tindakan!';
+        }
     }
 
-    // Gabungkan List Rekomendasi
-    let combinedItems = [];
-    if (adviceList.length > 0) {
-        combinedItems = adviceList;
-    } else if (sopList.length > 0) {
-        const itemLevel = (fsLower === 'buruk' || fsLower === 'kritis') ? 'danger' : ((fsLower === 'sedang' ||
-            fsLower === 'waspada') ? 'warning' : 'info');
-        combinedItems = sopList.map((sop, idx) => ({
-            num: `#${idx + 1}`,
-            type: 'SOP ACTION',
-            time: 'Segera',
-            title: `Langkah Tindakan ${idx + 1}`,
-            desc: sop,
-            level: itemLevel,
-            icon: 'fa-clipboard-check'
-        }));
-    }
+    // Dynamic Badges & Theme Colors
+    let diagIcon = theme === 'green' ? 'fa-shield-check' : 'fa-triangle-exclamation';
+    let fuzzyStyle = isFuzzyBaik ? 'background-color: #dcfce7; color: #15803d;' : (isFuzzyWarning ?
+        'background-color: #fef3c7; color: #b45309;' : 'background-color: #fee2e2; color: #b91c1c;');
+    let fuzzyDotStyle = isFuzzyBaik ? 'background-color: #16a34a;' : (isFuzzyWarning ? 'background-color: #ca8a04;' :
+        'background-color: #dc2626;');
 
-    // Generate List Rekomendasi HTML
+    let mlStyle = isMlOffline ? 'background-color: #f1f5f9; color: #64748b;' : (isMlBaik ?
+        'background-color: #dcfce7; color: #15803d;' : (isMlWarning ? 'background-color: #ffedd5; color: #c2410c;' :
+            'background-color: #fee2e2; color: #b91c1c;'));
+    let mlDotStyle = isMlOffline ? 'background-color: #94a3b8;' : (isMlBaik ? 'background-color: #16a34a;' : (
+        isMlWarning ? 'background-color: #ea580c;' : 'background-color: #dc2626;'));
+
+    // Format list rekomendasi / SOP
+    let itemLevel = (theme === 'red') ? 'danger' : ((theme === 'orange') ? 'warning' : 'info');
+    let rawItems = adviceList.length > 0 ? adviceList : sopList;
+
+    const iconMap = {
+        'activity': 'fa-chart-line',
+        'calendar': 'fa-calendar-alt',
+        'file-text': 'fa-file-alt',
+        'shield-check': 'fa-shield-alt',
+        'sliders': 'fa-sliders-h',
+        'droplets': 'fa-tint',
+        'alert-triangle': 'fa-exclamation-triangle',
+        'alert-octagon': 'fa-exclamation-circle',
+        'footprints': 'fa-shoe-prints',
+        'refresh-cw': 'fa-sync-alt',
+        'rotate-cw': 'fa-redo',
+        'search': 'fa-search',
+        'eye': 'fa-eye',
+        'utensils': 'fa-utensils',
+        'clock': 'fa-clock',
+        'wrench': 'fa-wrench',
+        'clipboard-list': 'fa-clipboard-list',
+        'clipboard-check': 'fa-clipboard-check',
+        'check-circle': 'fa-check-circle'
+    };
+
+    let combinedItems = rawItems.map((item, idx) => {
+        let textVal = '';
+        let iconVal = 'fa-clipboard-check';
+
+        if (typeof item === 'string') {
+            textVal = item;
+        } else if (typeof item === 'object' && item !== null) {
+            textVal = item.text || item.desc || '';
+            if (item.icon) {
+                const cleanIcon = item.icon.replace(/^fa-/, '').trim();
+                iconVal = iconMap[cleanIcon] || (item.icon.startsWith('fa-') ? item.icon : `fa-${item.icon}`);
+            }
+        }
+
+        return {
+            num: item.num || `#${idx + 1}`,
+            type: item.type || 'SOP ACTION',
+            time: item.time || 'Segera',
+            title: item.title || `Langkah Tindakan ${idx + 1}`,
+            desc: textVal,
+            level: item.level || itemLevel,
+            icon: iconVal
+        };
+    });
+
     let sopListHtml = '';
     if (combinedItems.length === 0) {
         sopListHtml = `
@@ -2039,11 +1996,11 @@ function generateRecommendationCardsHtml(data) {
             </div>
         `;
     } else {
-        combinedItems.forEach((item, index) => {
+        combinedItems.forEach((item) => {
             const isDanger = item.level === 'danger';
             const isWarning = item.level === 'warning';
             const stripClass = isDanger ? 'rec-card-danger' : (isWarning ? 'rec-card-warning' :
-            'rec-card-info');
+                'rec-card-info');
             const badgeBg = isDanger ? 'background-color: #fee2e2; color: #b91c1c;' : (isWarning ?
                 'background-color: #ffedd5; color: #c2410c;' : 'background-color: #e0f2fe; color: #0369a1;');
             const iconBg = isDanger ? 'background: #fee2e2; color: #ef4444;' : (isWarning ?
@@ -2053,17 +2010,17 @@ function generateRecommendationCardsHtml(data) {
                 <div class="rec-card ${stripClass} d-flex p-3 mb-3">
                     <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
                         <div class="rounded-3 d-flex align-items-center justify-content-center mb-1" style="width: 44px; height: 44px; ${iconBg}">
-                            <i class="fas ${item.icon || 'fa-clipboard-check'} fs-5"></i>
+                            <i class="fas ${item.icon} fs-5"></i>
                         </div>
-                        <span class="text-muted fw-bold" style="font-size: 0.75rem;">${item.num || ('#' + (index + 1))}</span>
+                        <span class="text-muted fw-bold" style="font-size: 0.75rem;">${item.num}</span>
                     </div>
                     <div class="flex-grow-1">
                         <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
-                            <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.type || 'SOP ACTION'}</span>
-                            <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> ${item.time || 'Segera'}</span>
+                            <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.type}</span>
+                            <span class="badge bg-light text-secondary rounded-pill px-3 py-1 border" style="font-size: 0.65rem; font-weight: 600;"><i class="far fa-clock me-1"></i> ${item.time}</span>
                         </div>
-                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title || ('Langkah Tindakan ' + (index + 1))}</h6>
-                        <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">${item.desc || item}</p>
+                        <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title}</h6>
+                        <p class="text-secondary mb-0" style="font-size: 0.85rem; line-height: 1.5;">${item.desc}</p>
                     </div>
                 </div>
             `;
@@ -2071,21 +2028,28 @@ function generateRecommendationCardsHtml(data) {
     }
 
     return `
-        <!-- 1. HEADER SUMMARY DIAGNOSIS CARD -->
-        <div class="status-summary-card">
-            <div class="mb-3">
-                <span class="badge-status-diag" style="${diagBadgeStyle}">
-                    <i class="fas ${diagIcon}"></i> Status Diagnosis: ${finalStatus.charAt(0).toUpperCase() + finalStatus.slice(1)}
+        <!-- 1. STATUS DIAGNOSIS & EARLY WARNING HEADER CARD -->
+        <div class="status-summary-card-custom theme-${theme}">
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <span class="badge-diag-main theme-${theme}">
+                    <i class="fas ${diagIcon}"></i> Status Diagnosis: ${diagText}
+                </span>
+
+                <span class="badge-sub-pill" style="${fuzzyStyle}">
+                    <span class="badge-dot-small" style="${fuzzyDotStyle}"></span>
+                    Logic Fuzzy (Saat Ini): ${fuzzyBadgeText}
+                </span>
+
+                <span class="badge-sub-pill" style="${mlStyle}">
+                    <span class="badge-dot-small" style="${mlDotStyle}"></span>
+                    Model ML (Prediksi +1 Jam): ${mlBadgeText}
                 </span>
             </div>
-            <div class="d-flex flex-wrap align-items-center gap-2">
-                <div class="info-pill-card mb-1">
-                    <i class="fas fa-microchip text-primary"></i>
-                    <span>Model ML: <strong class="text-dark">${mlPred}</strong></span>
-                </div>
-                <div class="info-pill-card mb-1">
-                    <i class="fas fa-sliders text-info"></i>
-                    <span>Logic Fuzzy: <strong class="text-dark">${fuzzyStat}</strong></span>
+
+            <div class="notice-warning-box theme-${theme}">
+                <i class="fas fa-triangle-exclamation mt-1" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+                <div>
+                    <strong>Peringatan Dini:</strong> ${narasi}
                 </div>
             </div>
         </div>
@@ -2114,12 +2078,10 @@ function generateRecommendationCardsHtml(data) {
 
         <!-- PANE CARA KERJA AI -->
         <div id="pane-carakerja" class="animate-tab-pane" style="display: none;">
-            <!-- INTRO DESKRIPSI BOX -->
             <div class="ai-intro-box mb-4">
                 Bayangkan kolammu dijaga oleh <strong>dua asisten</strong> sekaligus. Yang pertama mengecek keadaan air <strong>saat ini juga</strong>, yang kedua <strong>meramal</strong> akan seperti apa airnya nanti. Gabungan keduanya disebut <strong class="text-primary">Hybrid AI</strong> — supaya kamu tahu masalah hari ini sekaligus siap menghadapi masalah besok.
             </div>
 
-            <!-- DUAL CARDS COMPARISON -->
             <div class="row g-4 mb-4">
                 <div class="col-12 col-md-6">
                     <div class="ai-method-card">
@@ -2143,7 +2105,7 @@ function generateRecommendationCardsHtml(data) {
                         <div class="mb-3">
                             <div class="ai-section-label">CARA KERJA</div>
                             <p class="text-secondary m-0" style="font-size: 0.85rem; line-height: 1.5;">
-                                Mengevaluasi kondisi detik ini ke dalam kategori Baik, Sedang, atau Buruk.
+                                Mengevaluasi kondisi detik ini ke dalam kategori Normal, Warning, atau Critical.
                             </p>
                         </div>
 
@@ -2192,7 +2154,6 @@ function generateRecommendationCardsHtml(data) {
                 </div>
             </div>
 
-            <!-- REASON CARD -->
             <div class="ai-reason-card">
                 <h6 class="fw-bold text-dark mb-3" style="font-size: 0.95rem;">Alasan keduanya digabungkan</h6>
                 
@@ -2307,7 +2268,6 @@ function triggerAiRecommendation() {
                 finishAiAnalysis(data);
             })
             .catch(() => {
-                // PERBAIKAN: Berikan indikasi error jika API AI gagal diakses
                 finishAiAnalysis({
                     status: 'error',
                     message: 'Gagal terhubung ke modul AI. Pastikan server terhubung dengan baik.'
@@ -2359,7 +2319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         hour12: false
     });
 
-    // PERBAIKAN: Mengaktifkan polling real-time setiap 5 detik
     setInterval(fetchRealtimeData, 5000);
 
     const scrollContainer = document.querySelector('.hourly-scroll-container');

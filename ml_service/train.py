@@ -1,67 +1,65 @@
+import os
 import joblib
-import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 
-# 1. Generate Dataset Sintetis Tren Sensor Air Tambak (t -> t+1)
-np.random.seed(42)
-n_samples = 1200
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, 'sensors_trend.csv')
+MODEL_PATH = os.path.join(BASE_DIR, 'model_prediksi_tren.pkl')
 
-# Input parameter sensor saat ini (waktu t) - Rentang diperlebar untuk mendeteksi kondisi ekstrem
-ph_t = np.random.uniform(4.0, 11.0, n_samples)
-suhu_t = np.random.uniform(20.0, 40.0, n_samples)
-tds_t = np.random.uniform(50.0, 1500.0, n_samples)
-kekeruhan_t = np.random.uniform(0.0, 60.0, n_samples)
+# 1. Load Data
+try:
+    df = pd.read_csv(CSV_PATH)
+    print(f"✅ Data berhasil dimuat dari '{CSV_PATH}'. Total baris: {len(df)}")
+except FileNotFoundError:
+    print(f"❌ Error: File '{CSV_PATH}' tidak ditemukan.")
+    exit()
 
-# Tren/fluktuasi parameter di masa depan (waktu t+1 jam ke depan)
-ph_next = ph_t + np.random.normal(0, 0.15, n_samples)
-suhu_next = suhu_t + np.random.normal(0, 0.5, n_samples)
-tds_next = tds_t + np.random.normal(0, 15.0, n_samples)
-kekeruhan_next = kekeruhan_t + np.random.normal(0, 1.5, n_samples)
+# Sortir berdasarkan ID/Waktu agar perhitungan delta akurat
+if 'created_at' in df.columns:
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    df = df.sort_values('created_at').reset_index(drop=True)
 
-# Batas fisik rasional parameter sensor
-ph_next = np.clip(ph_next, 4.0, 11.0)
-suhu_next = np.clip(suhu_next, 20.0, 40.0)
-tds_next = np.clip(tds_next, 50.0, 1500.0)
-kekeruhan_next = np.clip(kekeruhan_next, 0.0, 60.0)
+# 2. Hitung Fitur Selisih Tren Delta (t - (t-1))
+df['ph_delta'] = df['ph'].diff()
+df['suhu_delta'] = df['suhu'].diff()
+df['tds_delta'] = df['tds'].diff()
+df['kekeruhan_delta'] = df['kekeruhan'].diff()
 
-df = pd.DataFrame({
-    'ph': np.round(ph_t, 2),
-    'suhu': np.round(suhu_t, 2),
-    'tds': np.round(tds_t, 2),
-    'kekeruhan': np.round(kekeruhan_t, 2),
-    'ph_next': np.round(ph_next, 2),
-    'suhu_next': np.round(suhu_next, 2),
-    'tds_next': np.round(tds_next, 2),
-    'kekeruhan_next': np.round(kekeruhan_next, 2)
-})
+# 3. Buat Kolom Target Masa Depan (t -> t+1)
+df['ph_next'] = df['ph'].shift(-1)
+df['suhu_next'] = df['suhu'].shift(-1)
+df['tds_next'] = df['tds'].shift(-1)
+df['kekeruhan_next'] = df['kekeruhan'].shift(-1)
 
-# Simpan dataset tren ke CSV
-df.to_csv('sensors_trend.csv', index=False)
-print("✅ Dataset sensors_trend.csv berhasil dibuat! Total data:", len(df))
+# Hapus baris NaN (baris pertama karena diff() dan baris terakhir karena shift(-1))
+feature_cols = ['ph', 'suhu', 'tds', 'kekeruhan', 'ph_delta', 'suhu_delta', 'tds_delta', 'kekeruhan_delta']
+target_cols = ['ph_next', 'suhu_next', 'tds_next', 'kekeruhan_next']
 
-# 2. Pisahkan Fitur Input (waktu t) dan Target Prediksi (waktu t+1)
-X = df[['ph', 'suhu', 'tds', 'kekeruhan']]
-y = df[['ph_next', 'suhu_next', 'tds_next', 'kekeruhan_next']]
+df_clean = df.dropna(subset=feature_cols + target_cols).copy()
 
-# 3. Bagi Data Train dan Test
+# 4. Pisahkan Fitur Input dan Target Prediksi
+X = df_clean[feature_cols]
+y = df_clean[target_cols]
+
+# 5. Bagi Data Training dan Testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# 4. Latih Model Regresi (Multi-Output)
+# 6. Latih Model ML Regresi Multi-Output
 model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# 5. Evaluasi Model per Parameter
+# 7. Evaluasi Performa Model
 y_pred = model.predict(X_test)
 mae_per_param = mean_absolute_error(y_test, y_pred, multioutput='raw_values')
 r2_per_param = r2_score(y_test, y_pred, multioutput='raw_values')
 
-print("\n--- Laporan Evaluasi Model Regresi Per Parameter ---")
+print("\n--- Laporan Evaluasi Model ML Berbasis Tren Delta ---")
 for col_name, mae_val, r2_val in zip(y.columns, mae_per_param, r2_per_param):
     print(f"Target: {col_name:<15} | MAE: {mae_val:.4f} | R2 Score: {r2_val:.4f}")
 
-# 6. Simpan Model ML Regresi
-joblib.dump(model, 'model_prediksi_tren.pkl')
-print("\n✅ Model ML Regresi berhasil disimpan di model_prediksi_tren.pkl!")
+# 8. Simpan Model ML
+joblib.dump(model, MODEL_PATH)
+print(f"\n✅ Model ML Berbasis Tren Delta berhasil disimpan di '{MODEL_PATH}'!")
