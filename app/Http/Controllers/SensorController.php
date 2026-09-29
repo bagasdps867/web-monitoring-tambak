@@ -194,9 +194,7 @@ class SensorController extends Controller
         }
     }
 
-    /**
-     * Determine label/status string based on Fuzzy score.
-     */
+  
     private function determineWaterQualityStatus($value)
     {
         if ($value === null) {
@@ -212,19 +210,17 @@ class SensorController extends Controller
         }
     }
 
-    /**
-     * Fungsi untuk memproses data dari Mobile Flutter dan mengembalikan teks AI / SOP
-     */
+    
     public function getAiRekomendasi(Request $request)
     {
         try {
-            // 1. Ambil data yang dikirim dari HP
+            
             $ph = $request->ph ?? 7.0;
             $suhu = $request->suhu ?? 28.0;
             $tds = $request->tds ?? 250;
             $kekeruhan = $request->kekeruhan ?? 15;
 
-            // 2. Logika Sederhana SOP Tambak
+          
             $status = "Normal";
             $langkah = [];
             $kritis = 0;
@@ -254,21 +250,21 @@ class SensorController extends Controller
                 $status = "Critical";
             }
 
-            // 3. Format Balasan Teks agar rapi saat dibaca Flutter
+       
             if ($status === "Normal") {
                 $rekomendasi = "EVALUASI: Kualitas air dalam keadaan sangat optimal.\n1. Lanjutkan budidaya secara normal.\n2. Pemberian pakan dilakukan sesuai jadwal.\n3. Lanjutkan monitoring visual.";
             } else {
                 $rekomendasi = "EVALUASI: Parameter air terdeteksi di luar batas normal ($status). Segera mitigasi:\n" . implode("\n", $langkah);
             }
 
-            // 4. Kembalikan ke HP dalam bentuk JSON
+          
             return response()->json([
                 'status' => 'success',
                 'rekomendasi' => $rekomendasi
             ], 200);
 
         } catch (\Exception $e) {
-            // Jika ada error di Laravel, kirim pesan error ke HP
+            
             return response()->json([
                 'status' => 'error',
                 'rekomendasi' => 'Peringatan: Gagal memproses AI di server. ' . $e->getMessage()
