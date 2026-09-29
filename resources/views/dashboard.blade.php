@@ -1,0 +1,2055 @@
+@extends('layouts.app')
+
+@push('styles')
+<style>
+/* =======================================================
+   ANIMATION TOOLKIT & BEHAVIOR
+======================================================= */
+:root {
+    --ai-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+body {
+    background-color: #e6f0ed !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Custom Scrollbar */
+html,
+body,
+.hourly-scroll-container,
+.custom-chart-tabs {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.3s var(--ai-easing);
+}
+
+html:hover,
+body:hover,
+.hourly-scroll-container:hover,
+.custom-chart-tabs:hover {
+    scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 10px;
+    transition: background 0.3s var(--ai-easing);
+}
+
+:hover::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.4);
+}
+
+/* Kartu Utama & Micro-interactions */
+.card-custom {
+    background: #ffffff;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s var(--ai-easing), box-shadow 0.3s var(--ai-easing);
+}
+
+.card-custom:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* =======================================================
+   STATUS BADGES & PURE CSS DOTS
+======================================================= */
+.badge-normal,
+.badge-warning-custom,
+.badge-danger-custom {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    transition: all 0.3s var(--ai-easing);
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.badge-normal {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+.badge-normal .badge-dot {
+    background-color: #16a34a;
+}
+
+.badge-warning-custom {
+    background-color: #fef08a;
+    color: #854d0e;
+    border: 1px solid rgba(202, 138, 4, 0.2);
+}
+
+.badge-warning-custom .badge-dot {
+    background-color: #ca8a04;
+}
+
+.badge-danger-custom {
+    background-color: #fecaca;
+    color: #b91c1c;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+.badge-danger-custom .badge-dot {
+    background-color: #dc2626;
+    animation: subtleCriticalPulse 1.6s ease-in-out infinite;
+}
+
+.badge-offline {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid rgba(100, 116, 139, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 50rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.badge-offline .badge-dot {
+    background-color: #64748b;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+@keyframes subtleCriticalPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+    }
+
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+    }
+}
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(0.85);
+    }
+}
+
+#system-status-dot {
+    animation: statusPulse 2s infinite var(--ai-easing);
+}
+
+/* Weather Card */
+.card-weather-target {
+    background: #85caf5;
+    border-radius: 28px;
+    border: none;
+    padding: 1.25rem !important;
+    color: #0c2d2a;
+    transition: transform 0.3s var(--ai-easing);
+}
+
+.card-weather-target:hover {
+    transform: translateY(-2px);
+}
+
+.weather-divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.weather-border-x {
+    border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.hourly-scroll-container {
+    display: flex !important;
+    gap: 8px;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    width: 100%;
+    min-width: 0;
+    padding-bottom: 6px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hourly-pill {
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: 16px;
+    padding: 8px 10px;
+    text-align: center;
+    flex: 0 0 62px !important;
+    width: 62px;
+    transition: transform 0.25s var(--ai-easing), background 0.25s var(--ai-easing);
+}
+
+.hourly-pill:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* AI Recommendation Styles */
+.ai-icon-wrapper {
+    width: 54px;
+    height: 54px;
+    background-color: #eff6ff;
+    border: 2px solid #bfdbfe;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+    font-size: 1.5rem;
+    transition: all 0.3s var(--ai-easing);
+    position: relative;
+}
+
+@keyframes aiRobotPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6), 0 0 0 0 rgba(59, 130, 246, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.25), 0 0 0 16px rgba(59, 130, 246, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0), 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}
+
+.ai-icon-wrapper.analyzing {
+    animation: aiRobotPulse 1.2s var(--ai-easing) infinite;
+    border-color: #3b82f6;
+    background-color: #e0f2fe;
+}
+
+.badge-ml-engine {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+}
+
+.btn-ai-analyze {
+    background: linear-gradient(135deg, #2563eb 0%, #0284c7 100%);
+    border: none;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 30px;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.35s var(--ai-easing);
+}
+
+.btn-ai-analyze:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    color: #ffffff;
+}
+
+.btn-ai-loading {
+    background: #475569 !important;
+    color: #ffffff !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.ai-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin360 0.8s linear infinite;
+}
+
+@keyframes spin360 {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ai-box-notice {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    transition: all 0.4s var(--ai-easing);
+    min-height: 200px;
+}
+
+.ai-scan-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0.02) 100%);
+    pointer-events: none;
+    opacity: 0;
+}
+
+.ai-box-notice.analyzing .ai-scan-line {
+    opacity: 1;
+    animation: scanGradient 1.8s var(--ai-easing) infinite;
+}
+
+@keyframes scanGradient {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.8;
+    }
+
+    80% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(220%);
+        opacity: 0;
+    }
+}
+
+.loading-steps-container {
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.loading-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    color: #64748b;
+    font-weight: 500;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.4s var(--ai-easing);
+}
+
+.loading-step.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.loading-step.active {
+    background: rgba(224, 242, 254, 0.7);
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.loading-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #94a3b8;
+    border-radius: 50%;
+    transition: all 0.3s var(--ai-easing);
+}
+
+.loading-step.active .loading-dot {
+    background-color: #2563eb;
+    animation: dotPulse 1.2s var(--ai-easing) infinite;
+}
+
+@keyframes dotPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5);
+    }
+
+    50% {
+        transform: scale(1.35);
+        box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    }
+}
+
+.ai-result-container {
+    animation: resultSlideUp 0.6s var(--ai-easing) forwards;
+}
+
+@keyframes resultSlideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RECOMMENDATION CARDS */
+.rec-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: cardStaggerIn 0.5s var(--ai-easing) forwards;
+    transition: transform 0.3s var(--ai-easing), box-shadow 0.3s var(--ai-easing), border-left-width 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.rec-card-danger {
+    border-left: 6px solid #ef4444;
+}
+
+.rec-card-warning {
+    border-left: 6px solid #f59e0b;
+}
+
+.rec-card-info {
+    border-left: 6px solid #3b82f6;
+}
+
+.rec-card-success {
+    border-left: 6px solid #10b981;
+}
+
+.rec-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.08) !important;
+}
+
+@keyframes cardStaggerIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.btn-chart-filter {
+    background-color: #ffffff;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 6px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: all 0.25s var(--ai-easing);
+}
+
+.btn-chart-filter.active {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.stat-header-label {
+    font-size: 0.65rem;
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.stat-header-val {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 50px;
+}
+
+//* =======================================================
+DARK MODE OVERRIDES (PERFECTED)=======================================================*/ body.dark-mode {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+}
+
+/* Mengatasi teks hitam (text-dark & text-secondary) agar menjadi terang */
+body.dark-mode .text-dark {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .text-secondary,
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+/* Base Custom Card */
+body.dark-mode .card-custom {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Kualitas Air Card & Mini Cards (Mengatasi kotak putih menyilaukan) */
+body.dark-mode #card-quality {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode #card-quality .bg-white {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode #quality-badge-text {
+    color: #60a5fa !important;
+}
+
+/* Weather Card Fix (Mengatasi teks yang sulit dibaca & border) */
+body.dark-mode .card-weather-target {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+
+body.dark-mode .card-weather-target div,
+body.dark-mode .card-weather-target span {
+    color: #f1f5f9 !important;
+}
+
+body.dark-mode .card-weather-target i {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+body.dark-mode .hourly-pill {
+    background: rgba(15, 23, 42, 0.6) !important;
+}
+
+body.dark-mode .hourly-pill:hover {
+    background: rgba(30, 41, 59, 0.8) !important;
+}
+
+body.dark-mode .weather-divider {
+    border-top: 1px solid #334155 !important;
+    border-bottom: 1px solid #334155 !important;
+}
+
+body.dark-mode .weather-border-x {
+    border-left: 1px solid #334155 !important;
+    border-right: 1px solid #334155 !important;
+}
+
+/* System Status Pill (Pojok Kanan Atas) */
+body.dark-mode #system-status-container {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+}
+
+/* AI Recommendation Section */
+body.dark-mode .ai-box-notice {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+}
+
+body.dark-mode .ai-icon-wrapper {
+    background-color: #1e293b !important;
+    border-color: #3b82f6 !important;
+}
+
+body.dark-mode .rec-card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .rec-card h6 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .rec-card p {
+    color: #cbd5e1 !important;
+    /* Teks deskripsi rekomendasi lebih terang */
+}
+
+/* Chart Tabs & Filters */
+body.dark-mode .btn-chart-filter {
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+    border: 1px solid #334155 !important;
+}
+
+body.dark-mode .btn-chart-filter.active {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+    border-color: #3b82f6 !important;
+}
+
+body.dark-mode .stat-header-label {
+    color: #64748b !important;
+}
+
+tema gelap dashboard
+</style>
+@endpush
+
+@section('content')
+<div class="container-fluid px-4 pt-1" style="padding-bottom: 100px !important;">
+    <div id="alertContainer" class="mb-3"></div>
+
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+        <div>
+            <span class="text-uppercase fw-bold text-primary small"
+                style="letter-spacing: 0.5px; font-size: 0.75rem;">WATER QUALITY MONITORING</span>
+            <h2 class="fw-bold m-0 text-dark" style="font-size: 1.8rem;">Dashboard Monitoring</h2>
+            <p class="text-secondary small m-0">Pantau kondisi kualitas air secara real-time.</p>
+        </div>
+        <div id="system-status-container"
+            class="d-inline-flex flex-wrap align-items-center bg-white px-3 py-2 rounded-pill shadow-sm"
+            style="width: fit-content;">
+            <span id="system-status-dot" class="badge bg-success rounded-circle p-1 me-2"
+                style="width: 8px; height: 8px; flex-shrink: 0;"></span>
+            <span id="system-status-text" class="fw-bold small me-2 text-dark text-nowrap">System Online</span>
+            <span class="text-muted small text-nowrap" style="font-size: 0.8rem;">Last updated: <span
+                    id="last-updated-time">--:--:--</span></span>
+        </div>
+    </div>
+
+    <!-- ROW 1: Top Cards -->
+    <div class="row g-3 mb-4 align-items-stretch">
+        <!-- KUALITAS AIR CARD -->
+        <div class="col-lg-3">
+            <div id="card-quality"
+                class="card card-custom h-100 p-3 position-relative overflow-hidden shadow-sm d-flex flex-column justify-content-between"
+                style="border-radius: 20px; background-color: #eef7f9; border: 1px solid #ccece6;">
+                <div class="position-absolute"
+                    style="width: 200px; height: 200px; background: rgba(14, 165, 233, 0.06); border-radius: 50%; top: -60px; right: -60px; z-index: 0;">
+                </div>
+                <div class="position-relative z-1 d-flex justify-content-between align-items-start">
+                    <div class="d-flex flex-column gap-1">
+                        <span class="fw-bold"
+                            style="font-size: 0.75rem; letter-spacing: 0.5px; color: #52708f;">KUALITAS AIR</span>
+                        <div id="quality-pill-wrapper" class="badge-normal shadow-sm">
+                            <span id="quality-dot" class="badge-dot"></span>
+                            <span id="quality-label">Normal</span>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center shadow-sm"
+                        style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #1e40af 0%, #06b6d4 100%);">
+                        <i class="fas fa-droplet text-white"></i>
+                    </div>
+                </div>
+
+                <div class="text-center my-2 position-relative z-1">
+                    <div class="d-inline-flex align-items-center justify-content-center position-relative"
+                        style="width: 145px; height: 145px;">
+                        <canvas id="scoreGauge"></canvas>
+                        <div class="position-absolute text-center mt-1">
+                            <h2 id="quality-value" class="fw-bolder mb-0 text-dark"
+                                style="font-size: 2.3rem; line-height: 1;">--</h2>
+                            <small class="text-secondary fw-medium" style="font-size: 0.75rem;">/ 100</small>
+                            <span id="quality-badge-text" class="fw-bold d-block mt-1"
+                                style="color: #1d4ed8; font-size: 0.85rem; letter-spacing: 0.5px;">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p id="quality-summary-text" class="text-center mb-2 px-1 position-relative z-1"
+                    style="font-size: 0.8rem; color: #64748b; line-height: 1.3;">Memuat status kualitas air...</p>
+
+                <div class="row g-2 text-center position-relative z-1">
+                    <div class="col-6">
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
+                            style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
+                            <small style="font-size: 0.7rem; color: #64748b;">pH</small>
+                            <strong id="mini-ph-val" class="fw-bold"
+                                style="color: #1e3a8a; font-size: 0.95rem;">--</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
+                            style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
+                            <small style="font-size: 0.7rem; color: #64748b;">Suhu</small>
+                            <strong id="mini-suhu-val" class="fw-bold"
+                                style="color: #10b981; font-size: 0.95rem;">--</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
+                            style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
+                            <small style="font-size: 0.7rem; color: #64748b;">TDS</small>
+                            <strong id="mini-tds-val" class="fw-bold"
+                                style="color: #06b6d4; font-size: 0.95rem;">--</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-white py-2 px-1 d-flex flex-column justify-content-center"
+                            style="border: 1px solid #ccece6; border-radius: 10px; min-height: 52px;">
+                            <small style="font-size: 0.7rem; color: #64748b;">NTU</small>
+                            <strong id="mini-kekeruhan-val" class="fw-bold"
+                                style="color: #8b5cf6; font-size: 0.95rem;">--</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEATHER CARD -->
+        <div class="col-lg-3">
+            <div class="card card-weather-target h-100 d-flex flex-column justify-content-between shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="fw-bold text-uppercase d-flex align-items-center gap-1"
+                        style="font-size: 0.72rem; color: #3d6875;">
+                        <i class="fas fa-location-dot text-danger"></i> {{ $cuaca['lokasi'] ?? 'Sidoarjo' }}
+                    </div>
+                    <div class="text-end" style="line-height: 1.1;">
+                        <div class="fw-bold" style="font-size: 0.95rem; color: #0c2d2a;">Weather</div>
+                        <span style="font-size: 0.72rem; color: #417280;">{{ $cuaca['hari'] ?? 'Hari ini' }}</span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 my-2">
+                    <i class="{{ $cuaca['icon'] ?? 'fas fa-cloud-sun text-warning' }}"
+                        style="font-size: 3.2rem; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.08));"></i>
+                    <div>
+                        <div class="fw-bold"
+                            style="font-size: 2.8rem; line-height: 1; color: #0c2d2a; letter-spacing: -1px;">
+                            {{ $cuaca['suhu'] ?? '--' }}°C</div>
+                        <div style="font-size: 0.85rem; color: #417280; font-weight: 500;">
+                            {{ $cuaca['kondisi'] ?? '--' }}</div>
+                    </div>
+                </div>
+
+                <div class="row text-center py-2 weather-divider my-1">
+                    <div class="col-4 px-1">
+                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">
+                            {{ $cuaca['kelembaban'] ?? '--' }}%</div>
+                        <div style="font-size: 0.65rem; color: #417280;">Kelembaban</div>
+                    </div>
+                    <div class="col-4 px-1 weather-border-x d-flex align-items-center justify-content-center">
+                        <div id="weather-time" class="fw-bold" style="font-size: 0.9rem; color: #ef4444;">
+                            {{ $cuaca['waktu'] ?? '--:--' }}</div>
+                    </div>
+                    <div class="col-4 px-1">
+                        <div class="fw-bold" style="font-size: 1.05rem; color: #0c2d2a;">{{ $cuaca['angin'] ?? '--' }}
+                        </div>
+                        <div style="font-size: 0.65rem; color: #417280;">Angin · {{ $cuaca['arah_angin'] ?? '--' }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hourly-scroll-container pt-1">
+                    @if(isset($cuaca['hourly']) && is_iterable($cuaca['hourly']))
+                    @foreach($cuaca['hourly'] as $item)
+                    <div class="hourly-pill">
+                        <div style="font-size: 0.68rem; color: #417280; font-weight: 600;">{{ $item['jam'] ?? '' }}
+                        </div>
+                        <i class="{{ $item['icon'] ?? 'fas fa-cloud' }} my-1 d-block" style="font-size: 0.85rem;"></i>
+                        <div class="fw-bold" style="font-size: 0.85rem; color: #0c2d2a;">{{ $item['suhu'] ?? '' }}</div>
+                        <div style="font-size: 0.6rem; color: #417280;">{{ $item['angin'] ?? '' }}</div>
+                    </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- SENSOR SUMMARY CARDS -->
+        <div class="col-lg-6">
+            <div class="d-flex flex-column justify-content-between h-100 gap-2">
+                <div id="card-ph"
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px; background-color: #e0f2fe; color: #0284c7;">
+                            <i class="fas fa-vial fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">pH</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="ph-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">pH</span>
+                            </div>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Tingkat keasaman air</div>
+                        </div>
+                    </div>
+                    <span id="ph-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
+                </div>
+
+                <div id="card-suhu"
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px; background-color: #dcfce7; color: #16a34a;">
+                            <i class="fas fa-temperature-half fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">Suhu</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="suhu-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">°C</span>
+                            </div>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Temperatur air tambak</div>
+                        </div>
+                    </div>
+                    <span id="suhu-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
+                </div>
+
+                <div id="card-tds"
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px; background-color: #e0f7fa; color: #00acc1;">
+                            <i class="fas fa-filter fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">TDS</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="tds-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--</h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">ppm</span>
+                            </div>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Total padatan terlarut</div>
+                        </div>
+                    </div>
+                    <span id="tds-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
+                </div>
+
+                <div id="card-kekeruhan"
+                    class="card card-custom px-4 py-3 d-flex flex-row justify-content-between align-items-center h-100">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-3 d-flex align-items-center justify-content-center"
+                            style="width: 48px; height: 48px; background-color: #f3e8ff; color: #9333ea;">
+                            <i class="fas fa-water fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="text-secondary" style="font-size: 0.85rem; margin-bottom: 2px;">Kekeruhan</div>
+                            <div class="d-flex align-items-baseline gap-1" style="line-height: 1;">
+                                <h4 id="kekeruhan-value" class="fw-bold m-0 text-dark" style="font-size: 1.5rem;">--
+                                </h4>
+                                <span class="text-secondary" style="font-size: 0.9rem;">NTU</span>
+                            </div>
+                            <div class="text-secondary mt-1" style="font-size: 0.8rem;">Tingkat kekeruhan air</div>
+                        </div>
+                    </div>
+                    <span id="kekeruhan-badge" class="badge-normal"><span class="badge-dot"></span> Normal</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 2: HYBRID AI SMART RECOMMENDATION -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div id="tips-card" class="card card-custom p-3 p-md-4" style="border-radius: 20px;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 pb-4 mb-4"
+                    style="border-bottom: 1px solid #f1f5f9;">
+                    <div class="d-flex align-items-center gap-3 pe-md-4">
+                        <div id="aiIconWrapper" class="ai-icon-wrapper flex-shrink-0">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1 text-dark d-flex align-items-center flex-wrap gap-2">
+                                Hybrid AI Recommendation
+                                <span class="badge-ml-engine">ML &amp; FUZZY SOP</span>
+                            </h4>
+                            <div class="text-muted" style="font-size: 0.9rem;">
+                                Evaluasi kondisi kolam secara cerdas menggunakan perpaduan Machine Learning, Logic
+                                Fuzzy, dan SOP Budidaya.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex-shrink-0 mt-2 mt-md-0" style="min-width: fit-content;">
+                        <button id="btnAiAction" onclick="triggerAiRecommendation()"
+                            class="btn btn-ai-analyze d-flex align-items-center justify-content-center gap-2">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <span>Analisis Hybrid AI</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="ai-container-box" class="ai-box-notice p-4 mx-md-2 mb-2">
+                    <div class="ai-scan-line"></div>
+
+                    <div id="ai-standby" class="text-center py-4">
+                        <div class="ai-icon-wrapper mx-auto mb-3"
+                            style="width: 48px; height: 48px; font-size: 1.25rem;">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
+                        <p class="text-muted mb-0 mx-auto" style="max-width: 480px; line-height: 1.6;">
+                            Klik tombol <strong>"Analisis Hybrid AI"</strong> untuk membaca parameter real-time,
+                            mendapatkan status diagnosis, serta tindakan SOP terpilih.
+                        </p>
+                    </div>
+
+                    <div id="ai-loading" style="display: none;" class="w-100 py-3">
+                        <div class="loading-steps-container">
+                            <div class="loading-step" id="step-1">
+                                <div class="loading-dot"></div>
+                                <span>Membaca sensor air real-time...</span>
+                            </div>
+                            <div class="loading-step" id="step-2">
+                                <div class="loading-dot"></div>
+                                <span>Menjalankan model Machine Learning...</span>
+                            </div>
+                            <div class="loading-step" id="step-3">
+                                <div class="loading-dot"></div>
+                                <span>Mengevaluasi Logic Fuzzy &amp; SOP Mitigasi...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ai-content-text" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROW 3: MONITORING DATA HEADER & FILTER -->
+    <div
+        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 mt-4">
+        <div>
+            <h4 class="fw-bold mb-0 text-dark">Monitoring Data</h4>
+            <small class="text-muted">Grafik historis parameter kualitas air</small>
+        </div>
+        <div
+            class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto justify-content-between justify-content-md-end">
+            <div class="btn-group btn-group-sm" role="group">
+                <button type="button" id="btn-today" class="btn btn-outline-primary btn-chart-filter active"
+                    onclick="filterChartTime('today')">Today</button>
+                <button type="button" id="btn-7days" class="btn btn-outline-primary btn-chart-filter"
+                    onclick="filterChartTime('7days')">7 Days</button>
+                <button type="button" id="btn-30days" class="btn btn-outline-primary btn-chart-filter"
+                    onclick="filterChartTime('30days')">30 Days</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Chart Tabs -->
+    <div class="d-flex d-md-none gap-2 mb-3 pb-2 custom-chart-tabs">
+        <button class="btn btn-chart-tab active" onclick="switchMobileChart('ph')" id="tab-ph">
+            <i class="fas fa-check me-2 check-icon"></i> pH
+        </button>
+        <button class="btn btn-chart-tab" onclick="switchMobileChart('suhu')" id="tab-suhu">
+            <i class="fas fa-check me-2 check-icon d-none"></i> Suhu
+        </button>
+        <button class="btn btn-chart-tab" onclick="switchMobileChart('tds')" id="tab-tds">
+            <i class="fas fa-check me-2 check-icon d-none"></i> TDS
+        </button>
+        <button class="btn btn-chart-tab" onclick="switchMobileChart('kekeruhan')" id="tab-kekeruhan">
+            <i class="fas fa-check me-2 check-icon d-none"></i> Kekeruhan
+        </button>
+    </div>
+
+    <div class="row g-3">
+        <!-- 1. Grafik pH -->
+        <div class="col-12 col-md-6 chart-card-wrapper active-mobile" id="chart-wrapper-ph">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik pH</h5>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat pH dari waktu ke
+                            waktu</small>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="stat-box">
+                            <div class="stat-header-label">AVG</div>
+                            <div id="ph-avg" class="stat-header-val" style="color: #2563eb;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MIN</div>
+                            <div id="ph-min" class="stat-header-val" style="color: #2563eb;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MAX</div>
+                            <div id="ph-max" class="stat-header-val" style="color: #2563eb;">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="phChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Grafik Suhu -->
+        <div class="col-12 col-md-6 chart-card-wrapper" id="chart-wrapper-suhu">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik Suhu</h5>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan suhu air</small>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="stat-box">
+                            <div class="stat-header-label">AVG</div>
+                            <div id="suhu-avg" class="stat-header-val" style="color: #10b981;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MIN</div>
+                            <div id="suhu-min" class="stat-header-val" style="color: #10b981;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MAX</div>
+                            <div id="suhu-max" class="stat-header-val" style="color: #10b981;">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="suhuChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Grafik TDS -->
+        <div class="col-12 col-md-6 chart-card-wrapper" id="chart-wrapper-tds">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik TDS</h5>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan total padatan terlarut dalam
+                            air</small>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="stat-box">
+                            <div class="stat-header-label">AVG</div>
+                            <div id="tds-avg" class="stat-header-val" style="color: #06b6d4;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MIN</div>
+                            <div id="tds-min" class="stat-header-val" style="color: #06b6d4;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MAX</div>
+                            <div id="tds-max" class="stat-header-val" style="color: #06b6d4;">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="tdsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Grafik Kekeruhan -->
+        <div class="col-12 col-md-6 chart-card-wrapper" id="chart-wrapper-kekeruhan">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Grafik Kekeruhan</h5>
+                        <small class="text-secondary" style="font-size: 0.75rem;">Perubahan tingkat kekeruhan
+                            air</small>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <div class="stat-box">
+                            <div class="stat-header-label">AVG</div>
+                            <div id="kekeruhan-avg" class="stat-header-val" style="color: #8b5cf6;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MIN</div>
+                            <div id="kekeruhan-min" class="stat-header-val" style="color: #8b5cf6;">--</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-header-label">MAX</div>
+                            <div id="kekeruhan-max" class="stat-header-val" style="color: #8b5cf6;">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 220px; position: relative;">
+                    <canvas id="kekeruhanChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Array data sensor di-render langsung dari Backend (urutan sudah dari Lama -> Baru)
+let sensorData = @json($sensorData ?? []);
+let activeTimeRange = 'today';
+
+let charts = {
+    ph: null,
+    suhu: null,
+    tds: null,
+    kekeruhan: null
+};
+let scoreChart = null;
+
+function parseDate(dateStr) {
+    if (!dateStr) return new Date();
+    if (typeof dateStr === 'string') {
+        const isoStr = dateStr.replace(' ', 'T');
+        const d = new Date(isoStr);
+        if (!isNaN(d.getTime())) return d;
+    }
+    const d = new Date(dateStr);
+    return isNaN(d.getTime()) ? new Date() : d;
+}
+
+function formatTimeLabel(dateStr) {
+    if (!dateStr) return '';
+    const d = parseDate(dateStr);
+    const minutes = d.getMinutes();
+    const roundedMinutes = Math.round(minutes / 30) * 30;
+    d.setMinutes(roundedMinutes);
+    d.setSeconds(0);
+    const hours = String(d.getHours()).padStart(2, '0');
+    const mins = String(d.getMinutes()).padStart(2, '0');
+    return `${hours}:${mins}`;
+}
+
+function calculateGaugeScore(ph, suhu, tds, ntu) {
+    let score = 100;
+    if (ph < 6.5 || ph > 8.5) score -= 25;
+    if (suhu < 26.0 || suhu > 31.0) score -= 25;
+    if (tds > 500) score -= 25;
+    if (ntu > 20.0) score -= 25;
+    return Math.max(10, Math.min(100, score));
+}
+
+function updateChartStats(key, arrData, unit = '') {
+    const minEl = document.getElementById(`${key}-min`);
+    const maxEl = document.getElementById(`${key}-max`);
+    const avgEl = document.getElementById(`${key}-avg`);
+
+    if (!arrData || !arrData.length) {
+        if (minEl) minEl.textContent = '--';
+        if (maxEl) maxEl.textContent = '--';
+        if (avgEl) avgEl.textContent = '--';
+        return;
+    }
+
+    const validNums = arrData.filter(v => v !== null && !isNaN(v));
+    if (!validNums.length) {
+        if (minEl) minEl.textContent = '--';
+        if (maxEl) maxEl.textContent = '--';
+        if (avgEl) avgEl.textContent = '--';
+        return;
+    }
+
+    const min = Math.min(...validNums).toFixed(1);
+    const max = Math.max(...validNums).toFixed(1);
+    const avg = (validNums.reduce((a, b) => a + b, 0) / validNums.length).toFixed(1);
+
+    const colorMap = {
+        'ph': '#2563eb',
+        'suhu': '#10b981',
+        'tds': '#06b6d4',
+        'kekeruhan': '#8b5cf6'
+    };
+    const themeColor = colorMap[key] || '#64748b';
+    const unitHtml = unit ?
+        ` <span style="color: ${themeColor}; font-weight: 600; font-size: 0.75rem;">${unit}</span>` : '';
+
+    if (minEl) minEl.innerHTML = `${min}${unitHtml}`;
+    if (maxEl) maxEl.innerHTML = `${max}${unitHtml}`;
+    if (avgEl) avgEl.innerHTML = `${avg}${unitHtml}`;
+}
+
+function evalPh(val) {
+    if (val >= 6.5 && val <= 8.5) return 'Normal';
+    if ((val >= 6.0 && val < 6.5) || (val > 8.5 && val <= 9.0)) return 'Warning';
+    return 'Critical';
+}
+
+function evalSuhu(val) {
+    if (val >= 26.0 && val <= 31.0) return 'Normal';
+    if ((val >= 24.0 && val < 26.0) || (val > 31.0 && val <= 33.0)) return 'Warning';
+    return 'Critical';
+}
+
+function evalTds(val) {
+    if (val <= 500) return 'Normal';
+    if (val <= 1000) return 'Warning';
+    return 'Critical';
+}
+
+function evalKekeruhan(val) {
+    if (val <= 20.0) return 'Normal';
+    if (val <= 50.0) return 'Warning';
+    return 'Critical';
+}
+
+function updateBadgeUI(elementId, status) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    if (status === 'Normal') {
+        el.className = 'badge-normal';
+        el.innerHTML = `<span class="badge-dot"></span> Normal`;
+    } else if (status === 'Warning') {
+        el.className = 'badge-warning-custom';
+        el.innerHTML = `<span class="badge-dot"></span> Warning`;
+    } else {
+        el.className = 'badge-danger-custom';
+        el.innerHTML = `<span class="badge-dot"></span> Critical`;
+    }
+}
+
+function animateGaugeScore(targetScore, color) {
+    if (!scoreChart) return;
+
+    scoreChart.data.datasets[0].data = [targetScore, 100 - targetScore];
+    scoreChart.data.datasets[0].backgroundColor[0] = color;
+    scoreChart.options.animation = {
+        duration: 900,
+        easing: 'easeOutCubic'
+    };
+    scoreChart.update();
+
+    const valueEl = document.getElementById('quality-value');
+    if (valueEl) {
+        let startVal = parseInt(valueEl.textContent) || 0;
+        const duration = 900;
+        const startTime = performance.now();
+
+        function step(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easeProgress = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.round(startVal + (targetScore - startVal) * easeProgress);
+            valueEl.textContent = currentVal;
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    }
+}
+
+function updateSensorBadgesAndValues(latest) {
+    if (!latest) return;
+
+    const phVal = parseFloat(latest.ph) || 0;
+    const phEl = document.getElementById('ph-value');
+    const miniPhEl = document.getElementById('mini-ph-val');
+    if (phEl) phEl.textContent = phVal.toFixed(1);
+    if (miniPhEl) miniPhEl.textContent = phVal.toFixed(1);
+    updateBadgeUI('ph-badge', evalPh(phVal));
+
+    const suhuVal = parseFloat(latest.suhu) || 0;
+    const suhuEl = document.getElementById('suhu-value');
+    const miniSuhuEl = document.getElementById('mini-suhu-val');
+    if (suhuEl) suhuEl.textContent = suhuVal.toFixed(1);
+    if (miniSuhuEl) miniSuhuEl.textContent = `${suhuVal.toFixed(1)}°`;
+    updateBadgeUI('suhu-badge', evalSuhu(suhuVal));
+
+    const tdsVal = parseFloat(latest.tds) || 0;
+    const tdsEl = document.getElementById('tds-value');
+    const miniTdsEl = document.getElementById('mini-tds-val');
+    if (tdsEl) tdsEl.textContent = Math.round(tdsVal);
+    if (miniTdsEl) miniTdsEl.textContent = Math.round(tdsVal);
+    updateBadgeUI('tds-badge', evalTds(tdsVal));
+
+    const ntuVal = parseFloat(latest.kekeruhan ?? latest.ntu) || 0;
+    const kekeruhanEl = document.getElementById('kekeruhan-value');
+    const miniKekeruhanEl = document.getElementById('mini-kekeruhan-val');
+    if (kekeruhanEl) kekeruhanEl.textContent = ntuVal.toFixed(1);
+    if (miniKekeruhanEl) miniKekeruhanEl.textContent = ntuVal.toFixed(1);
+    updateBadgeUI('kekeruhan-badge', evalKekeruhan(ntuVal));
+
+    const qualityScore = (latest.kualitas !== null && latest.kualitas !== undefined) ?
+        Math.round(parseFloat(latest.kualitas)) : calculateGaugeScore(phVal, suhuVal, tdsVal, ntuVal);
+
+    let qualityText = 'Normal';
+    let qualityColor = '#10b981';
+    let summary = 'Semua parameter dalam kondisi aman dan optimal.';
+    let pillClass = 'badge-normal shadow-sm';
+
+    if (qualityScore < 45) {
+        qualityText = 'Critical';
+        qualityColor = '#ef4444';
+        summary = 'Kualitas air kritis, perlu tindakan pengondisian segera.';
+        pillClass = 'badge-danger-custom shadow-sm';
+    } else if (qualityScore < 70) {
+        qualityText = 'Warning';
+        qualityColor = '#f59e0b';
+        summary = 'Kualitas air kurang stabil, pantau perubahan pH & suhu.';
+        pillClass = 'badge-warning-custom shadow-sm';
+    } else {
+        qualityText = 'Normal';
+        qualityColor = '#10b981';
+        summary = 'Semua parameter dalam kondisi aman dan optimal.';
+        pillClass = 'badge-normal shadow-sm';
+    }
+
+    const qualityPill = document.getElementById('quality-pill-wrapper');
+    if (qualityPill) qualityPill.className = pillClass;
+
+    const labelEl = document.getElementById('quality-label');
+    if (labelEl) labelEl.textContent = qualityText;
+
+    const badgeTextEl = document.getElementById('quality-badge-text');
+    if (badgeTextEl) {
+        badgeTextEl.textContent = qualityText.toUpperCase();
+        badgeTextEl.style.color = qualityColor;
+    }
+
+    const summaryEl = document.getElementById('quality-summary-text');
+    if (summaryEl) summaryEl.textContent = summary;
+
+    animateGaugeScore(qualityScore, qualityColor);
+}
+
+function initScoreGauge() {
+    const canvas = document.getElementById('scoreGauge');
+    if (!canvas) return;
+    const ctxGauge = canvas.getContext('2d');
+    scoreChart = new Chart(ctxGauge, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [0, 100],
+                backgroundColor: ['#10b981', '#e2e8f0'],
+                borderWidth: 0,
+                borderRadius: 20
+            }]
+        },
+        options: {
+            cutout: '80%',
+            rotation: 210,
+            circumference: 360,
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    enabled: false
+                }
+            }
+        }
+    });
+}
+
+const crosshairPlugin = {
+    id: 'crosshair',
+    afterDraw: chart => {
+        const activeElements = chart.tooltip?.getActiveElements();
+        if (activeElements && activeElements.length) {
+            const x = activeElements[0].element.x;
+            const yAxis = chart.scales.y;
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, yAxis.top);
+            ctx.lineTo(x, yAxis.bottom);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(203, 213, 225, 0.8)';
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+};
+
+function createLineChart(id, label, initialLabels, dataPoints, borderColor, bgColor, threshold = null, thresholdColor =
+    '#cbd5e1') {
+    const canvas = document.getElementById(id);
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d');
+
+    let gradient = ctx.createLinearGradient(0, 0, 0, 220);
+    gradient.addColorStop(0, bgColor);
+    gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+    const datasets = [{
+        label: label,
+        data: dataPoints,
+        borderColor: borderColor,
+        backgroundColor: gradient,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: borderColor,
+        pointHoverBorderColor: '#ffffff'
+    }];
+
+    if (threshold !== null) {
+        datasets.push({
+            label: 'Ambang Batas',
+            data: Array(dataPoints.length).fill(threshold),
+            borderColor: thresholdColor,
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            fill: false,
+            pointRadius: 0,
+            pointHoverRadius: 0
+        });
+    }
+
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: initialLabels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 5
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#64748b',
+                    bodyColor: borderColor,
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1.5
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    border: {
+                        display: false
+                    }
+                },
+                y: {
+                    grid: {
+                        color: '#f8fafc',
+                        borderDash: [4, 4]
+                    },
+                    ticks: {
+                        color: '#94a3b8'
+                    },
+                    border: {
+                        display: false
+                    }
+                }
+            }
+        },
+        plugins: [crosshairPlugin]
+    });
+}
+
+function initCharts() {
+    initScoreGauge();
+    charts.ph = createLineChart('phChart', 'pH', [], [], '#2563eb', 'rgba(37, 99, 235, 0.1)', 7.5, '#bfdbfe');
+    charts.suhu = createLineChart('suhuChart', 'Suhu (°C)', [], [], '#10b981', 'rgba(16, 185, 129, 0.1)', 30,
+        '#bbf7d0');
+    charts.tds = createLineChart('tdsChart', 'TDS (ppm)', [], [], '#06b6d4', 'rgba(6, 182, 212, 0.1)', 500, '#fca5a5');
+    charts.kekeruhan = createLineChart('kekeruhanChart', 'Kekeruhan (NTU)', [], [], '#8b5cf6',
+        'rgba(139, 92, 246, 0.1)', 20, '#fca5a5');
+
+    filterChartTime(activeTimeRange);
+
+    if (sensorData.length > 0) {
+        // Ambil elemen terakhir (paling baru)
+        const latestData = sensorData[sensorData.length - 1];
+        updateSensorBadgesAndValues(latestData);
+    }
+}
+
+function processSensorDataByRange(rawData, range) {
+    if (!rawData || rawData.length === 0) return {
+        labels: [],
+        ph: [],
+        suhu: [],
+        tds: [],
+        kekeruhan: []
+    };
+
+    let sortedData = [...rawData].sort((a, b) => parseDate(a.created_at) - parseDate(b.created_at));
+    const now = new Date();
+
+    if (range === 'today') {
+        const todayStr = now.toDateString();
+        let todayData = sortedData.filter(item => parseDate(item.created_at).toDateString() === todayStr);
+        let grouped = {};
+        todayData.forEach(item => {
+            const timeKey = formatTimeLabel(item.created_at);
+            if (!grouped[timeKey]) grouped[timeKey] = {
+                ph: [],
+                suhu: [],
+                tds: [],
+                kekeruhan: []
+            };
+            grouped[timeKey].ph.push(parseFloat(item.ph) || 0);
+            grouped[timeKey].suhu.push(parseFloat(item.suhu) || 0);
+            grouped[timeKey].tds.push(parseFloat(item.tds) || 0);
+            grouped[timeKey].kekeruhan.push(parseFloat(item.kekeruhan ?? item.ntu) || 0);
+        });
+
+        let labels = Object.keys(grouped);
+        let ph = labels.map(k => grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length);
+        let suhu = labels.map(k => grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length);
+        let tds = labels.map(k => grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length);
+        let kekeruhan = labels.map(k => grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length);
+
+        return {
+            labels,
+            ph,
+            suhu,
+            tds,
+            kekeruhan
+        };
+    } else {
+        const daysCount = range === '7days' ? 7 : 30;
+        const limitDate = new Date();
+        limitDate.setDate(limitDate.getDate() - daysCount);
+        let filteredData = sortedData.filter(item => parseDate(item.created_at) >= limitDate);
+        let grouped = {};
+        filteredData.forEach(item => {
+            const dateKey = parseDate(item.created_at).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short'
+            });
+            if (!grouped[dateKey]) grouped[dateKey] = {
+                ph: [],
+                suhu: [],
+                tds: [],
+                kekeruhan: []
+            };
+            grouped[dateKey].ph.push(parseFloat(item.ph) || 0);
+            grouped[dateKey].suhu.push(parseFloat(item.suhu) || 0);
+            grouped[dateKey].tds.push(parseFloat(item.tds) || 0);
+            grouped[dateKey].kekeruhan.push(parseFloat(item.kekeruhan ?? item.ntu) || 0);
+        });
+
+        let labels = Object.keys(grouped);
+        let ph = labels.map(k => grouped[k].ph.reduce((a, b) => a + b, 0) / grouped[k].ph.length);
+        let suhu = labels.map(k => grouped[k].suhu.reduce((a, b) => a + b, 0) / grouped[k].suhu.length);
+        let tds = labels.map(k => grouped[k].tds.reduce((a, b) => a + b, 0) / grouped[k].tds.length);
+        let kekeruhan = labels.map(k => grouped[k].kekeruhan.reduce((a, b) => a + b, 0) / grouped[k].kekeruhan.length);
+
+        return {
+            labels,
+            ph,
+            suhu,
+            tds,
+            kekeruhan
+        };
+    }
+}
+
+function filterChartTime(range) {
+    activeTimeRange = range;
+    ['btn-today', 'btn-7days', 'btn-30days'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove('active');
+    });
+
+    const activeBtn = document.getElementById(`btn-${range}`);
+    if (activeBtn) activeBtn.classList.add('active');
+
+    const processed = processSensorDataByRange(sensorData, range);
+
+    if (charts.ph) {
+        charts.ph.data.labels = processed.labels;
+        charts.ph.data.datasets[0].data = processed.ph;
+        if (charts.ph.data.datasets[1]) charts.ph.data.datasets[1].data = Array(processed.labels.length).fill(7.5);
+        charts.ph.update();
+    }
+    if (charts.suhu) {
+        charts.suhu.data.labels = processed.labels;
+        charts.suhu.data.datasets[0].data = processed.suhu;
+        if (charts.suhu.data.datasets[1]) charts.suhu.data.datasets[1].data = Array(processed.labels.length).fill(30);
+        charts.suhu.update();
+    }
+    if (charts.tds) {
+        charts.tds.data.labels = processed.labels;
+        charts.tds.data.datasets[0].data = processed.tds;
+        if (charts.tds.data.datasets[1]) charts.tds.data.datasets[1].data = Array(processed.labels.length).fill(500);
+        charts.tds.update();
+    }
+    if (charts.kekeruhan) {
+        charts.kekeruhan.data.labels = processed.labels;
+        charts.kekeruhan.data.datasets[0].data = processed.kekeruhan;
+        if (charts.kekeruhan.data.datasets[1]) charts.kekeruhan.data.datasets[1].data = Array(processed.labels.length)
+            .fill(20);
+        charts.kekeruhan.update();
+    }
+
+    updateChartStats('ph', processed.ph, 'pH');
+    updateChartStats('suhu', processed.suhu, '°C');
+    updateChartStats('tds', processed.tds, 'ppm');
+    updateChartStats('kekeruhan', processed.kekeruhan, 'NTU');
+}
+
+function startLiveWeatherClock() {
+    function updateClock() {
+        const now = new Date();
+        const weatherTimeEl = document.getElementById('weather-time');
+        if (weatherTimeEl) {
+            weatherTimeEl.textContent =
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} WIB`;
+        }
+    }
+    updateClock();
+    setInterval(updateClock, 10000);
+}
+
+function fetchRealtimeData() {
+    fetch('/api/sensor/latest')
+        .then(response => response.ok ? response.json() : Promise.reject('Gagal mengambil data'))
+        .then(res => {
+            const latest = res.data;
+            if (latest && latest.ph !== undefined) {
+                const lastIdx = sensorData.length - 1;
+                const isNew = sensorData.length === 0 ||
+                    (latest.id && sensorData[lastIdx] && latest.id !== sensorData[lastIdx].id) ||
+                    (latest.created_at && sensorData[lastIdx] && latest.created_at !== sensorData[lastIdx]
+                        .created_at);
+
+                if (isNew) {
+                    sensorData.push(latest);
+                    if (sensorData.length > 1440) sensorData.shift();
+                    updateSensorBadgesAndValues(latest);
+                    filterChartTime(activeTimeRange);
+                } else {
+                    updateSensorBadgesAndValues(latest);
+                }
+            }
+
+            const updatedEl = document.getElementById('last-updated-time');
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', {
+                hour12: false
+            });
+
+            const dotEl = document.getElementById('system-status-dot');
+            if (dotEl) dotEl.className = 'badge bg-success rounded-circle p-1 me-2';
+
+            const statusTextEl = document.getElementById('system-status-text');
+            if (statusTextEl) statusTextEl.textContent = 'System Online';
+        })
+        .catch(() => {
+            const updatedEl = document.getElementById('last-updated-time');
+            if (updatedEl) updatedEl.textContent = new Date().toLocaleTimeString('id-ID', {
+                hour12: false
+            });
+
+            const dotEl = document.getElementById('system-status-dot');
+            if (dotEl) dotEl.className = 'badge bg-warning rounded-circle p-1 me-2';
+
+            const statusTextEl = document.getElementById('system-status-text');
+            if (statusTextEl) statusTextEl.textContent = 'Live Cache';
+        });
+}
+
+/* =======================================================
+   HELPER UNTUK BADGE & TEXT COLOR DARI STATUS DIAGNOSIS
+======================================================= */
+function getStatusBadgeHtml(statusStr, forceWarningIcon = false) {
+    const st = (statusStr || 'Baik').toString().trim();
+    const stLower = st.toLowerCase();
+
+    let bg = '#dcfce7';
+    let color = '#15803d';
+    let border = '#bbf7d0';
+    let iconHtml = '<i class="fas fa-check-circle me-1"></i>';
+
+    if (stLower.includes('offline') || stLower.includes('tidak diketahui')) {
+        bg = '#f1f5f9';
+        color = '#475569';
+        border = '#cbd5e1';
+        iconHtml = '<i class="fas fa-power-off me-1"></i>';
+    } else if (stLower.includes('sedang') || stLower.includes('warning') || stLower.includes('waspada')) {
+        bg = '#fef3c7';
+        color = '#b45309';
+        border = '#fde68a';
+        iconHtml = '<i class="fas fa-triangle-exclamation me-1"></i>';
+    } else if (stLower.includes('buruk') || stLower.includes('critical') || stLower.includes('kritis') || stLower
+        .includes('danger')) {
+        bg = '#fee2e2';
+        color = '#b91c1c';
+        border = '#fecaca';
+        iconHtml = '<i class="fas fa-triangle-exclamation me-1"></i>';
+    } else {
+        if (forceWarningIcon) {
+            iconHtml = '<i class="fas fa-triangle-exclamation me-1"></i>';
+        }
+    }
+
+    return `<span class="badge rounded-pill px-3 py-1" style="background-color: ${bg}; color: ${color}; border: 1px solid ${border}; font-size: 0.75rem; font-weight: 700;">${iconHtml}${st}</span>`;
+}
+
+function getStatusTextColor(statusStr) {
+    const st = (statusStr || 'Baik').toString().trim().toLowerCase();
+    if (st.includes('sedang') || st.includes('warning') || st.includes('waspada')) {
+        return '#c2410c';
+    } else if (st.includes('buruk') || st.includes('critical') || st.includes('kritis') || st.includes('danger')) {
+        return '#b91c1c';
+    }
+    return '#15803d';
+}
+
+/* =======================================================
+   HYBRID AI RECOMMENDATION GENERATOR
+======================================================= */
+function generateRecommendationCardsHtml(data) {
+    if (!data || data.status === 'error') {
+        return `
+            <div class="alert alert-warning rounded-4 mb-0" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i> ${data?.message || 'Gagal memuat analisis Hybrid AI.'}
+            </div>
+        `;
+    }
+
+    const hybrid = data.hybrid_ai || {};
+    const rekomendasiSaatIni = data.rekomendasi_saat_ini || [];
+    const prediksi = data.prediksi_ke_depan || {};
+    const tindakanPrediksi = prediksi.tindakan || [];
+    const pesanAntisipasi = prediksi.pesan_antisipasi || '';
+
+    const isMlOnline = hybrid.is_offline === false;
+
+    // Status Diagnosis
+    const statusSaatIni = hybrid.status_saat_ini || 'Baik';
+    const statusPrediksi = hybrid.status_prediksi || 'Baik';
+
+    let accentColor = '#10b981';
+    let statusBg = '#ffffff';
+    let statusBorder = '#bbf7d0';
+
+    if (statusSaatIni === 'Buruk' || (isMlOnline && statusPrediksi === 'Buruk')) {
+        accentColor = '#ef4444';
+        statusBg = '#fffdfd';
+        statusBorder = '#fecaca';
+    } else if (statusSaatIni === 'Sedang' || (isMlOnline && statusPrediksi === 'Sedang')) {
+        accentColor = '#f59e0b';
+        statusBg = '#ffffff';
+        statusBorder = '#fde68a';
+    }
+
+    const badgeSaatIni = getStatusBadgeHtml(statusSaatIni, true);
+
+    let badgePrediksiHeader = '';
+    let descHtml = hybrid.keterangan_status ||
+        `Kualitas air saat ini berada di level <strong style="color: ${getStatusTextColor(statusSaatIni)}">${statusSaatIni}</strong>.`;
+
+    if (isMlOnline) {
+        badgePrediksiHeader = `
+            <span class="text-muted mx-2" style="opacity: 0.4;">|</span>
+            <span class="fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #475569;">PREDIKSI +1 JAM</span>
+            ${getStatusBadgeHtml(statusPrediksi, false)}
+        `;
+        if (!hybrid.keterangan_status) {
+            descHtml =
+                `Kualitas air saat ini berada di level <strong style="color: ${getStatusTextColor(statusSaatIni)}">${statusSaatIni}</strong> dan 1 jam ke depan diprediksi menjadi <strong style="color: ${getStatusTextColor(statusPrediksi)}">${statusPrediksi}</strong>.`;
+        }
+    }
+
+    function renderCard(item) {
+        const level = item.level || 'info';
+        let stripClass = 'rec-card-info';
+        let badgeBg = 'background-color: #e0f2fe; color: #0369a1;';
+        let iconBg = 'background: #e0f2fe; color: #0284c7;';
+
+        if (level === 'danger') {
+            stripClass = 'rec-card-danger';
+            badgeBg = 'background-color: #fee2e2; color: #b91c1c;';
+            iconBg = 'background: #fee2e2; color: #ef4444;';
+        } else if (level === 'warning') {
+            stripClass = 'rec-card-warning';
+            badgeBg = 'background-color: #ffedd5; color: #c2410c;';
+            iconBg = 'background: #ffedd5; color: #f97316;';
+        } else if (level === 'success') {
+            stripClass = 'rec-card-success';
+            badgeBg = 'background-color: #dcfce7; color: #15803d;';
+            iconBg = 'background: #dcfce7; color: #10b981;';
+        }
+
+        return `
+            <div class="rec-card ${stripClass} d-flex p-3 mb-3">
+                <div class="d-flex flex-column align-items-center me-3" style="width: 50px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center mb-1" style="width: 44px; height: 44px; ${iconBg}">
+                        <i class="${item.icon || 'fas fa-clipboard-check'} fs-5"></i>
+                    </div>
+                    <span class="text-muted fw-bold" style="font-size: 0.75rem;">${item.num}</span>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                        <span class="badge rounded-pill px-3 py-1" style="${badgeBg} font-size: 0.65rem; letter-spacing: 0.5px; font-weight: 700;">${item.badge} · ${item.type}</span>
+                    </div>
+                    <h6 class="fw-bold text-dark mb-1" style="font-size: 1rem;">${item.title}</h6>
+                    <p class="mb-0" style="color: #000000; font-size: 0.85rem; line-height: 1.5;">${item.desc}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    let saatIniHtml = rekomendasiSaatIni.map(renderCard).join('');
+    let layoutColumnsHtml = '';
+
+    if (isMlOnline) {
+        let prediksiHtml = tindakanPrediksi.map(renderCard).join('');
+        layoutColumnsHtml = `
+            <div class="col-12 col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-primary-subtle text-primary rounded px-2 py-1"><i class="fas fa-clipboard-list"></i></div>
+                    <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Rekomendasi Tindakan (Saat Ini)</h5>
+                </div>
+                ${saatIniHtml}
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-warning-subtle text-warning-emphasis rounded px-2 py-1"><i class="fas fa-clock-rotate-left"></i></div>
+                    <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Prediksi & Tindakan (1 Jam ke Depan)</h5>
+                </div>
+                ${pesanAntisipasi ? `
+                <div class="alert alert-warning border-0 rounded-3 mb-3 p-3 d-flex gap-2 align-items-start" style="background-color: #fffbeb; border-left: 4px solid #f59e0b !important;">
+                    <i class="fas fa-bullhorn text-warning mt-1"></i>
+                    <span style="font-size: 0.85rem; color: #92400e; line-height: 1.5;">${pesanAntisipasi}</span>
+                </div>
+                ` : ''}
+                ${prediksiHtml}
+            </div>
+        `;
+    } else {
+        layoutColumnsHtml = `
+            <div class="col-12">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <div class="bg-primary-subtle text-primary rounded px-2 py-1"><i class="fas fa-clipboard-list"></i></div>
+                    <h5 class="fw-bold m-0 text-dark" style="font-size: 1.05rem;">Rekomendasi Tindakan (Saat Ini)</h5>
+                </div>
+                ${saatIniHtml}
+            </div>
+        `;
+    }
+
+    return `
+        <!-- HEADER STATUS DIAGNOSIS -->
+        <div class="card p-3 p-md-4 mb-4" style="background-color: ${statusBg}; border: 1px solid ${statusBorder}; border-left: 5px solid ${accentColor} !important; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                <span class="fw-bold text-uppercase" style="font-size: 0.75rem; letter-spacing: 0.5px; color: #475569;">STATUS DIAGNOSIS</span>
+                ${badgeSaatIni}
+                ${badgePrediksiHeader}
+            </div>
+            <div class="text-secondary m-0" style="font-size: 0.92rem; line-height: 1.5;">
+                ${descHtml}
+            </div>
+        </div>
+
+        <!-- TATA LETAK KOLOM DINAMIS -->
+        <div class="row g-4">
+            ${layoutColumnsHtml}
+        </div>
+    `;
+}
+
+function triggerAiRecommendation() {
+    const btn = document.getElementById('btnAiAction');
+    const iconWrapper = document.getElementById('aiIconWrapper');
+    const standby = document.getElementById('ai-standby');
+    const loading = document.getElementById('ai-loading');
+    const contentText = document.getElementById('ai-content-text');
+    const containerBox = document.getElementById('ai-container-box');
+
+    if (!btn || !loading || !contentText || !containerBox) return;
+
+    btn.disabled = true;
+    btn.classList.remove('btn-ai-analyze');
+    btn.classList.add('btn-ai-loading');
+    btn.innerHTML = `<span class="ai-spinner me-2"></span><span>Menganalisis…</span>`;
+
+    if (iconWrapper) iconWrapper.classList.add('analyzing');
+    containerBox.classList.add('analyzing');
+    if (standby) standby.style.display = 'none';
+    contentText.style.display = 'none';
+    contentText.innerHTML = '';
+    loading.style.display = 'block';
+
+    const steps = [
+        document.getElementById('step-1'),
+        document.getElementById('step-2'),
+        document.getElementById('step-3')
+    ];
+    steps.forEach(s => {
+        if (s) s.classList.remove('visible', 'active');
+    });
+
+    setTimeout(() => {
+        if (steps[0]) steps[0].classList.add('visible', 'active');
+    }, 100);
+    setTimeout(() => {
+        if (steps[0]) steps[0].classList.remove('active');
+        if (steps[1]) steps[1].classList.add('visible', 'active');
+    }, 700);
+    setTimeout(() => {
+        if (steps[1]) steps[1].classList.remove('active');
+        if (steps[2]) steps[2].classList.add('visible', 'active');
+    }, 1300);
+    setTimeout(() => {
+        executeAiFetch();
+    }, 1900);
+
+    function executeAiFetch() {
+        fetch("{{ route('dashboard.ai') }}", {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.ok ? res.json() : Promise.reject('Network response was not ok'))
+            .then(data => {
+                finishAiAnalysis(data);
+            })
+            .catch(() => {
+                finishAiAnalysis({
+                    status: 'error',
+                    message: 'Gagal terhubung ke modul AI. Pastikan server terhubung dengan baik.'
+                });
+            });
+    }
+
+    function finishAiAnalysis(data) {
+        btn.disabled = false;
+        btn.classList.remove('btn-ai-loading');
+        btn.classList.add('btn-ai-analyze');
+        btn.innerHTML = `<i class="fas fa-wand-magic-sparkles"></i><span>Analisis Hybrid AI</span>`;
+
+        if (iconWrapper) iconWrapper.classList.remove('analyzing');
+        containerBox.classList.remove('analyzing');
+        loading.style.display = 'none';
+
+        contentText.style.display = 'block';
+        contentText.className = 'ai-result-container';
+        contentText.innerHTML = generateRecommendationCardsHtml(data);
+    }
+}
+
+function switchMobileChart(chartId) {
+    document.querySelectorAll('.chart-card-wrapper').forEach(card => card.classList.remove('active-mobile'));
+    const targetChartWrapper = document.getElementById('chart-wrapper-' + chartId);
+    if (targetChartWrapper) targetChartWrapper.classList.add('active-mobile');
+
+    document.querySelectorAll('.btn-chart-tab').forEach(btn => {
+        btn.classList.remove('active');
+        const icon = btn.querySelector('.check-icon');
+        if (icon) icon.classList.add('d-none');
+    });
+
+    const activeTab = document.getElementById('tab-' + chartId);
+    if (activeTab) {
+        activeTab.classList.add('active');
+        const activeIcon = activeTab.querySelector('.check-icon');
+        if (activeIcon) activeIcon.classList.remove('d-none');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initCharts();
+    startLiveWeatherClock();
+
+    const timeEl = document.getElementById('last-updated-time');
+    if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('id-ID', {
+        hour12: false
+    });
+
+    setInterval(fetchRealtimeData, 5000);
+
+    const scrollContainer = document.querySelector('.hourly-scroll-container');
+    if (scrollContainer) {
+        let autoScrollTimer;
+
+        function startAutoScroll() {
+            autoScrollTimer = setInterval(() => {
+                const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                if (scrollContainer.scrollLeft >= maxScroll - 5) {
+                    scrollContainer.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    scrollContainer.scrollBy({
+                        left: 70,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 2500);
+        }
+        startAutoScroll();
+        scrollContainer.addEventListener('mouseenter', () => clearInterval(autoScrollTimer));
+        scrollContainer.addEventListener('mouseleave', () => startAutoScroll());
+    }
+        // Fungsi agar web otomatis mengecek ambang batas terbaru dari database secara berkala
+    function syncWebThresholds() {
+        fetch('/api/get-ambang-batas')
+            .then(response => response.json())
+            .then(data => {
+                // Jika Anda punya elemen teks di web untuk menampilkan batas (contoh: id="label-ph-max")
+                // Nilainya bisa di-update secara otomatis di sini tanpa refresh browser!
+                console.log("Ambang batas web disinkronkan:", data);
+            })
+            .catch(error => console.error('Gagal sinkron web:', error));
+    }
+
+    // Jalankan setiap 3 detik sekali
+    setInterval(syncWebThresholds, 3000);
+    });
+</script>
+@endpush
