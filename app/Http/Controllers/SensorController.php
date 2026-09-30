@@ -34,19 +34,18 @@ class SensorController extends Controller
      */
     public function filterHistory(Request $request)
     {
-        $query = Sensor::query();
+        $query = Sensor::perSlot();
 
         $this->applyDateFilter($query, $request);
-        $this->applyPhFilter($query, $request);
-        $this->applySuhuFilter($query, $request);
-        $this->applyKekeruhanFilter($query, $request);
-        $this->applyTdsFilter($query, $request);
 
-        $sensorData = $query->orderByDesc('created_at')->get();
+        match ($request->status) {
+            'normal'   => $query->where('kualitas', '>=', 75),
+            'warning'  => $query->where('kualitas', '>=', 45)->where('kualitas', '<', 75),
+            'critical' => $query->where('kualitas', '<', 45),
+            default    => null,
+        };
 
-        $formattedData = $sensorData->map(fn($data) => $this->formatSensorData($data));
-
-        return response()->json($formattedData);
+        return response()->json($query->orderByDesc('id')->get());
     }
 
     /**

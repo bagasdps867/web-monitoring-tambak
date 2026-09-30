@@ -15,7 +15,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $sensorData = Sensor::orderBy('id', 'desc')->take(1440)->get()->reverse()->values();
+        $sensorData = Sensor::perSlot()->orderBy('id', 'desc')->take(1440)->get()->reverse()->values();
         $cuaca = $this->getCuacaData();
 
         return view('dashboard', compact('sensorData', 'cuaca'));

@@ -17,4 +17,10 @@ class Sensor extends Model
         'kekeruhan',
         'kualitas',
     ];
+
+    public function scopePerSlot($query)
+    {
+        return $query->whereIn('id', self::selectRaw('MAX(id)')
+            ->groupByRaw('FLOOR(UNIX_TIMESTAMP(created_at) / 60)'));
+    }
 }

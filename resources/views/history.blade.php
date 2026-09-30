@@ -861,29 +861,7 @@ function evaluateWaterQuality(item) {
     }
 }
 
-function filter30MinIntervals(dataList) {
-    let grouped = {};
-
-    dataList.forEach(item => {
-        let rawDate = item.created_at || item.updated_at;
-        if (!rawDate) return;
-
-        let date = new Date(rawDate);
-        if (isNaN(date.getTime())) return;
-
-        let slotMinute = date.getMinutes() < 30 ? '00' : '30';
-        let slotKey =
-            `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${slotMinute}`;
-
-        if (!grouped[slotKey]) {
-            grouped[slotKey] = item;
-        }
-    });
-
-    return Object.values(grouped);
-}
-
-function loadHistoryData() {
+function loadHistoryData(keepPage = false) {
     let startDate = $("#start_date").val();
     let endDate = $("#end_date").val();
     let status = $("#status_filter").val();
@@ -899,48 +877,9 @@ function loadHistoryData() {
         },
         dataType: "json",
         success: function(response) {
-            let rawList = Array.isArray(response) ? response : (response.data || response.sensors || []);
+            // Filter tanggal/status & interval 30 menit sudah dikerjakan server.
             let sortOrder = $("#sort_order").val();
-
-            // 1. Filter Data Client-Side
-            rawList = rawList.filter(item => {
-                let rawDate = item.created_at || item.updated_at || "";
-                // Konversi ke format yang aman (mengganti spasi dengan T untuk kompatibilitas browser)
-                let itemDateObj = new Date(rawDate.replace(' ', 'T'));
-                let evalRes = evaluateWaterQuality(item);
-
-                let passStartDate = true;
-                let passEndDate = true;
-
-                // Pastikan tanggal valid sebelum membandingkan
-                if (!isNaN(itemDateObj.getTime())) {
-                    if (startDate) {
-                        let startObj = new Date(startDate);
-                        startObj.setHours(0, 0, 0, 0); // Mulai dari 00:00:00
-                        passStartDate = itemDateObj >= startObj;
-                    }
-                    if (endDate) {
-                        let endObj = new Date(endDate);
-                        endObj.setHours(23, 59, 59, 999); // Sampai 23:59:59
-                        passEndDate = itemDateObj <= endObj;
-                    }
-                }
-
-                let passStatus = (status === 'all' || !status) ? true : (evalRes.category ===
-                    status);
-
-                return passStartDate && passEndDate && passStatus;
-            });
-
-            // 2. Sorting
-            rawList.sort((a, b) => {
-                let dateA = new Date(a.created_at || a.updated_at || 0);
-                let dateB = new Date(b.created_at || b.updated_at || 0);
-                return sortOrder === 'oldest' ? dateA - dateB : dateB - dateA;
-            });
-
-            // 3. Interval 30 Menit
-            currentFilteredData = filter30MinIntervals(rawList);
+            currentFilteredData = response.sort((a, b) => sortOrder === 'oldest' ? a.id - b.id : b.id - a.id);
 
             let totalData = currentFilteredData.length;
             let sumPh = 0,
@@ -982,7 +921,7 @@ function loadHistoryData() {
                 $("#summary_kualitas_sub").text(`${normalCount} dari ${totalData} data normal`);
             }
 
-            renderTablePage(1);
+            renderTablePage(keepPage ? Math.min(currentPage, Math.ceil(totalData / itemsPerPage) || 1) : 1);
         },
         error: function(xhr, status, error) {
             $("#historyBody").html(
@@ -1214,7 +1153,7 @@ $(document).ready(function() {
     loadHistoryData();
     setInterval(() => {
         if (!$("#start_date").val() && !$("#end_date").val() && $("#status_filter").val() === 'all') {
-            loadHistoryData();
+            loadHistoryData(true);
         }
     }, 20000);
 });

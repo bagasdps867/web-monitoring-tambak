@@ -1404,7 +1404,7 @@ function updateSensorBadgesAndValues(latest) {
         qualityColor = '#ef4444';
         summary = 'Kualitas air kritis, perlu tindakan pengondisian segera.';
         pillClass = 'badge-danger-custom shadow-sm';
-    } else if (qualityScore < 70) {
+    } else if (qualityScore < 75) {
         qualityText = 'Warning';
         qualityColor = '#f59e0b';
         summary = 'Kualitas air kurang stabil, pantau perubahan pH & suhu.';
@@ -1752,7 +1752,10 @@ function fetchRealtimeData() {
                         .created_at);
 
                 if (isNew) {
-                    sensorData.push(latest);
+                    // Satu titik per 1 menit: kalau masih di slot yang sama, timpa titik terakhir
+                    const slot = d => Math.floor(parseDate(d.created_at) / 60000);
+                    if (sensorData.length && slot(sensorData[lastIdx]) === slot(latest)) sensorData[lastIdx] = latest;
+                    else sensorData.push(latest);
                     if (sensorData.length > 1440) sensorData.shift();
                     updateSensorBadgesAndValues(latest);
                     filterChartTime(activeTimeRange);
