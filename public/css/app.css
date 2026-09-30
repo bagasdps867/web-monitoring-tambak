@@ -1,0 +1,103 @@
+ /* Styling navbar desktop */
+        .navbar-top {
+            background: linear-gradient(90deg, #00A9A4, #007F73);
+        }
+
+        .navbar-top .nav-link {
+            color: white;
+        }
+
+        .navbar-top .nav-link:hover {
+            color: #ffc107;
+        }
+
+        /* Styling navbar mobile bottom */
+        .navbar-bottom {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-top {
+                display: none;
+            }
+
+            .navbar-bottom {
+                display: flex;
+                justify-content: space-around;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: #007F73;
+                padding: 10px 0;
+                z-index: 1000;
+            }
+
+            .navbar-bottom a {
+                color: white;
+                text-align: center;
+                flex: 1;
+                font-size: 14px;
+            }
+
+            .navbar-bottom a:hover {
+                color: #ffc107;
+            }
+        }
+
+        .navbar-bottom a {
+        color: white;
+        text-align: center;
+        font-size: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 10px; /* <-- Tambahkan jarak antar item */
+        }
+
+
+        /* Toggle Tema */
+        .theme-toggle {
+            cursor: pointer;
+        }
+
+        /* Dashboard Style */
+
+        /* Dark Mode support */
+body.dark-mode {
+    background-color: #121212;
+    color: #f1f1f1;
+}
+
+body.dark-mode .card {
+    background-color: #1e1e1e;
+    color: #fff;
+}
+
+body.dark-mode .card-header {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsif layout untuk cards */
+@media (max-width: 767px) {
+    .dashboard-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .dashboard-row-1 {
+        display: flex;
+        gap: 1rem;
+        flex-direction: row;
+    }
+
+    .dashboard-row-1 > .card-col {
+        flex: 1;
+    }
+
+    .dashboard-row-2 {
+        margin-top: 1rem;
+    }
+}
